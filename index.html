@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="כאבי ראש" />
+  <title>מעקב כאבי ראש – שירה</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #ff6b9d;
+      --purple: #a855f7;
+      --blue: #60a5fa;
+      --teal: #2dd4bf;
+      --yellow: #fbbf24;
+      --orange: #fb923c;
+      --red: #f87171;
+      --bg: #fdf4ff;
+      --card: #ffffff;
+      --text: #2d1b69;
+      --muted: #9ca3af;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Arial Hebrew', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    /* ── Header ── */
+    .header {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 20px 18px;
+    }
+    .header-photo {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+    }
+    .header-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(20,5,40,0.72) 0%, rgba(20,5,40,0.15) 55%, transparent 100%);
+    }
+    .header-content {
+      position: relative; z-index: 2;
+      width: 100%; display: flex;
+      align-items: flex-end; justify-content: space-between;
+    }
+    .header h1 {
+      font-size: 22px; font-weight: 800; color: white;
+      letter-spacing: -0.3px; line-height: 1.2;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+    .header-greeting {
+      font-size: 15px; font-weight: 600; color: white;
+      opacity: 0.92; text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+
+    /* ── Tab bar ── */
+    .tabs {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid #f3e8ff;
+      display: flex;
+      z-index: 100;
+      box-shadow: 0 -2px 12px rgba(168,85,247,0.1);
+    }
+    .tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      padding: 10px 0 14px;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      border: none; background: none; cursor: pointer; gap: 3px;
+    }
+    .tab .tab-icon { font-size: 22px; }
+    .tab.active { color: var(--purple); }
+
+    /* ── Pages ── */
+    .page { display: none; padding: 20px; }
+    .page.active { display: block; }
+
+    /* ── Record page ── */
+    .record-card {
+      background: white;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 24px rgba(168,85,247,0.12);
+      text-align: center;
+    }
+    .record-card .big-emoji { font-size: 72px; margin-bottom: 8px; display: block; }
+    .record-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .record-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+    #gauge-svg { width: 100%; margin-bottom: 20px; touch-action: none; cursor: pointer; }
+    #gauge-svg path { transition: opacity 0.15s; }
+    #gauge-svg path.dimmed { opacity: 0.35; }
+
+    .note-area {
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 14px;
+      padding: 12px; font-size: 15px; font-family: inherit;
+      color: var(--text); resize: none; outline: none;
+      margin-bottom: 20px;
+    }
+    .note-area:focus { border-color: var(--purple); }
+
+    .datetime-row {
+      display: flex; gap: 10px; margin-bottom: 16px;
+    }
+    .datetime-row label {
+      flex: 1; display: flex; flex-direction: column; gap: 5px;
+      font-size: 13px; font-weight: 600; color: var(--purple); text-align: right;
+    }
+    .datetime-row input {
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
+      padding: 10px 12px; font-size: 14px; font-family: inherit;
+      color: var(--text); outline: none; background: white;
+      direction: ltr; text-align: center;
+    }
+    .datetime-row input:focus { border-color: var(--purple); }
+
+    /* custom time picker */
+    .time-display {
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
+      padding: 10px 12px; font-size: 16px; font-weight: 600;
+      color: var(--text); background: white; text-align: center;
+      cursor: pointer; user-select: none; direction: ltr;
+    }
+    .time-display:active { border-color: var(--purple); background: #faf5ff; }
+
+    .time-modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 200;
+      align-items: flex-end; justify-content: center;
+    }
+    .time-modal-backdrop.open { display: flex; }
+    .time-modal {
+      background: white; border-radius: 24px 24px 0 0;
+      padding: 20px 16px 36px; width: 100%; max-height: 65vh;
+      display: flex; flex-direction: column;
+    }
+    .time-modal-title {
+      text-align: center; font-size: 15px; font-weight: 700;
+      color: var(--purple); margin-bottom: 16px;
+    }
+    .time-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; overflow-y: auto;
+    }
+    .time-opt {
+      padding: 12px 4px; border-radius: 12px; border: 2px solid #e9d5ff;
+      font-size: 15px; font-weight: 600; text-align: center;
+      cursor: pointer; background: white; color: var(--text);
+      transition: all 0.1s; direction: ltr;
+    }
+    .time-opt.selected { background: var(--purple); color: white; border-color: var(--purple); }
+    .time-opt:active { transform: scale(0.95); }
+
+    .save-btn {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white; border: none; border-radius: 50%;
+      font-size: 28px; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(168,85,247,0.35);
+      transition: transform 0.12s, box-shadow 0.12s;
+      display: block; margin: 0 auto;
+    }
+    .save-btn:active { transform: scale(0.93); box-shadow: 0 2px 10px rgba(168,85,247,0.25); }
+    .save-btn:disabled { background: #e5e7eb; color: #d1d5db; box-shadow: none; cursor: default; }
+
+    .toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
+      background: #2d1b69; color: white; padding: 12px 24px;
+      border-radius: 50px; font-size: 15px; font-weight: 600;
+      z-index: 999; transition: transform 0.35s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Medical page ── */
+    .med-subtabs {
+      display: flex; gap: 10px; margin-bottom: 18px;
+    }
+    .med-subtab {
+      flex: 1; padding: 10px 0; border-radius: 14px; border: 2px solid #e9d5ff;
+      font-size: 14px; font-weight: 700; color: var(--purple); background: white;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .med-subtab.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+    .med-section { display: none; }
+    .med-section.active { display: block; }
+
+    /* visit cards */
+    .visit-card {
+      background: white; border-radius: 18px; margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08); overflow: hidden;
+    }
+    .visit-header {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+      cursor: pointer;
+    }
+    .visit-icon {
+      width: 44px; height: 44px; border-radius: 12px; background: #ede9fe;
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+      flex-shrink: 0;
+    }
+    .visit-meta { flex: 1; }
+    .visit-meta .v-doctor { font-size: 15px; font-weight: 700; color: var(--text); }
+    .visit-meta .v-date { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .visit-chevron { font-size: 18px; color: var(--muted); transition: transform 0.2s; }
+    .visit-card.open .visit-chevron { transform: rotate(180deg); }
+    .visit-body {
+      display: none; padding: 0 16px 16px; border-top: 1px solid #f3e8ff;
+    }
+    .visit-card.open .visit-body { display: block; }
+    .visit-summary {
+      font-size: 14px; color: var(--text); line-height: 1.6; margin-top: 12px; white-space: pre-wrap;
+    }
+    .visit-files { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .file-chip {
+      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+      background: #f3e8ff; border-radius: 20px; font-size: 13px;
+      color: var(--purple); font-weight: 600; text-decoration: none; cursor: pointer;
+    }
+    .visit-delete-btn {
+      margin-top: 12px; background: none; border: none; color: #f87171;
+      font-size: 13px; font-weight: 600; cursor: pointer; padding: 0;
+    }
+
+    /* add visit form */
+    .add-panel {
+      background: white; border-radius: 18px; padding: 18px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.1); margin-bottom: 16px;
+      display: none;
+    }
+    .add-panel.open { display: block; }
+    .field-label {
+      font-size: 13px; font-weight: 700; color: var(--purple);
+      display: block; margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
+      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      color: var(--text); outline: none; background: white; margin-bottom: 14px;
+    }
+    .field-input:focus { border-color: var(--purple); }
+    .field-textarea {
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
+      padding: 10px 12px; font-size: 15px; font-family: inherit; resize: none;
+      color: var(--text); outline: none; background: white; margin-bottom: 14px;
+    }
+    .field-textarea:focus { border-color: var(--purple); }
+    .file-upload-label {
+      display: flex; align-items: center; gap: 8px; padding: 10px 16px;
+      border: 2px dashed #c4b5fd; border-radius: 12px; cursor: pointer;
+      color: var(--purple); font-size: 14px; font-weight: 600; margin-bottom: 14px;
+    }
+    .file-upload-label input { display: none; }
+    .file-preview-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .file-preview-chip {
+      display: flex; align-items: center; gap: 4px; padding: 4px 10px;
+      background: #ede9fe; border-radius: 20px; font-size: 12px; color: var(--purple);
+    }
+    .file-preview-chip button {
+      background: none; border: none; color: var(--purple); cursor: pointer;
+      font-size: 14px; padding: 0 2px; line-height: 1;
+    }
+    .form-row { display: flex; gap: 10px; }
+    .form-row .field-input { flex: 1; }
+    .btn-primary {
+      width: 100%; padding: 14px; background: linear-gradient(135deg,var(--pink),var(--purple));
+      color: white; border: none; border-radius: 14px; font-size: 16px;
+      font-weight: 700; cursor: pointer; margin-bottom: 8px;
+    }
+    .btn-ghost {
+      width: 100%; padding: 10px; background: none; border: 2px solid #e9d5ff;
+      border-radius: 14px; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer;
+    }
+    .add-trigger-btn {
+      width: 100%; padding: 14px; background: white;
+      border: 2px dashed #c4b5fd; border-radius: 16px;
+      font-size: 15px; font-weight: 700; color: var(--purple);
+      cursor: pointer; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+
+    /* todo list */
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .quick-chip {
+      padding: 8px 14px; border-radius: 20px; border: 2px solid #e9d5ff;
+      font-size: 13px; font-weight: 600; color: var(--purple); background: white;
+      cursor: pointer; transition: all 0.12s;
+    }
+    .quick-chip:active { background: var(--purple); color: white; }
+    .todo-add-row { display: flex; gap: 8px; margin-bottom: 18px; }
+    .todo-add-row .field-input { flex: 1; margin-bottom: 0; }
+    .todo-add-btn {
+      padding: 10px 18px; background: var(--purple); color: white;
+      border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    .todo-group-title {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px; margin: 10px 0 8px;
+    }
+    .todo-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      background: white; border-radius: 14px; margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(168,85,247,0.06);
+    }
+    .todo-item.done { opacity: 0.55; }
+    .todo-check {
+      width: 26px; height: 26px; border-radius: 8px; border: 2px solid #c4b5fd;
+      background: white; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 14px; flex-shrink: 0; transition: all 0.15s;
+    }
+    .todo-item.done .todo-check { background: var(--purple); border-color: var(--purple); color: white; }
+    .todo-text { flex: 1; font-size: 15px; color: var(--text); }
+    .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
+    .todo-del { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 4px; }
+    .med-empty { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 14px; }
+    .med-empty .med-empty-emoji { font-size: 48px; display: block; margin-bottom: 10px; }
+
+    /* ── Share button ── */
+    .share-btn {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #25d366, #128c3e);
+      color: white; border: none; border-radius: 18px;
+      font-size: 17px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.35);
+      transition: transform 0.12s, box-shadow 0.12s;
+      margin-bottom: 20px; display: flex; align-items: center;
+      justify-content: center; gap: 10px;
+    }
+    .share-btn:active { transform: scale(0.97); }
+    .share-btn .wa-icon { font-size: 22px; }
+
+    /* ── History page ── */
+    .section-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text);
+    }
+
+    .history-empty {
+      text-align: center; padding: 48px 20px;
+      color: var(--muted); font-size: 15px;
+    }
+    .history-empty .empty-emoji { font-size: 56px; margin-bottom: 12px; display: block; }
+
+    .entry-card {
+      background: white; border-radius: 18px; padding: 14px 16px;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .entry-badge {
+      min-width: 46px; height: 46px; border-radius: 13px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; gap: 1px;
+    }
+    .entry-badge .badge-emoji { font-size: 20px; }
+    .entry-badge .badge-num { font-size: 13px; font-weight: 800; }
+    .entry-info { flex: 1; }
+    .entry-info .entry-date { font-size: 13px; color: var(--muted); }
+    .entry-info .entry-note { font-size: 14px; margin-top: 2px; color: var(--text); }
+    .entry-delete {
+      background: none; border: none; font-size: 20px; cursor: pointer;
+      color: var(--muted); padding: 6px;
+    }
+
+    /* ── Stats page ── */
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: white; border-radius: 18px; padding: 16px;
+      text-align: center; box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .stat-card .stat-emoji { font-size: 32px; margin-bottom: 4px; }
+    .stat-card .stat-val { font-size: 26px; font-weight: 800; color: var(--purple); }
+    .stat-card .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .chart-card {
+      background: white; border-radius: 18px; padding: 18px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08); margin-bottom: 16px;
+    }
+    .chart-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+    .chart-card canvas { max-height: 200px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <img class="header-photo" src="shira.png" alt="שירה" />
+  <div class="header-overlay"></div>
+  <div class="header-content">
+    <h1>מעקב כאבי ראש</h1>
+    <div class="header-greeting">שלום שירה 👋</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ נשמר!</div>
+
+<!-- RECORD -->
+<div class="page active" id="page-record">
+  <div class="record-card">
+    <span class="big-emoji" id="record-emoji">🤕</span>
+    <h2>כמה זה כואב?</h2>
+    <p>געי בטכנומטר כדי לדרג את עוצמת הכאב</p>
+
+    <svg id="gauge-svg" viewBox="0 0 300 165">
+      <g id="gauge-segments"></g>
+      <!-- needle -->
+      <line id="gauge-needle" x1="150" y1="155" x2="248" y2="155"
+            stroke="#1e1b4b" stroke-width="3.5" stroke-linecap="round"
+            style="transform-origin:150px 155px;transform:rotate(0deg);transition:transform 0.35s cubic-bezier(.34,1.56,.64,1)"/>
+      <circle cx="150" cy="155" r="10" fill="#1e1b4b"/>
+      <circle cx="150" cy="155" r="5" fill="white"/>
+      <!-- centre level display -->
+      <text id="gauge-num" x="150" y="118" text-anchor="middle" dominant-baseline="middle"
+            font-size="32" font-weight="800" fill="#2d1b69"
+            font-family="-apple-system,BlinkMacSystemFont,sans-serif" opacity="0">–</text>
+    </svg>
+
+    <div class="datetime-row">
+      <label>📅 תאריך<input type="date" id="entry-date" /></label>
+      <label>🕐 שעה
+        <div class="time-display" id="time-display" onclick="openTimePicker()">00:00</div>
+      </label>
+    </div>
+
+    <textarea class="note-area" id="note-input" rows="2" placeholder="הערות? (גורמים, מיקום הכאב…)"></textarea>
+
+    <button class="save-btn" id="save-btn" disabled>💾</button>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="section-title">📋 כל הרשומות</div>
+  <div id="history-list"></div>
+</div>
+
+<!-- STATS -->
+<div class="page" id="page-stats">
+  <div class="section-title">📊 סטטיסטיקות</div>
+  <div class="stats-grid" id="stats-grid"></div>
+  <div class="chart-card">
+    <h3>עוצמת כאב לאורך זמן</h3>
+    <canvas id="chart-timeline"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>תדירות לפי יום בשבוע</h3>
+    <canvas id="chart-dow"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>התפלגות עוצמות</h3>
+    <canvas id="chart-dist"></canvas>
+  </div>
+  <button class="share-btn" id="share-btn" onclick="shareInfographic()">
+    <span class="wa-icon">💬</span> שתף דוח ב-WhatsApp
+  </button>
+</div>
+<canvas id="infographic-canvas" style="display:none"></canvas>
+
+<!-- MEDICAL -->
+<div class="page" id="page-medical">
+  <div class="med-subtabs">
+    <button class="med-subtab active" data-mt="visits">🏥 ביקורים</button>
+    <button class="med-subtab" data-mt="todos">✅ משימות</button>
+  </div>
+
+  <!-- Visits -->
+  <div class="med-section active" id="mt-visits">
+    <button class="add-trigger-btn" id="add-visit-trigger">➕ הוסף ביקור רופא</button>
+    <div class="add-panel" id="visit-form">
+      <label class="field-label">👨‍⚕️ שם הרופא / מרפאה</label>
+      <input class="field-input" id="v-doctor" type="text" placeholder="ד״ר כהן – נוירולוג" />
+      <label class="field-label">📅 תאריך הביקור</label>
+      <input class="field-input" id="v-date" type="date" />
+      <label class="field-label">📝 סיכום / הערות</label>
+      <textarea class="field-textarea" id="v-summary" rows="4" placeholder="מה נאמר בביקור? אבחנות, המלצות, תרופות..."></textarea>
+      <label class="field-label">📎 קבצים מצורפים</label>
+      <label class="file-upload-label">
+        <span>📁</span> בחר קבצים (תמונות / PDF)
+        <input type="file" id="v-files" accept="image/*,.pdf" multiple onchange="previewFiles(this)" />
+      </label>
+      <div class="file-preview-row" id="v-files-preview"></div>
+      <button class="btn-primary" onclick="saveVisit()">💾 שמור ביקור</button>
+      <button class="btn-ghost" onclick="toggleVisitForm(false)">ביטול</button>
+    </div>
+    <div id="visits-list"></div>
+  </div>
+
+  <!-- Todos -->
+  <div class="med-section" id="mt-todos">
+    <div class="quick-chips" id="quick-chips"></div>
+    <div class="todo-add-row">
+      <input class="field-input" id="todo-input" type="text" placeholder="משימה חדשה..." />
+      <button class="todo-add-btn" onclick="addTodo()">➕</button>
+    </div>
+    <div id="todos-list"></div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<nav class="tabs">
+  <button class="tab active" data-page="record">
+    <span class="tab-icon">➕</span>תיעוד
+  </button>
+  <button class="tab" data-page="history">
+    <span class="tab-icon">📋</span>היסטוריה
+  </button>
+  <button class="tab" data-page="stats">
+    <span class="tab-icon">📊</span>סטטיסטיקה
+  </button>
+  <button class="tab" data-page="medical">
+    <span class="tab-icon">🏥</span>רפואי
+  </button>
+</nav>
+
+<!-- Time picker modal -->
+<div class="time-modal-backdrop" id="time-modal-backdrop" onclick="closeTimePicker(event)">
+  <div class="time-modal">
+    <div class="time-modal-title">בחרי שעה 🕐</div>
+    <div class="time-grid" id="time-grid"></div>
+  </div>
+</div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────────
+  const STORAGE_KEY = 'shira_headaches_v1';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+  function save(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  // ── Level config ──────────────────────────────────────────
+  const LEVEL_META = {
+    1:  { emoji: '😌', color: '#d1fae5', text: '#065f46' },
+    2:  { emoji: '🙂', color: '#d1fae5', text: '#065f46' },
+    3:  { emoji: '😐', color: '#fef9c3', text: '#713f12' },
+    4:  { emoji: '😕', color: '#fef9c3', text: '#713f12' },
+    5:  { emoji: '😟', color: '#ffedd5', text: '#9a3412' },
+    6:  { emoji: '😣', color: '#ffedd5', text: '#9a3412' },
+    7:  { emoji: '😖', color: '#fee2e2', text: '#991b1b' },
+    8:  { emoji: '😭', color: '#fee2e2', text: '#991b1b' },
+    9:  { emoji: '🤯', color: '#fce7f3', text: '#9d174d' },
+    10: { emoji: '💀', color: '#fce7f3', text: '#9d174d' },
+  };
+
+  const BIG_EMOJIS = ['','😌','🙂','😐','😕','😟','😣','😖','😭','🤯','💀'];
+
+  // ── Build gauge ───────────────────────────────────────────
+  const GAUGE_COLORS = ['#14b8a6','#16a34a','#4ade80','#a3e635','#d4d417','#fbbf24','#fb923c','#f97316','#ef4444','#dc2626'];
+  const GCX = 150, GCY = 155, R_OUT = 128, R_IN = 80;
+
+  function gpt(r, deg) {
+    const rad = deg * Math.PI / 180;
+    return [GCX + r * Math.cos(rad), GCY - r * Math.sin(rad)];
+  }
+
+  const segG = document.getElementById('gauge-segments');
+  const segPaths = [];
+  for (let i = 1; i <= 10; i++) {
+    const a1 = (i - 1) * 18 + 2.5, a2 = i * 18 - 2.5;
+    const [ox1,oy1] = gpt(R_OUT, a1), [ox2,oy2] = gpt(R_OUT, a2);
+    const [ix1,iy1] = gpt(R_IN,  a1), [ix2,iy2] = gpt(R_IN,  a2);
+    const d = `M${ox1},${oy1} A${R_OUT},${R_OUT} 0 0,0 ${ox2},${oy2} L${ix2},${iy2} A${R_IN},${R_IN} 0 0,1 ${ix1},${iy1} Z`;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', GAUGE_COLORS[i - 1]);
+    path.setAttribute('data-level', i);
+    path.style.cursor = 'pointer';
+    segG.appendChild(path);
+    segPaths.push(path);
+  }
+
+  let selectedLevel = null;
+
+  function selectLevel(n) {
+    selectedLevel = n;
+    // rotate needle: angle from right, counterclockwise
+    const angle = (n - 0.5) * 18;
+    document.getElementById('gauge-needle').style.transform = `rotate(${-angle}deg)`;
+    // dim unselected segments
+    segPaths.forEach(p => p.classList.toggle('dimmed', +p.dataset.level !== n));
+    // show number
+    const numEl = document.getElementById('gauge-num');
+    numEl.textContent = n;
+    numEl.style.fill = GAUGE_COLORS[n - 1];
+    numEl.setAttribute('opacity', '1');
+    document.getElementById('record-emoji').textContent = BIG_EMOJIS[n];
+    document.getElementById('save-btn').disabled = false;
+  }
+
+  // click/tap on gauge SVG
+  document.getElementById('gauge-svg').addEventListener('pointerdown', e => {
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const scaleX = 300 / rect.width;
+    const scaleY = 165 / rect.height;
+    const px = (e.clientX - rect.left) * scaleX;
+    const py = (e.clientY - rect.top)  * scaleY;
+    const dx = px - GCX, dy = GCY - py; // dy flipped: up is positive
+    if (dy < -10) return; // below center
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (angle < 0 || angle > 180) return;
+    const level = Math.min(10, Math.max(1, Math.ceil(angle / 18)));
+    selectLevel(level);
+  });
+
+  // ── Custom 30-min time picker ─────────────────────────────
+  const pad = n => String(n).padStart(2, '0');
+  let selectedTime = '00:00';
+
+  const timeGrid = document.getElementById('time-grid');
+  const TIME_OPTS = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m of [0, 30]) {
+      TIME_OPTS.push(`${pad(h)}:${pad(m)}`);
+    }
+  }
+  TIME_OPTS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'time-opt';
+    btn.textContent = t;
+    btn.dataset.val = t;
+    btn.addEventListener('click', () => {
+      selectedTime = t;
+      document.getElementById('time-display').textContent = t;
+      document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === t));
+      setTimeout(closeTimePicker, 150);
+    });
+    timeGrid.appendChild(btn);
+  });
+
+  function openTimePicker() {
+    document.getElementById('time-modal-backdrop').classList.add('open');
+    // scroll selected into view
+    const sel = timeGrid.querySelector('.time-opt.selected');
+    if (sel) sel.scrollIntoView({ block: 'center' });
+  }
+  function closeTimePicker(e) {
+    if (e && e.target !== document.getElementById('time-modal-backdrop')) return;
+    document.getElementById('time-modal-backdrop').classList.remove('open');
+  }
+
+  // ── Set default date/time to now ─────────────────────────
+  function setDateTimeNow() {
+    const now = new Date();
+    const mins = now.getMinutes() < 30 ? 0 : 30;
+    selectedTime = `${pad(now.getHours())}:${pad(mins)}`;
+    document.getElementById('entry-date').value =
+      `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+    document.getElementById('time-display').textContent = selectedTime;
+    document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === selectedTime));
+  }
+  setDateTimeNow();
+
+  // ── Save entry ────────────────────────────────────────────
+  document.getElementById('save-btn').addEventListener('click', () => {
+    if (!selectedLevel) return;
+    const dateVal = document.getElementById('entry-date').value;
+    const timeVal = selectedTime;
+    let ts;
+    try {
+      ts = (dateVal && timeVal)
+        ? new Date(`${dateVal}T${timeVal}:00`).toISOString()
+        : new Date().toISOString();
+      if (ts === 'Invalid Date' || isNaN(new Date(ts))) throw new Error();
+    } catch {
+      ts = new Date().toISOString();
+    }
+
+    const entries = load();
+    entries.unshift({
+      id: Date.now(),
+      level: selectedLevel,
+      note: document.getElementById('note-input').value.trim(),
+      ts,
+    });
+    entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+    save(entries);
+
+    // reset
+    selectedLevel = null;
+    document.getElementById('gauge-needle').style.transform = 'rotate(0deg)';
+    segPaths.forEach(p => p.classList.remove('dimmed'));
+    document.getElementById('gauge-num').setAttribute('opacity', '0');
+    document.getElementById('record-emoji').textContent = '🤕';
+    document.getElementById('note-input').value = '';
+    document.getElementById('save-btn').disabled = true;
+    setDateTimeNow();
+
+    showToast('✅ נשמר בהצלחה!');
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // ── History ───────────────────────────────────────────────
+  function renderHistory() {
+    const entries = load();
+    const el = document.getElementById('history-list');
+    if (!entries.length) {
+      el.innerHTML = `<div class="history-empty"><span class="empty-emoji">🌸</span>אין רשומות עדיין.<br>תעדי את כאב הראש הראשון של שירה!</div>`;
+      return;
+    }
+    el.innerHTML = entries.map(e => {
+      const m = LEVEL_META[e.level];
+      const d = new Date(e.ts);
+      const dateStr = d.toLocaleDateString('he-IL', { weekday:'short', month:'short', day:'numeric' });
+      const timeStr = d.toLocaleTimeString('he-IL', { hour:'2-digit', minute:'2-digit' });
+      return `
+        <div class="entry-card" data-id="${e.id}">
+          <div class="entry-badge" style="background:${m.color}">
+            <span class="badge-emoji">${m.emoji}</span>
+            <span class="badge-num" style="color:${m.text}">${e.level}/10</span>
+          </div>
+          <div class="entry-info">
+            <div class="entry-date">📅 ${dateStr} · ${timeStr}</div>
+            ${e.note ? `<div class="entry-note">📝 ${e.note}</div>` : ''}
+          </div>
+          <button class="entry-delete" data-id="${e.id}" title="Delete">🗑️</button>
+        </div>`;
+    }).join('');
+
+    el.querySelectorAll('.entry-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = +btn.dataset.id;
+        const updated = load().filter(e => e.id !== id);
+        save(updated);
+        renderHistory();
+      });
+    });
+  }
+
+  // ── Stats ─────────────────────────────────────────────────
+  let chartTimeline, chartDow, chartDist;
+
+  function renderStats() {
+    const entries = load();
+    const grid = document.getElementById('stats-grid');
+
+    if (!entries.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted)">אין נתונים עדיין 🌸</div>`;
+      return;
+    }
+
+    const total = entries.length;
+    const avg = (entries.reduce((s, e) => s + e.level, 0) / total).toFixed(1);
+    const max = Math.max(...entries.map(e => e.level));
+    const last7 = entries.filter(e => new Date(e.ts) > new Date(Date.now() - 7*86400000)).length;
+
+    grid.innerHTML = `
+      <div class="stat-card"><div class="stat-emoji">📌</div><div class="stat-val">${total}</div><div class="stat-lbl">סה״כ רשומות</div></div>
+      <div class="stat-card"><div class="stat-emoji">📈</div><div class="stat-val">${avg}</div><div class="stat-lbl">ממוצע עוצמה</div></div>
+      <div class="stat-card"><div class="stat-emoji">🔺</div><div class="stat-val">${max}</div><div class="stat-lbl">עוצמה מקסימלית</div></div>
+      <div class="stat-card"><div class="stat-emoji">📅</div><div class="stat-val">${last7}</div><div class="stat-lbl">7 הימים האחרונים</div></div>
+    `;
+
+    // Timeline chart (last 30 entries, oldest first)
+    const recent = [...entries].reverse().slice(-30);
+    const tlLabels = recent.map(e => {
+      const d = new Date(e.ts);
+      return `${d.getMonth()+1}/${d.getDate()}`;
+    });
+    const tlData = recent.map(e => e.level);
+    const tlColors = tlData.map(v =>
+      v <= 2 ? '#34d399' : v <= 4 ? '#fbbf24' : v <= 6 ? '#fb923c' : v <= 8 ? '#f87171' : '#f43f5e'
+    );
+
+    if (chartTimeline) chartTimeline.destroy();
+    chartTimeline = new Chart(document.getElementById('chart-timeline'), {
+      type: 'bar',
+      data: { labels: tlLabels, datasets: [{ data: tlData, backgroundColor: tlColors, borderRadius: 6, borderSkipped: false }] },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 0, max: 10, ticks: { stepSize: 2 }, grid: { color: '#f3e8ff' } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+
+    // Day-of-week
+    const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+    const dowCounts = Array(7).fill(0);
+    entries.forEach(e => { dowCounts[new Date(e.ts).getDay()]++; });
+    if (chartDow) chartDow.destroy();
+    chartDow = new Chart(document.getElementById('chart-dow'), {
+      type: 'bar',
+      data: {
+        labels: days,
+        datasets: [{ data: dowCounts, backgroundColor: '#c4b5fd', borderRadius: 8, borderSkipped: false }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f3e8ff' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Level distribution
+    const dist = Array(10).fill(0);
+    entries.forEach(e => dist[e.level - 1]++);
+    const distColors = ['#34d399','#6ee7b7','#fde047','#fbbf24','#fb923c','#f97316','#f87171','#ef4444','#f43f5e','#e11d48'];
+    if (chartDist) chartDist.destroy();
+    chartDist = new Chart(document.getElementById('chart-dist'), {
+      type: 'bar',
+      data: {
+        labels: ['1','2','3','4','5','6','7','8','9','10'],
+        datasets: [{ data: dist, backgroundColor: distColors, borderRadius: 8, borderSkipped: false }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f3e8ff' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // ── Infographic & WhatsApp share ─────────────────────────
+  async function shareInfographic() {
+    const entries = load();
+    if (!entries.length) { showToast('אין נתונים לשיתוף עדיין'); return; }
+
+    const W = 900, H = 1400;
+    const canvas = document.getElementById('infographic-canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const rr = (x,y,w,h,r) => {
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.lineTo(x+w-r, y); ctx.arcTo(x+w,y,x+w,y+r,r);
+      ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+      ctx.lineTo(x+r, y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+      ctx.lineTo(x, y+r); ctx.arcTo(x,y,x+r,y,r);
+      ctx.closePath();
+    };
+
+    // ── background
+    ctx.fillStyle = '#fdf4ff';
+    ctx.fillRect(0, 0, W, H);
+
+    // subtle dot pattern
+    ctx.fillStyle = 'rgba(168,85,247,0.06)';
+    for (let x=20;x<W;x+=40) for (let y=20;y<H;y+=40) { ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill(); }
+
+    // ── header gradient card
+    const hg = ctx.createLinearGradient(0,0,W,200);
+    hg.addColorStop(0,'#ff6b9d'); hg.addColorStop(1,'#a855f7');
+    ctx.fillStyle = hg;
+    rr(30,30,W-60,200,28); ctx.fill();
+
+    // header glow blob
+    ctx.save(); ctx.globalAlpha=0.18;
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(W-120,80,90,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    ctx.font='bold 72px serif'; ctx.textAlign='center'; ctx.fillStyle='white';
+    ctx.fillText('🌸', 120, 155);
+    ctx.font='bold 40px -apple-system,Arial Hebrew,sans-serif'; ctx.textAlign='right';
+    ctx.fillText('מעקב כאבי ראש – שירה', W-60, 110);
+    ctx.font='24px -apple-system,Arial Hebrew,sans-serif'; ctx.globalAlpha=0.85;
+    ctx.fillText('דוח אישי', W-60, 155);
+    ctx.globalAlpha=1;
+    const now = new Date();
+    ctx.font='22px -apple-system,Arial Hebrew,sans-serif'; ctx.globalAlpha=0.75;
+    ctx.fillText(`${now.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}`, W-60, 195);
+    ctx.globalAlpha=1;
+
+    // ── stats calculations
+    const total = entries.length;
+    const avg   = (entries.reduce((s,e)=>s+e.level,0)/total).toFixed(1);
+    const maxLv = Math.max(...entries.map(e=>e.level));
+    const last7 = entries.filter(e=>new Date(e.ts)>new Date(Date.now()-7*864e5)).length;
+    const recent30 = entries.filter(e=>new Date(e.ts)>new Date(Date.now()-30*864e5)).length;
+
+    // ── 4 stat cards  row 1
+    const STAT_COLORS = ['#ede9fe','#d1fae5','#fee2e2','#fef9c3'];
+    const STAT_TXT    = ['#7c3aed','#065f46','#991b1b','#713f12'];
+    const stats = [
+      {emoji:'📌', val:total,      lbl:'סה"כ\nרשומות'},
+      {emoji:'📈', val:avg,        lbl:'ממוצע\nעוצמה'},
+      {emoji:'🔺', val:maxLv,      lbl:'עוצמה\nמקסימלית'},
+      {emoji:'📅', val:last7,      lbl:'7 ימים\nאחרונים'},
+    ];
+    const cw=(W-90)/2, ch=180, cy=270, gap=30;
+    stats.forEach((s,i)=>{
+      const col=i%2, row=Math.floor(i/2);
+      const cx2 = 30 + col*(cw+gap);
+      const cy2 = cy + row*(ch+gap);
+      ctx.fillStyle = STAT_COLORS[i];
+      rr(cx2,cy2,cw,ch,20); ctx.fill();
+      ctx.font='48px serif'; ctx.textAlign='center';
+      ctx.fillText(s.emoji, cx2+cw/2, cy2+62);
+      ctx.font=`bold 52px -apple-system,Arial Hebrew,sans-serif`;
+      ctx.fillStyle=STAT_TXT[i]; ctx.textAlign='center';
+      ctx.fillText(s.val, cx2+cw/2, cy2+115);
+      ctx.font=`20px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='#6b7280';
+      s.lbl.split('\n').forEach((l,li)=>ctx.fillText(l, cx2+cw/2, cy2+143+li*22));
+    });
+
+    // ── pain level bar (last 14 entries)
+    const sectionY = 710;
+    ctx.fillStyle='white'; rr(30,sectionY,W-60,200,20); ctx.fill();
+    ctx.shadowColor='rgba(168,85,247,0.1)'; ctx.shadowBlur=12;
+    ctx.fillStyle='white'; rr(30,sectionY,W-60,200,20); ctx.fill();
+    ctx.shadowBlur=0;
+
+    ctx.font=`bold 26px -apple-system,Arial Hebrew,sans-serif`;
+    ctx.fillStyle='#2d1b69'; ctx.textAlign='right';
+    ctx.fillText('עוצמת כאב – 14 האירועים האחרונים', W-60, sectionY+44);
+
+    const recent14 = [...entries].slice(0,14).reverse();
+    const barW = (W-100) / 14;
+    const barMaxH = 110;
+    const barBX = 50, barBY = sectionY+60;
+    const barColors=['#14b8a6','#16a34a','#4ade80','#a3e635','#d4d417','#fbbf24','#fb923c','#f97316','#ef4444','#dc2626'];
+    recent14.forEach((e,i)=>{
+      const bh = (e.level/10)*barMaxH;
+      ctx.fillStyle = barColors[e.level-1];
+      rr(barBX+i*barW+2, barBY+barMaxH-bh, barW-4, bh, 4);
+      ctx.fill();
+      ctx.font=`bold 18px -apple-system,sans-serif`; ctx.fillStyle='#374151'; ctx.textAlign='center';
+      ctx.fillText(e.level, barBX+i*barW+barW/2, barBY+barMaxH+22);
+    });
+
+    // ── recent entries list
+    const listY = 940;
+    ctx.fillStyle='white'; rr(30,listY,W-60,360,20); ctx.fill();
+    ctx.font=`bold 26px -apple-system,Arial Hebrew,sans-serif`;
+    ctx.fillStyle='#2d1b69'; ctx.textAlign='right';
+    ctx.fillText('5 האירועים האחרונים', W-60, listY+44);
+
+    const LEVEL_EMOJI=['','😌','🙂','😐','😕','😟','😣','😖','😭','🤯','💀'];
+    entries.slice(0,5).forEach((e,i)=>{
+      const ey=listY+80+i*54;
+      const lvlColor = barColors[e.level-1];
+      // pill badge
+      ctx.fillStyle=lvlColor+'33'; rr(W-110,ey-28,76,36,12); ctx.fill();
+      ctx.font=`bold 22px -apple-system,sans-serif`; ctx.fillStyle=lvlColor;
+      ctx.textAlign='center'; ctx.fillText(`${e.level}/10`, W-72, ey-4);
+      // emoji
+      ctx.font='28px serif'; ctx.textAlign='right';
+      ctx.fillText(LEVEL_EMOJI[e.level], W-120, ey-2);
+      // date
+      const d=new Date(e.ts);
+      const ds=d.toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'numeric'});
+      const ts2=d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+      ctx.font=`22px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='#374151';
+      ctx.textAlign='right'; ctx.fillText(`${ds}  ${ts2}`, W-160, ey-2);
+      if(e.note){ ctx.font=`18px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='#9ca3af'; ctx.fillText(e.note.slice(0,30), W-160, ey+22); }
+      // separator
+      if(i<4){ ctx.strokeStyle='#f3e8ff'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(50,ey+34); ctx.lineTo(W-50,ey+34); ctx.stroke(); }
+    });
+
+    // ── footer
+    const footG=ctx.createLinearGradient(0,H-80,W,H);
+    footG.addColorStop(0,'#ff6b9d'); footG.addColorStop(1,'#a855f7');
+    ctx.fillStyle=footG; rr(30,H-70,W-60,50,16); ctx.fill();
+    ctx.font=`bold 22px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='white'; ctx.textAlign='center';
+    ctx.fillText('נוצר באפליקציית מעקב כאבי ראש של שירה 🌸', W/2, H-38);
+
+    // ── share
+    canvas.toBlob(async blob=>{
+      const file=new File([blob],'shira-headache-report.png',{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file], title:'דוח כאבי ראש – שירה', text:'דוח כאבי ראש של שירה 🌸'}); return; }
+        catch(e){ if(e.name==='AbortError') return; }
+      }
+      // fallback: download image + open WhatsApp
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+      a.download='shira-headache-report.png'; a.click();
+      setTimeout(()=>window.open(`https://wa.me/?text=${encodeURIComponent('דוח כאבי ראש של שירה 🌸\nמצורפת תמונת הדוח')}`,'_blank'),800);
+    },'image/png');
+  }
+
+  // ── Tab navigation ────────────────────────────────────────
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const page = tab.dataset.page;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${page}`));
+      if (page === 'history') renderHistory();
+      if (page === 'stats') renderStats();
+      if (page === 'medical') { renderVisits(); renderTodos(); }
+    });
+  });
+
+  // ── Medical data ─────────────────────────────────────────
+  const MED_KEY  = 'shira_medical_v1';
+  const TODO_KEY = 'shira_todos_v1';
+
+  function loadVisits()  { try { return JSON.parse(localStorage.getItem(MED_KEY))  || []; } catch { return []; } }
+  function saveVisits(d) { localStorage.setItem(MED_KEY,  JSON.stringify(d)); }
+  function loadTodos()   { try { return JSON.parse(localStorage.getItem(TODO_KEY)) || []; } catch { return []; } }
+  function saveTodos(d)  { localStorage.setItem(TODO_KEY, JSON.stringify(d)); }
+
+  // ── Visit form ────────────────────────────────────────────
+  let pendingFiles = []; // {name, type, data}
+
+  function toggleVisitForm(open) {
+    document.getElementById('visit-form').classList.toggle('open', open);
+    document.getElementById('add-visit-trigger').style.display = open ? 'none' : 'flex';
+    if (!open) { resetVisitForm(); }
+  }
+  document.getElementById('add-visit-trigger').addEventListener('click', () => toggleVisitForm(true));
+
+  function resetVisitForm() {
+    document.getElementById('v-doctor').value = '';
+    document.getElementById('v-date').value = '';
+    document.getElementById('v-summary').value = '';
+    document.getElementById('v-files-preview').innerHTML = '';
+    pendingFiles = [];
+  }
+
+  function previewFiles(input) {
+    const preview = document.getElementById('v-files-preview');
+    Array.from(input.files).forEach(file => {
+      if (file.size > 4 * 1024 * 1024) { showToast('קובץ גדול מדי (מקסימום 4MB)'); return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        pendingFiles.push({ name: file.name, type: file.type, data: e.target.result });
+        const chip = document.createElement('div');
+        chip.className = 'file-preview-chip';
+        const icon = file.type.startsWith('image/') ? '🖼️' : '📄';
+        chip.innerHTML = `${icon} ${file.name.slice(0,20)} <button onclick="removeFile(this,'${file.name}')">×</button>`;
+        preview.appendChild(chip);
+      };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  }
+
+  function removeFile(btn, name) {
+    pendingFiles = pendingFiles.filter(f => f.name !== name);
+    btn.closest('.file-preview-chip').remove();
+  }
+
+  function saveVisit() {
+    const doctor  = document.getElementById('v-doctor').value.trim();
+    const date    = document.getElementById('v-date').value;
+    const summary = document.getElementById('v-summary').value.trim();
+    if (!doctor || !date) { showToast('נא למלא שם רופא ותאריך'); return; }
+    const visits = loadVisits();
+    visits.unshift({ id: Date.now(), doctor, date, summary, files: [...pendingFiles] });
+    saveVisits(visits);
+    toggleVisitForm(false);
+    renderVisits();
+    showToast('✅ הביקור נשמר!');
+  }
+
+  function renderVisits() {
+    const visits = loadVisits();
+    const el = document.getElementById('visits-list');
+    if (!visits.length) {
+      el.innerHTML = `<div class="med-empty"><span class="med-empty-emoji">🏥</span>אין ביקורים עדיין.<br>הוסיפי את הביקור הראשון!</div>`;
+      return;
+    }
+    el.innerHTML = visits.map(v => {
+      const d = new Date(v.date);
+      const ds = d.toLocaleDateString('he-IL', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+      const filesHtml = v.files && v.files.length
+        ? `<div class="visit-files">${v.files.map(f => {
+            const icon = f.type && f.type.startsWith('image/') ? '🖼️' : '📄';
+            return `<a class="file-chip" href="${f.data}" download="${f.name}" target="_blank">${icon} ${f.name.slice(0,22)}</a>`;
+          }).join('')}</div>` : '';
+      return `
+        <div class="visit-card" id="vc-${v.id}">
+          <div class="visit-header" onclick="toggleVisitCard(${v.id})">
+            <div class="visit-icon">🩺</div>
+            <div class="visit-meta">
+              <div class="v-doctor">${v.doctor}</div>
+              <div class="v-date">📅 ${ds}</div>
+            </div>
+            <span class="visit-chevron">⌄</span>
+          </div>
+          <div class="visit-body">
+            ${v.summary ? `<div class="visit-summary">${v.summary}</div>` : ''}
+            ${filesHtml}
+            <button class="visit-delete-btn" onclick="deleteVisit(${v.id})">🗑️ מחק ביקור</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function toggleVisitCard(id) {
+    document.getElementById(`vc-${id}`).classList.toggle('open');
+  }
+
+  function deleteVisit(id) {
+    saveVisits(loadVisits().filter(v => v.id !== id));
+    renderVisits();
+  }
+
+  // ── Todos ─────────────────────────────────────────────────
+  const QUICK_TASKS = [
+    'תיאום תור מעקב','בדיקת דם','MRI / CT','קנייה בבית מרקחת',
+    'צור קשר עם ביטוח','רשימת תרופות','בדיקת עיניים','ייעוץ שני'
+  ];
+
+  const qc = document.getElementById('quick-chips');
+  QUICK_TASKS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-chip';
+    btn.textContent = t;
+    btn.addEventListener('click', () => { addTodoText(t); });
+    qc.appendChild(btn);
+  });
+
+  document.getElementById('todo-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTodo();
+  });
+
+  function addTodo() {
+    const inp = document.getElementById('todo-input');
+    addTodoText(inp.value.trim());
+    inp.value = '';
+  }
+
+  function addTodoText(text) {
+    if (!text) return;
+    const todos = loadTodos();
+    todos.unshift({ id: Date.now(), text, done: false, ts: new Date().toISOString() });
+    saveTodos(todos);
+    renderTodos();
+  }
+
+  function renderTodos() {
+    const todos = loadTodos();
+    const el = document.getElementById('todos-list');
+    if (!todos.length) {
+      el.innerHTML = `<div class="med-empty"><span class="med-empty-emoji">✅</span>אין משימות פתוחות.<br>הוסיפי משימה או בחרי מהרשימה המהירה!</div>`;
+      return;
+    }
+    const pending  = todos.filter(t => !t.done);
+    const done     = todos.filter(t =>  t.done);
+    let html = '';
+    if (pending.length) {
+      html += pending.map(t => todoHtml(t)).join('');
+    }
+    if (done.length) {
+      html += `<div class="todo-group-title">הושלמו ✓</div>`;
+      html += done.map(t => todoHtml(t)).join('');
+    }
+    el.innerHTML = html;
+  }
+
+  function todoHtml(t) {
+    return `
+      <div class="todo-item${t.done ? ' done' : ''}" id="td-${t.id}">
+        <button class="todo-check" onclick="toggleTodo(${t.id})">${t.done ? '✓' : ''}</button>
+        <span class="todo-text">${t.text}</span>
+        <button class="todo-del" onclick="deleteTodo(${t.id})">🗑️</button>
+      </div>`;
+  }
+
+  function toggleTodo(id) {
+    const todos = loadTodos();
+    const t = todos.find(t => t.id === id);
+    if (t) t.done = !t.done;
+    saveTodos(todos);
+    renderTodos();
+  }
+
+  function deleteTodo(id) {
+    saveTodos(loadTodos().filter(t => t.id !== id));
+    renderTodos();
+  }
+
+  // ── Medical sub-tabs ──────────────────────────────────────
+  document.querySelectorAll('.med-subtab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.med-subtab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.med-section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(`mt-${btn.dataset.mt}`).classList.add('active');
+      if (btn.dataset.mt === 'todos') renderTodos();
+    });
+  });
+
+  // ── Service Worker ────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+</body>
+</html>
