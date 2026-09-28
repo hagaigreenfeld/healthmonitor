@@ -15,9 +15,10 @@ export async function listIssueTypes(uid) {
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-export function createIssueType(uid, { name, emoji, color, fields }) {
+export function createIssueType(uid, { name, emoji, color, fields, sourceGlobalId = null }) {
   return addDoc(col(uid, 'issueTypes'), {
     name, emoji: emoji || '📌', color: color || '#60a5fa', fields: fields || [],
+    sourceGlobalId,
     createdAt: serverTimestamp()
   });
 }
@@ -28,6 +29,27 @@ export function updateIssueType(uid, issueTypeId, patch) {
 
 export function deleteIssueType(uid, issueTypeId) {
   return deleteDoc(ref(uid, 'issueTypes', issueTypeId));
+}
+
+// ── Global issue types (admin-managed, visible to every user) ──
+export async function listGlobalIssueTypes() {
+  const snap = await getDocs(query(collection(db, 'globalIssueTypes'), orderBy('createdAt')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export function createGlobalIssueType(createdByUid, { name, emoji, color, fields }) {
+  return addDoc(collection(db, 'globalIssueTypes'), {
+    name, emoji: emoji || '📌', color: color || '#60a5fa', fields: fields || [],
+    createdBy: createdByUid, createdAt: serverTimestamp()
+  });
+}
+
+export function updateGlobalIssueType(issueTypeId, patch) {
+  return updateDoc(doc(db, 'globalIssueTypes', issueTypeId), patch);
+}
+
+export function deleteGlobalIssueType(issueTypeId) {
+  return deleteDoc(doc(db, 'globalIssueTypes', issueTypeId));
 }
 
 // ── Entries (the actual health records) ──────────────────────
