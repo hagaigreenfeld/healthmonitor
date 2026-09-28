@@ -495,20 +495,22 @@
   <div class="issue-chip-row" id="record-issue-chips"></div>
 
   <div class="record-card">
-    <span class="big-emoji" id="record-emoji">🤕</span>
-    <h2>כמה זה כואב?</h2>
+    <div id="severity-section">
+      <span class="big-emoji" id="record-emoji">🤕</span>
+      <h2>כמה זה כואב?</h2>
 
-    <svg id="gauge-svg" viewBox="0 0 300 165">
-      <g id="gauge-segments"></g>
-      <line id="gauge-needle" x1="150" y1="155" x2="248" y2="155"
-            stroke="#1e1b4b" stroke-width="3.5" stroke-linecap="round"
-            style="transform-origin:150px 155px;transform:rotate(0deg);transition:transform 0.35s cubic-bezier(.34,1.56,.64,1)"/>
-      <circle cx="150" cy="155" r="10" fill="#1e1b4b"/>
-      <circle cx="150" cy="155" r="5" fill="white"/>
-      <text id="gauge-num" x="150" y="118" text-anchor="middle" dominant-baseline="middle"
-            font-size="32" font-weight="800" fill="#2d1b69"
-            font-family="-apple-system,BlinkMacSystemFont,sans-serif" opacity="0">–</text>
-    </svg>
+      <svg id="gauge-svg" viewBox="0 0 300 165">
+        <g id="gauge-segments"></g>
+        <line id="gauge-needle" x1="150" y1="155" x2="248" y2="155"
+              stroke="#1e1b4b" stroke-width="3.5" stroke-linecap="round"
+              style="transform-origin:150px 155px;transform:rotate(0deg);transition:transform 0.35s cubic-bezier(.34,1.56,.64,1)"/>
+        <circle cx="150" cy="155" r="10" fill="#1e1b4b"/>
+        <circle cx="150" cy="155" r="5" fill="white"/>
+        <text id="gauge-num" x="150" y="118" text-anchor="middle" dominant-baseline="middle"
+              font-size="32" font-weight="800" fill="#2d1b69"
+              font-family="-apple-system,BlinkMacSystemFont,sans-serif" opacity="0">–</text>
+      </svg>
+    </div>
 
     <div class="datetime-row">
       <label>📅 תאריך<input type="date" id="entry-date" /></label>
@@ -517,13 +519,14 @@
       </label>
     </div>
 
-    <div class="status-row">
-      <button type="button" class="status-btn" data-status="instant">⚡ חד פעמי</button>
-      <button type="button" class="status-btn active" data-status="open">🟠 פתוח</button>
-      <button type="button" class="status-btn" data-status="closed">✅ נסגר</button>
-    </div>
-    <div id="duration-input-wrap" style="display:none">
-      <input class="field-input" id="entry-duration" type="number" min="0" step="0.5" placeholder="משך בשעות" style="margin-bottom:0" />
+    <div id="status-section">
+      <div class="status-row">
+        <button type="button" class="status-btn active" data-status="open">🟠 פתוח</button>
+        <button type="button" class="status-btn" data-status="closed">✅ נסגר</button>
+      </div>
+      <div id="duration-input-wrap" style="display:none">
+        <input class="field-input" id="entry-duration" type="number" min="0" step="0.5" placeholder="משך בשעות" style="margin-bottom:0" />
+      </div>
     </div>
 
     <div id="custom-fields-container"></div>
@@ -629,6 +632,19 @@
     <input class="field-input" id="it-name" type="text" placeholder="כאבי בטן" />
     <label class="field-label">אימוג׳י</label>
     <input class="field-input" id="it-emoji" type="text" placeholder="🤒" maxlength="4" />
+
+    <label class="field-label">אופן תיעוד</label>
+    <div class="status-row" id="it-entry-mode-row" style="margin-bottom:14px">
+      <button type="button" class="status-btn active" data-entry-mode="episodic">מתמשך (פתוח/סגור)</button>
+      <button type="button" class="status-btn" data-entry-mode="instant">רגע חד־פעמי</button>
+    </div>
+
+    <label class="field-label">מדידת עוצמה (0-10)</label>
+    <div class="status-row" id="it-track-severity-row" style="margin-bottom:14px">
+      <button type="button" class="status-btn active" data-track-severity="true">כן</button>
+      <button type="button" class="status-btn" data-track-severity="false">לא</button>
+    </div>
+
     <label class="field-label">שדות מותאמים אישית</label>
     <div id="it-fields-list"></div>
     <button class="btn-ghost" type="button" id="it-add-field-btn">➕ הוסף שדה</button>
@@ -865,7 +881,9 @@ document.getElementById('gauge-svg').addEventListener('pointerdown', e => {
 });
 
 function updateSaveEnabled() {
-  document.getElementById('save-btn').disabled = !(selectedLevel && selectedRecordIssueTypeId);
+  const type = currentRecordType();
+  const severityOk = type?.trackSeverity === false || !!selectedLevel;
+  document.getElementById('save-btn').disabled = !(severityOk && selectedRecordIssueTypeId);
 }
 
 // ── Time picker (unchanged) ───────────────────────────────────
@@ -909,10 +927,10 @@ const durationWrap = document.getElementById('duration-input-wrap');
 let recordStatus = 'open';
 function setRecordStatus(status) {
   recordStatus = status;
-  document.querySelectorAll('.status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === status));
+  document.querySelectorAll('#status-section .status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === status));
   durationWrap.style.display = status === 'closed' ? 'block' : 'none';
 }
-document.querySelectorAll('.status-btn').forEach(btn => {
+document.querySelectorAll('#status-section .status-btn').forEach(btn => {
   btn.addEventListener('click', () => setRecordStatus(btn.dataset.status));
 });
 
@@ -920,7 +938,30 @@ document.querySelectorAll('.status-btn').forEach(btn => {
 function currentRecordType() {
   return issueTypes.find(t => t.id === selectedRecordIssueTypeId);
 }
+// Show/hide severity gauge and open/closed controls based on the selected
+// type's config, since not every type needs a 0-10 rating or duration tracking.
+function applyTypeConfigToRecordForm() {
+  const type = currentRecordType();
+  const isInstant = type?.entryMode === 'instant';
+  const tracksSeverity = type?.trackSeverity !== false;
+
+  document.getElementById('severity-section').style.display = tracksSeverity ? 'block' : 'none';
+  if (!tracksSeverity) {
+    selectedLevel = null;
+    document.getElementById('gauge-num').setAttribute('opacity', '0');
+    segPaths.forEach(p => p.classList.remove('dimmed'));
+  }
+
+  document.getElementById('status-section').style.display = isInstant ? 'none' : 'block';
+  if (isInstant) {
+    recordStatus = 'instant';
+  } else if (recordStatus === 'instant') {
+    setRecordStatus('open');
+  }
+  updateSaveEnabled();
+}
 function renderCustomFields() {
+  applyTypeConfigToRecordForm();
   const container = document.getElementById('custom-fields-container');
   container.innerHTML = '';
   const type = currentRecordType();
@@ -986,7 +1027,7 @@ function loadEntryIntoForm(entry) {
   editingEntryId = entry.id;
   document.getElementById('edit-banner').style.display = 'flex';
   selectRecordIssueType(entry.issueTypeId);
-  selectLevel(entry.severity);
+  if (entry.severity != null) selectLevel(entry.severity);
   const d = toDate(entry.startAt);
   document.getElementById('entry-date').value = d.toISOString().slice(0, 10);
   selectedTime = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -1007,7 +1048,10 @@ function loadEntryIntoForm(entry) {
 }
 
 document.getElementById('save-btn').addEventListener('click', async () => {
-  if (!selectedLevel || !selectedRecordIssueTypeId) return;
+  const type = currentRecordType();
+  const needsSeverity = type?.trackSeverity !== false;
+  if (!selectedRecordIssueTypeId || (needsSeverity && !selectedLevel)) return;
+  const severity = needsSeverity ? selectedLevel : null;
   const [h, m] = selectedTime.split(':').map(Number);
   const startAt = new Date(document.getElementById('entry-date').value);
   startAt.setHours(h, m, 0, 0);
@@ -1020,7 +1064,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     const patch = {
       issueTypeId: selectedRecordIssueTypeId,
       startAt: Timestamp.fromDate(startAt),
-      severity: selectedLevel,
+      severity,
       customFieldValues,
       comments,
       status: recordStatus,
@@ -1034,7 +1078,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     const entryRef = await Data.createEntry(currentUser.uid, {
       issueTypeId: selectedRecordIssueTypeId,
       startAt: Timestamp.fromDate(startAt),
-      severity: selectedLevel,
+      severity,
       customFieldValues,
       comments,
       status: recordStatus === 'closed' ? 'open' : recordStatus
@@ -1073,7 +1117,7 @@ async function renderHistory() {
   }
   el.innerHTML = entries.map(e => {
     const type = issueTypes.find(t => t.id === e.issueTypeId);
-    const meta = LEVEL_META[e.severity] || LEVEL_META[5];
+    const meta = e.severity != null ? (LEVEL_META[e.severity] || LEVEL_META[5]) : { color: '#ede9fe', text: 'var(--purple)' };
     const date = e.startAt?.toDate ? e.startAt.toDate() : new Date(e.startAt);
     const note = e.comments && e.comments[0] ? e.comments[0].text : '';
     const statusHtml = e.status === 'open'
@@ -1086,7 +1130,7 @@ async function renderHistory() {
       <div class="entry-card">
         <div class="entry-badge" style="background:${meta.color};color:${meta.text}">
           <span class="badge-emoji">${type?.emoji || '📌'}</span>
-          <span class="badge-num">${e.severity}</span>
+          ${e.severity != null ? `<span class="badge-num">${e.severity}</span>` : ''}
         </div>
         <div class="entry-info">
           <div class="entry-date">${type?.name || ''} · ${date.toLocaleDateString('he-IL')} ${date.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</div>
@@ -1124,7 +1168,8 @@ async function renderStats() {
     issueTypeId: statsFilterId === 'all' ? undefined : statsFilterId
   });
   const grid = document.getElementById('stats-grid');
-  const avg = entries.length ? (entries.reduce((s,e)=>s+e.severity,0)/entries.length).toFixed(1) : '–';
+  const withSeverity = entries.filter(e => e.severity != null);
+  const avg = withSeverity.length ? (withSeverity.reduce((s,e)=>s+e.severity,0)/withSeverity.length).toFixed(1) : '–';
   const openCount = entries.filter(e => e.status === 'open').length;
   const last30 = entries.filter(e => {
     const d = e.startAt?.toDate ? e.startAt.toDate() : new Date(e.startAt);
@@ -1137,7 +1182,7 @@ async function renderStats() {
     <div class="stat-card"><div class="stat-emoji">🗓️</div><div class="stat-val">${last30}</div><div class="stat-lbl">ב-30 יום אחרונים</div></div>
   `;
 
-  const sorted = [...entries].sort((a,b) => toDate(a.startAt) - toDate(b.startAt));
+  const sorted = [...withSeverity].sort((a,b) => toDate(a.startAt) - toDate(b.startAt));
   const timelineLabels = sorted.map(e => toDate(e.startAt).toLocaleDateString('he-IL'));
   const timelineData = sorted.map(e => e.severity);
 
@@ -1146,7 +1191,7 @@ async function renderStats() {
   const dowLabels = ['א','ב','ג','ד','ה','ו','ש'];
 
   const distCounts = Array(10).fill(0);
-  entries.forEach(e => distCounts[e.severity-1]++);
+  withSeverity.forEach(e => distCounts[e.severity-1]++);
 
   renderChart('chart-timeline', 'line', timelineLabels, [{ label: 'עוצמה', data: timelineData, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.15)', fill: true, tension: 0.3 }]);
   renderChart('chart-dow', 'bar', dowLabels, [{ label: 'כמות', data: dowCounts, backgroundColor: '#60a5fa' }]);
@@ -1288,12 +1333,32 @@ function renderTodos() {
 let editingFields = [];
 let editingIssueTypeId = null;
 let editingScope = 'personal'; // 'personal' | 'global'
+let editingEntryMode = 'episodic'; // 'episodic' | 'instant'
+let editingTrackSeverity = true;
+
+function setEditingEntryMode(mode) {
+  editingEntryMode = mode;
+  document.querySelectorAll('#it-entry-mode-row .status-btn').forEach(b => b.classList.toggle('active', b.dataset.entryMode === mode));
+}
+function setEditingTrackSeverity(track) {
+  editingTrackSeverity = track;
+  document.querySelectorAll('#it-track-severity-row .status-btn').forEach(b => b.classList.toggle('active', (b.dataset.trackSeverity === 'true') === track));
+}
+document.querySelectorAll('#it-entry-mode-row .status-btn').forEach(btn => {
+  btn.addEventListener('click', () => setEditingEntryMode(btn.dataset.entryMode));
+});
+document.querySelectorAll('#it-track-severity-row .status-btn').forEach(btn => {
+  btn.addEventListener('click', () => setEditingTrackSeverity(btn.dataset.trackSeverity === 'true'));
+});
+
 document.getElementById('add-issue-type-trigger').addEventListener('click', () => {
   editingScope = 'personal';
   editingIssueTypeId = null;
   editingFields = [];
   document.getElementById('it-name').value = '';
   document.getElementById('it-emoji').value = '';
+  setEditingEntryMode('episodic');
+  setEditingTrackSeverity(true);
   document.getElementById('it-save-btn').textContent = '💾 שמור';
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
@@ -1304,6 +1369,8 @@ document.getElementById('add-global-type-trigger').addEventListener('click', () 
   editingFields = [];
   document.getElementById('it-name').value = '';
   document.getElementById('it-emoji').value = '';
+  setEditingEntryMode('episodic');
+  setEditingTrackSeverity(true);
   document.getElementById('it-save-btn').textContent = '💾 שמור לקטלוג';
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
@@ -1319,6 +1386,8 @@ function openIssueTypeEditor(type, scope) {
   editingFields = (type.fields || []).map(f => ({ ...f, options: [...(f.options || [])] }));
   document.getElementById('it-name').value = type.name;
   document.getElementById('it-emoji').value = type.emoji || '';
+  setEditingEntryMode(type.entryMode || 'episodic');
+  setEditingTrackSeverity(type.trackSeverity !== false);
   document.getElementById('it-save-btn').textContent = scope === 'global' ? '💾 עדכן בקטלוג' : '💾 עדכן';
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
@@ -1353,20 +1422,22 @@ document.getElementById('it-save-btn').addEventListener('click', async () => {
   const emoji = document.getElementById('it-emoji').value.trim();
   if (!name) { showToast('⚠️ נא להזין שם'); return; }
   const fields = editingFields.filter(f => f.label);
+  const entryMode = editingEntryMode;
+  const trackSeverity = editingTrackSeverity;
   if (editingScope === 'global') {
     if (editingIssueTypeId) {
-      await Data.updateGlobalIssueType(editingIssueTypeId, { name, emoji, fields });
+      await Data.updateGlobalIssueType(editingIssueTypeId, { name, emoji, fields, entryMode, trackSeverity });
     } else {
-      await Data.createGlobalIssueType(currentUser.uid, { name, emoji, fields });
+      await Data.createGlobalIssueType(currentUser.uid, { name, emoji, fields, entryMode, trackSeverity });
     }
     globalIssueTypes = await Data.listGlobalIssueTypes();
     renderAdminCatalog();
     renderCatalog();
   } else {
     if (editingIssueTypeId) {
-      await Data.updateIssueType(currentUser.uid, editingIssueTypeId, { name, emoji, fields });
+      await Data.updateIssueType(currentUser.uid, editingIssueTypeId, { name, emoji, fields, entryMode, trackSeverity });
     } else {
-      await Data.createIssueType(currentUser.uid, { name, emoji, fields });
+      await Data.createIssueType(currentUser.uid, { name, emoji, fields, entryMode, trackSeverity });
     }
     issueTypes = await Data.listIssueTypes(currentUser.uid);
     if (!selectedRecordIssueTypeId) selectedRecordIssueTypeId = issueTypes[0]?.id;
@@ -1400,7 +1471,7 @@ function renderCatalog() {
   el.querySelectorAll('[data-add-global]').forEach(btn => btn.addEventListener('click', async () => {
     const g = globalIssueTypes.find(x => x.id === btn.dataset.addGlobal);
     if (!g) return;
-    await Data.createIssueType(currentUser.uid, { name: g.name, emoji: g.emoji, fields: g.fields, sourceGlobalId: g.id });
+    await Data.createIssueType(currentUser.uid, { name: g.name, emoji: g.emoji, fields: g.fields, sourceGlobalId: g.id, entryMode: g.entryMode, trackSeverity: g.trackSeverity });
     issueTypes = await Data.listIssueTypes(currentUser.uid);
     if (!selectedRecordIssueTypeId) selectedRecordIssueTypeId = issueTypes[0]?.id;
     renderCatalog();

@@ -15,10 +15,10 @@ export async function listIssueTypes(uid) {
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-export function createIssueType(uid, { name, emoji, color, fields, sourceGlobalId = null }) {
+export function createIssueType(uid, { name, emoji, color, fields, sourceGlobalId = null, entryMode = 'episodic', trackSeverity = true }) {
   return addDoc(col(uid, 'issueTypes'), {
     name, emoji: emoji || '📌', color: color || '#60a5fa', fields: fields || [],
-    sourceGlobalId,
+    sourceGlobalId, entryMode, trackSeverity,
     createdAt: serverTimestamp()
   });
 }
@@ -37,10 +37,10 @@ export async function listGlobalIssueTypes() {
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-export function createGlobalIssueType(createdByUid, { name, emoji, color, fields }) {
+export function createGlobalIssueType(createdByUid, { name, emoji, color, fields, entryMode = 'episodic', trackSeverity = true }) {
   return addDoc(collection(db, 'globalIssueTypes'), {
     name, emoji: emoji || '📌', color: color || '#60a5fa', fields: fields || [],
-    createdBy: createdByUid, createdAt: serverTimestamp()
+    entryMode, trackSeverity, createdBy: createdByUid, createdAt: serverTimestamp()
   });
 }
 
