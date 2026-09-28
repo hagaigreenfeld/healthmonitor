@@ -1263,16 +1263,30 @@ function renderTodos() {
 
 // ── Settings: issue types management ──────────────────────────
 let editingFields = [];
+let editingIssueTypeId = null;
 document.getElementById('add-issue-type-trigger').addEventListener('click', () => {
+  editingIssueTypeId = null;
   editingFields = [];
   document.getElementById('it-name').value = '';
   document.getElementById('it-emoji').value = '';
+  document.getElementById('it-save-btn').textContent = '💾 שמור';
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
 });
 document.getElementById('it-cancel-btn').addEventListener('click', () => {
+  editingIssueTypeId = null;
   document.getElementById('issue-type-form').classList.remove('open');
 });
+function openIssueTypeEditor(type) {
+  editingIssueTypeId = type.id;
+  editingFields = (type.fields || []).map(f => ({ ...f, options: [...(f.options || [])] }));
+  document.getElementById('it-name').value = type.name;
+  document.getElementById('it-emoji').value = type.emoji || '';
+  document.getElementById('it-save-btn').textContent = '💾 עדכן';
+  renderFieldsBuilder();
+  document.getElementById('issue-type-form').classList.add('open');
+  document.getElementById('issue-type-form').scrollIntoView({ behavior: 'smooth' });
+}
 document.getElementById('it-add-field-btn').addEventListener('click', () => {
   editingFields.push({ id: 'f' + Date.now(), label: '', type: 'number', unit: '', options: [] });
   renderFieldsBuilder();
@@ -1301,7 +1315,13 @@ document.getElementById('it-save-btn').addEventListener('click', async () => {
   const name = document.getElementById('it-name').value.trim();
   const emoji = document.getElementById('it-emoji').value.trim();
   if (!name) { showToast('⚠️ נא להזין שם'); return; }
-  await Data.createIssueType(currentUser.uid, { name, emoji, fields: editingFields.filter(f => f.label) });
+  const fields = editingFields.filter(f => f.label);
+  if (editingIssueTypeId) {
+    await Data.updateIssueType(currentUser.uid, editingIssueTypeId, { name, emoji, fields });
+  } else {
+    await Data.createIssueType(currentUser.uid, { name, emoji, fields });
+  }
+  editingIssueTypeId = null;
   document.getElementById('issue-type-form').classList.remove('open');
   issueTypes = await Data.listIssueTypes(currentUser.uid);
   if (!selectedRecordIssueTypeId) selectedRecordIssueTypeId = issueTypes[0]?.id;
@@ -1318,8 +1338,13 @@ function renderIssueTypesSettings() {
       <span class="it-emoji">${t.emoji || '📌'}</span>
       <span class="it-name">${escapeHtml(t.name)}</span>
       <span class="it-fields-count">${(t.fields||[]).length} שדות</span>
+      <button class="todo-del" data-edit-type="${t.id}">✏️</button>
       <button class="todo-del" data-del-type="${t.id}">🗑</button>
     </div>`).join('');
+  el.querySelectorAll('[data-edit-type]').forEach(btn => btn.addEventListener('click', () => {
+    const type = issueTypes.find(t => t.id === btn.dataset.editType);
+    if (type) openIssueTypeEditor(type);
+  }));
   el.querySelectorAll('[data-del-type]').forEach(btn => btn.addEventListener('click', async () => {
     await Data.deleteIssueType(currentUser.uid, btn.dataset.delType);
     if (selectedRecordIssueTypeId === btn.dataset.delType) selectedRecordIssueTypeId = null;
