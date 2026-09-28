@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "healthmonitor-405cc"
+  },
+  "targets": {
+    "healthmonitor-405cc": {
+      "hosting": {
+        "health-monitorings": [
+          "health-monitorings"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

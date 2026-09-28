@@ -1,0 +1,31 @@
+{
+  "hosting": [
+    {
+      "site": "healthmonitor-405cc",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "firestore.rules",
+        ".firebaserc",
+        "**/.*",
+        "**/node_modules/**",
+        ".claude/**"
+      ]
+    },
+    {
+      "target": "health-monitorings",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "firestore.rules",
+        ".firebaserc",
+        "**/.*",
+        "**/node_modules/**",
+        ".claude/**"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
