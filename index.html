@@ -601,6 +601,11 @@
     <span id="settings-user-email"></span>
     <button class="btn-ghost" id="logout-btn">התנתקות</button>
   </div>
+  <div class="add-panel open" style="margin-bottom:20px">
+    <label class="field-label">שם תצוגה</label>
+    <input class="field-input" id="settings-name-input" type="text" placeholder="השם שלך" style="margin-bottom:8px" />
+    <button class="btn-primary" id="settings-save-name-btn" style="margin-bottom:0">💾 שמור שם</button>
+  </div>
 
   <div class="section-title" style="font-size:15px">סוגי בעיות למעקב</div>
   <div id="issue-types-list"></div>
@@ -643,6 +648,7 @@ import { auth } from './js/firebase.js';
 import { signUp, signIn, signOutUser, onAuthChange, seedDefaultIssueTypeIfEmpty } from './js/auth.js';
 import * as Data from './js/data.js';
 import { Timestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+import { updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 
 // ── State ─────────────────────────────────────────────────────
 let currentUser = null;
@@ -694,6 +700,7 @@ authSubmitBtn.addEventListener('click', async () => {
     } else {
       await signIn(email, password);
     }
+    if (currentUser) refreshGreeting();
   } catch (err) {
     authError.textContent = friendlyAuthError(err);
   } finally {
@@ -712,13 +719,28 @@ function friendlyAuthError(err) {
 
 document.getElementById('logout-btn').addEventListener('click', () => signOutUser());
 
+function displayNameOrFallback(user) {
+  return user.displayName || user.email.split('@')[0];
+}
+function refreshGreeting() {
+  document.getElementById('header-greeting').textContent = `שלום ${displayNameOrFallback(currentUser)} 👋`;
+}
+document.getElementById('settings-save-name-btn').addEventListener('click', async () => {
+  const name = document.getElementById('settings-name-input').value.trim();
+  if (!name) return;
+  await updateProfile(currentUser, { displayName: name });
+  refreshGreeting();
+  showToast('✅ נשמר!');
+});
+
 onAuthChange(async (user) => {
   currentUser = user;
   if (user) {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app-root').style.display = 'block';
-    document.getElementById('header-greeting').textContent = `שלום ${user.displayName || user.email} 👋`;
+    refreshGreeting();
     document.getElementById('settings-user-email').textContent = user.email;
+    document.getElementById('settings-name-input').value = user.displayName || '';
     await loadAllData();
   } else {
     document.getElementById('auth-screen').style.display = 'flex';
