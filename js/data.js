@@ -61,12 +61,12 @@ export async function listEntries(uid, { issueTypeId } = {}) {
 }
 
 export function createEntry(uid, {
-  issueTypeId, startAt, severity, customFieldValues = {}, comments = []
+  issueTypeId, startAt, severity, customFieldValues = {}, comments = [], status = 'open'
 }) {
   return addDoc(col(uid, 'entries'), {
     issueTypeId,
     startAt,
-    status: 'open',
+    status,
     endAt: null,
     durationHours: null,
     severity,

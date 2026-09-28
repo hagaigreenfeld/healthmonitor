@@ -175,16 +175,15 @@
     .time-opt.selected { background: var(--purple); color: white; border-color: var(--purple); }
     .time-opt:active { transform: scale(0.95); }
 
-    /* open/close + duration */
-    .toggle-duration-row {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    /* open/closed/instant status + duration */
+    .status-row { display: flex; gap: 6px; margin-bottom: 8px; }
+    .status-btn {
+      flex: 1; padding: 8px 4px; border-radius: 10px; border: 2px solid #e9d5ff;
+      font-size: 12px; font-weight: 700; color: var(--purple); background: white;
+      cursor: pointer; transition: all 0.12s;
     }
-    .toggle-duration-row #duration-input-wrap { flex: 1; }
-    .toggle-row {
-      display: flex; align-items: center; gap: 8px; justify-content: flex-end;
-      font-size: 13px; font-weight: 600; color: var(--purple); white-space: nowrap;
-    }
-    .toggle-row input { width: 18px; height: 18px; }
+    .status-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+    #duration-input-wrap { margin-bottom: 8px; }
 
     /* dynamic custom fields */
     #custom-fields-container {
@@ -518,14 +517,13 @@
       </label>
     </div>
 
-    <div class="toggle-duration-row">
-      <label class="toggle-row" style="margin-bottom:0">
-        פתוח (עדיין נמשך)
-        <input type="checkbox" id="entry-open-toggle" checked />
-      </label>
-      <div id="duration-input-wrap" style="display:none">
-        <input class="field-input" id="entry-duration" type="number" min="0" step="0.5" placeholder="משך בשעות" style="margin-bottom:0" />
-      </div>
+    <div class="status-row">
+      <button type="button" class="status-btn" data-status="instant">⚡ חד פעמי</button>
+      <button type="button" class="status-btn active" data-status="open">🟠 פתוח</button>
+      <button type="button" class="status-btn" data-status="closed">✅ נסגר</button>
+    </div>
+    <div id="duration-input-wrap" style="display:none">
+      <input class="field-input" id="entry-duration" type="number" min="0" step="0.5" placeholder="משך בשעות" style="margin-bottom:0" />
     </div>
 
     <div id="custom-fields-container"></div>
@@ -906,11 +904,16 @@ function setDateTimeNow() {
 }
 setDateTimeNow();
 
-// ── Open/close + duration toggle ──────────────────────────────
-const openToggle = document.getElementById('entry-open-toggle');
+// ── Entry status: open / closed (with duration) / instant ────
 const durationWrap = document.getElementById('duration-input-wrap');
-openToggle.addEventListener('change', () => {
-  durationWrap.style.display = openToggle.checked ? 'none' : 'block';
+let recordStatus = 'open';
+function setRecordStatus(status) {
+  recordStatus = status;
+  document.querySelectorAll('.status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === status));
+  durationWrap.style.display = status === 'closed' ? 'block' : 'none';
+}
+document.querySelectorAll('.status-btn').forEach(btn => {
+  btn.addEventListener('click', () => setRecordStatus(btn.dataset.status));
 });
 
 // ── Custom fields (dynamic, per issue type) ───────────────────
@@ -963,8 +966,7 @@ function resetRecordForm() {
   document.getElementById('record-emoji').textContent = '🤕';
   document.getElementById('note-input').value = '';
   document.getElementById('entry-duration').value = '';
-  document.getElementById('entry-open-toggle').checked = true;
-  durationWrap.style.display = 'none';
+  setRecordStatus('open');
   setDateTimeNow();
   renderCustomFields();
   updateSaveEnabled();
@@ -990,9 +992,7 @@ function loadEntryIntoForm(entry) {
   selectedTime = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   document.getElementById('time-display').textContent = selectedTime;
   document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === selectedTime));
-  const isOpen = entry.status === 'open';
-  document.getElementById('entry-open-toggle').checked = isOpen;
-  durationWrap.style.display = isOpen ? 'none' : 'block';
+  setRecordStatus(entry.status || 'open');
   document.getElementById('entry-duration').value = entry.durationHours ?? '';
   document.getElementById('note-input').value = entry.comments?.[0]?.text || '';
   Object.entries(entry.customFieldValues || {}).forEach(([fieldId, val]) => {
@@ -1012,8 +1012,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   const startAt = new Date(document.getElementById('entry-date').value);
   startAt.setHours(h, m, 0, 0);
   const note = document.getElementById('note-input').value.trim();
-  const isOpen = document.getElementById('entry-open-toggle').checked;
-  const durationHours = isOpen ? null : parseFloat(document.getElementById('entry-duration').value) || 0;
+  const durationHours = recordStatus === 'closed' ? (parseFloat(document.getElementById('entry-duration').value) || 0) : null;
   const customFieldValues = collectCustomFieldValues();
   const comments = note ? [{ text: note, createdAt: new Date().toISOString() }] : [];
 
@@ -1024,9 +1023,9 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       severity: selectedLevel,
       customFieldValues,
       comments,
-      status: isOpen ? 'open' : 'closed',
-      endAt: isOpen ? null : Timestamp.fromDate(new Date(startAt.getTime() + durationHours * 3600000)),
-      durationHours: isOpen ? null : durationHours
+      status: recordStatus,
+      endAt: recordStatus === 'closed' ? Timestamp.fromDate(new Date(startAt.getTime() + durationHours * 3600000)) : null,
+      durationHours
     };
     await Data.updateEntry(currentUser.uid, editingEntryId, patch);
     exitEditMode();
@@ -1037,9 +1036,10 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       startAt: Timestamp.fromDate(startAt),
       severity: selectedLevel,
       customFieldValues,
-      comments
+      comments,
+      status: recordStatus === 'closed' ? 'open' : recordStatus
     });
-    if (!isOpen) {
+    if (recordStatus === 'closed') {
       const endAt = new Date(startAt.getTime() + durationHours * 3600000);
       await Data.closeEntry(currentUser.uid, entryRef.id, Timestamp.fromDate(endAt));
     }
@@ -1078,7 +1078,9 @@ async function renderHistory() {
     const note = e.comments && e.comments[0] ? e.comments[0].text : '';
     const statusHtml = e.status === 'open'
       ? `<div class="entry-status open">🟠 פתוח</div>`
-      : `<div class="entry-status closed">${e.durationHours != null ? `⏱ ${e.durationHours.toFixed(1)} שעות` : '✅ סגור'}</div>`;
+      : e.status === 'instant'
+        ? `<div class="entry-status closed">⚡ חד פעמי</div>`
+        : `<div class="entry-status closed">${e.durationHours != null ? `⏱ ${e.durationHours.toFixed(1)} שעות` : '✅ סגור'}</div>`;
     const closeBtn = e.status === 'open' ? `<button class="entry-close-btn" data-close="${e.id}">✔️ סגור עכשיו</button>` : '';
     return `
       <div class="entry-card">
