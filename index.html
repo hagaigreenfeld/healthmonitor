@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="כאבי ראש" />
-  <title>מעקב כאבי ראש – שירה</title>
+  <meta name="apple-mobile-web-app-title" content="מעקב בריאות" />
+  <title>מעקב בריאות</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-192.png" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -39,20 +39,12 @@
     /* ── Header ── */
     .header {
       position: relative;
-      height: 200px;
+      height: 100px;
       overflow: hidden;
       display: flex;
       align-items: flex-end;
       padding: 0 20px 18px;
-    }
-    .header-photo {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: center top;
-    }
-    .header-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(20,5,40,0.72) 0%, rgba(20,5,40,0.15) 55%, transparent 100%);
+      background: linear-gradient(135deg, var(--pink), var(--purple));
     }
     .header-content {
       position: relative; z-index: 2;
@@ -89,35 +81,50 @@
     .tab.active { color: var(--purple); }
 
     /* ── Pages ── */
-    .page { display: none; padding: 20px; }
+    .page { display: none; padding: 12px 16px; }
     .page.active { display: block; }
+
+    /* ── Issue type chips ── */
+    .issue-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .issue-chip {
+      padding: 9px 16px; border-radius: 20px; border: 2px solid #e9d5ff;
+      font-size: 14px; font-weight: 700; color: var(--purple); background: white;
+      cursor: pointer; transition: all 0.12s;
+    }
+    .issue-chip.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+    .edit-banner {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      background: #ede9fe; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px;
+      font-weight: 700; color: var(--purple); font-size: 14px;
+    }
+    .edit-banner button { width: auto; padding: 6px 14px; margin: 0; }
 
     /* ── Record page ── */
     .record-card {
       background: white;
-      border-radius: 24px;
-      padding: 28px 24px;
+      border-radius: 20px;
+      padding: 12px 16px;
       box-shadow: 0 4px 24px rgba(168,85,247,0.12);
       text-align: center;
     }
-    .record-card .big-emoji { font-size: 72px; margin-bottom: 8px; display: block; }
-    .record-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-    .record-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .record-card .big-emoji { font-size: 36px; margin-bottom: 0; display: block; line-height: 1; }
+    .record-card h2 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
 
-    #gauge-svg { width: 100%; margin-bottom: 20px; touch-action: none; cursor: pointer; }
+    #gauge-svg { width: 100%; max-width: 210px; margin: 0 auto 4px; display: block; touch-action: none; cursor: pointer; }
     #gauge-svg path { transition: opacity 0.15s; }
     #gauge-svg path.dimmed { opacity: 0.35; }
 
     .note-area {
-      width: 100%; border: 2px solid #e9d5ff; border-radius: 14px;
-      padding: 12px; font-size: 15px; font-family: inherit;
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
+      padding: 6px 10px; font-size: 13px; font-family: inherit;
       color: var(--text); resize: none; outline: none;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
     }
     .note-area:focus { border-color: var(--purple); }
 
     .datetime-row {
-      display: flex; gap: 10px; margin-bottom: 16px;
+      display: flex; gap: 8px; margin-bottom: 8px;
     }
     .datetime-row label {
       flex: 1; display: flex; flex-direction: column; gap: 5px;
@@ -125,7 +132,7 @@
     }
     .datetime-row input {
       width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
-      padding: 10px 12px; font-size: 14px; font-family: inherit;
+      padding: 6px 10px; font-size: 13px; font-family: inherit;
       color: var(--text); outline: none; background: white;
       direction: ltr; text-align: center;
     }
@@ -134,7 +141,7 @@
     /* custom time picker */
     .time-display {
       width: 100%; border: 2px solid #e9d5ff; border-radius: 12px;
-      padding: 10px 12px; font-size: 16px; font-weight: 600;
+      padding: 6px 10px; font-size: 14px; font-weight: 600;
       color: var(--text); background: white; text-align: center;
       cursor: pointer; user-select: none; direction: ltr;
     }
@@ -168,11 +175,36 @@
     .time-opt.selected { background: var(--purple); color: white; border-color: var(--purple); }
     .time-opt:active { transform: scale(0.95); }
 
+    /* open/close + duration */
+    .toggle-duration-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .toggle-duration-row #duration-input-wrap { flex: 1; }
+    .toggle-row {
+      display: flex; align-items: center; gap: 8px; justify-content: flex-end;
+      font-size: 13px; font-weight: 600; color: var(--purple); white-space: nowrap;
+    }
+    .toggle-row input { width: 18px; height: 18px; }
+
+    /* dynamic custom fields */
+    #custom-fields-container {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; margin-bottom: 8px;
+    }
+    .custom-field { text-align: right; }
+    .custom-field label {
+      display: block; font-size: 10px; font-weight: 700; color: var(--purple); margin-bottom: 2px;
+    }
+    .custom-field select, .custom-field input {
+      width: 100%; border: 2px solid #e9d5ff; border-radius: 10px;
+      padding: 6px 8px; font-size: 12px; font-family: inherit;
+      color: var(--text); outline: none; background: white;
+    }
+
     .save-btn {
-      width: 64px; height: 64px;
+      width: 46px; height: 46px;
       background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white; border: none; border-radius: 50%;
-      font-size: 28px; cursor: pointer;
+      font-size: 22px; cursor: pointer;
       box-shadow: 0 6px 20px rgba(168,85,247,0.35);
       transition: transform 0.12s, box-shadow 0.12s;
       display: block; margin: 0 auto;
@@ -311,10 +343,6 @@
       padding: 10px 18px; background: var(--purple); color: white;
       border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
     }
-    .todo-group-title {
-      font-size: 13px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.5px; margin: 10px 0 8px;
-    }
     .todo-item {
       display: flex; align-items: center; gap: 12px; padding: 12px 16px;
       background: white; border-radius: 14px; margin-bottom: 8px;
@@ -332,20 +360,6 @@
     .todo-del { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 4px; }
     .med-empty { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 14px; }
     .med-empty .med-empty-emoji { font-size: 48px; display: block; margin-bottom: 10px; }
-
-    /* ── Share button ── */
-    .share-btn {
-      width: 100%; padding: 16px;
-      background: linear-gradient(135deg, #25d366, #128c3e);
-      color: white; border: none; border-radius: 18px;
-      font-size: 17px; font-weight: 700; cursor: pointer;
-      box-shadow: 0 6px 20px rgba(37,211,102,0.35);
-      transition: transform 0.12s, box-shadow 0.12s;
-      margin-bottom: 20px; display: flex; align-items: center;
-      justify-content: center; gap: 10px;
-    }
-    .share-btn:active { transform: scale(0.97); }
-    .share-btn .wa-icon { font-size: 22px; }
 
     /* ── History page ── */
     .section-title {
@@ -366,16 +380,24 @@
     .entry-badge {
       min-width: 46px; height: 46px; border-radius: 13px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700; gap: 1px;
+      font-size: 10px; font-weight: 700; gap: 1px; flex-shrink: 0;
     }
     .entry-badge .badge-emoji { font-size: 20px; }
     .entry-badge .badge-num { font-size: 13px; font-weight: 800; }
-    .entry-info { flex: 1; }
+    .entry-info { flex: 1; min-width: 0; }
     .entry-info .entry-date { font-size: 13px; color: var(--muted); }
     .entry-info .entry-note { font-size: 14px; margin-top: 2px; color: var(--text); }
+    .entry-info .entry-status { font-size: 12px; font-weight: 700; margin-top: 2px; }
+    .entry-info .entry-status.open { color: var(--orange); }
+    .entry-info .entry-status.closed { color: var(--muted); }
+    .entry-actions { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+    .entry-close-btn {
+      background: #ede9fe; border: none; color: var(--purple); font-size: 11px;
+      font-weight: 700; border-radius: 10px; padding: 5px 8px; cursor: pointer; white-space: nowrap;
+    }
     .entry-delete {
-      background: none; border: none; font-size: 20px; cursor: pointer;
-      color: var(--muted); padding: 6px;
+      background: none; border: none; font-size: 18px; cursor: pointer;
+      color: var(--muted); padding: 4px;
     }
 
     /* ── Stats page ── */
@@ -397,16 +419,64 @@
     }
     .chart-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
     .chart-card canvas { max-height: 200px; }
+
+    /* ── Auth screen ── */
+    .auth-screen {
+      position: fixed; inset: 0; z-index: 500;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .auth-card {
+      background: white; border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 360px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25); text-align: center;
+    }
+    .auth-logo { font-size: 48px; margin-bottom: 8px; }
+    .auth-card h1 { font-size: 20px; font-weight: 800; margin-bottom: 20px; color: var(--text); }
+    .auth-error { color: var(--red); font-size: 13px; font-weight: 600; margin: -6px 0 12px; min-height: 16px; }
+
+    /* ── Settings page ── */
+    .settings-user-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: white; border-radius: 16px; padding: 14px 16px; margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .settings-user-row span { font-size: 13px; color: var(--muted); direction: ltr; }
+    .settings-user-row button { width: auto; padding: 8px 16px; margin: 0; }
+    .issue-type-card {
+      background: white; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .issue-type-card .it-emoji { font-size: 26px; }
+    .issue-type-card .it-name { flex: 1; font-weight: 700; }
+    .issue-type-card .it-fields-count { font-size: 12px; color: var(--muted); }
+    .custom-field-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .custom-field-row input, .custom-field-row select { margin-bottom: 0; }
+    .custom-field-row .cf-del { background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; }
   </style>
 </head>
 <body>
 
+<!-- AUTH -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">🩺</div>
+    <h1 id="auth-title">התחברות</h1>
+    <input class="field-input" id="auth-name" type="text" placeholder="שם" style="display:none" />
+    <input class="field-input" id="auth-email" type="email" placeholder="אימייל" autocomplete="email" />
+    <input class="field-input" id="auth-password" type="password" placeholder="סיסמה" autocomplete="current-password" />
+    <div class="auth-error" id="auth-error"></div>
+    <button class="btn-primary" id="auth-submit-btn">התחברות</button>
+    <button class="btn-ghost" id="auth-toggle-btn">אין לך חשבון? הרשמה</button>
+  </div>
+</div>
+
+<div id="app-root" style="display:none">
+
 <div class="header">
-  <img class="header-photo" src="shira.png" alt="שירה" />
-  <div class="header-overlay"></div>
   <div class="header-content">
-    <h1>מעקב כאבי ראש</h1>
-    <div class="header-greeting">שלום שירה 👋</div>
+    <h1>מעקב בריאות</h1>
+    <div class="header-greeting" id="header-greeting">שלום 👋</div>
   </div>
 </div>
 
@@ -414,20 +484,23 @@
 
 <!-- RECORD -->
 <div class="page active" id="page-record">
+  <div class="edit-banner" id="edit-banner" style="display:none">
+    <span>✏️ עריכת רשומה</span>
+    <button class="btn-ghost" id="cancel-edit-btn">ביטול</button>
+  </div>
+  <div class="issue-chip-row" id="record-issue-chips"></div>
+
   <div class="record-card">
     <span class="big-emoji" id="record-emoji">🤕</span>
     <h2>כמה זה כואב?</h2>
-    <p>געי בטכנומטר כדי לדרג את עוצמת הכאב</p>
 
     <svg id="gauge-svg" viewBox="0 0 300 165">
       <g id="gauge-segments"></g>
-      <!-- needle -->
       <line id="gauge-needle" x1="150" y1="155" x2="248" y2="155"
             stroke="#1e1b4b" stroke-width="3.5" stroke-linecap="round"
             style="transform-origin:150px 155px;transform:rotate(0deg);transition:transform 0.35s cubic-bezier(.34,1.56,.64,1)"/>
       <circle cx="150" cy="155" r="10" fill="#1e1b4b"/>
       <circle cx="150" cy="155" r="5" fill="white"/>
-      <!-- centre level display -->
       <text id="gauge-num" x="150" y="118" text-anchor="middle" dominant-baseline="middle"
             font-size="32" font-weight="800" fill="#2d1b69"
             font-family="-apple-system,BlinkMacSystemFont,sans-serif" opacity="0">–</text>
@@ -440,7 +513,19 @@
       </label>
     </div>
 
-    <textarea class="note-area" id="note-input" rows="2" placeholder="הערות? (גורמים, מיקום הכאב…)"></textarea>
+    <div class="toggle-duration-row">
+      <label class="toggle-row" style="margin-bottom:0">
+        פתוח (עדיין נמשך)
+        <input type="checkbox" id="entry-open-toggle" checked />
+      </label>
+      <div id="duration-input-wrap" style="display:none">
+        <input class="field-input" id="entry-duration" type="number" min="0" step="0.5" placeholder="משך בשעות" style="margin-bottom:0" />
+      </div>
+    </div>
+
+    <div id="custom-fields-container"></div>
+
+    <textarea class="note-area" id="note-input" rows="1" placeholder="הערות? (גורמים, מיקום הכאב…)"></textarea>
 
     <button class="save-btn" id="save-btn" disabled>💾</button>
   </div>
@@ -449,12 +534,14 @@
 <!-- HISTORY -->
 <div class="page" id="page-history">
   <div class="section-title">📋 כל הרשומות</div>
+  <div class="issue-chip-row" id="history-filter-chips"></div>
   <div id="history-list"></div>
 </div>
 
 <!-- STATS -->
 <div class="page" id="page-stats">
   <div class="section-title">📊 סטטיסטיקות</div>
+  <div class="issue-chip-row" id="stats-filter-chips"></div>
   <div class="stats-grid" id="stats-grid"></div>
   <div class="chart-card">
     <h3>עוצמת כאב לאורך זמן</h3>
@@ -468,11 +555,7 @@
     <h3>התפלגות עוצמות</h3>
     <canvas id="chart-dist"></canvas>
   </div>
-  <button class="share-btn" id="share-btn" onclick="shareInfographic()">
-    <span class="wa-icon">💬</span> שתף דוח ב-WhatsApp
-  </button>
 </div>
-<canvas id="infographic-canvas" style="display:none"></canvas>
 
 <!-- MEDICAL -->
 <div class="page" id="page-medical">
@@ -481,7 +564,6 @@
     <button class="med-subtab" data-mt="todos">✅ משימות</button>
   </div>
 
-  <!-- Visits -->
   <div class="med-section active" id="mt-visits">
     <button class="add-trigger-btn" id="add-visit-trigger">➕ הוסף ביקור רופא</button>
     <div class="add-panel" id="visit-form">
@@ -493,7 +575,7 @@
       <textarea class="field-textarea" id="v-summary" rows="4" placeholder="מה נאמר בביקור? אבחנות, המלצות, תרופות..."></textarea>
       <label class="field-label">📎 קבצים מצורפים</label>
       <label class="file-upload-label">
-        <span>📁</span> בחר קבצים (תמונות / PDF)
+        <span>📁</span> בחר קבצים (תמונות / PDF, עד 500KB כל אחד)
         <input type="file" id="v-files" accept="image/*,.pdf" multiple onchange="previewFiles(this)" />
       </label>
       <div class="file-preview-row" id="v-files-preview"></div>
@@ -503,9 +585,7 @@
     <div id="visits-list"></div>
   </div>
 
-  <!-- Todos -->
   <div class="med-section" id="mt-todos">
-    <div class="quick-chips" id="quick-chips"></div>
     <div class="todo-add-row">
       <input class="field-input" id="todo-input" type="text" placeholder="משימה חדשה..." />
       <button class="todo-add-btn" onclick="addTodo()">➕</button>
@@ -514,20 +594,38 @@
   </div>
 </div>
 
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="section-title">⚙️ ניהול</div>
+  <div class="settings-user-row">
+    <span id="settings-user-email"></span>
+    <button class="btn-ghost" id="logout-btn">התנתקות</button>
+  </div>
+
+  <div class="section-title" style="font-size:15px">סוגי בעיות למעקב</div>
+  <div id="issue-types-list"></div>
+
+  <button class="add-trigger-btn" id="add-issue-type-trigger">➕ הוסף סוג בעיה</button>
+  <div class="add-panel" id="issue-type-form">
+    <label class="field-label">שם</label>
+    <input class="field-input" id="it-name" type="text" placeholder="כאבי בטן" />
+    <label class="field-label">אימוג׳י</label>
+    <input class="field-input" id="it-emoji" type="text" placeholder="🤒" maxlength="4" />
+    <label class="field-label">שדות מותאמים אישית</label>
+    <div id="it-fields-list"></div>
+    <button class="btn-ghost" type="button" id="it-add-field-btn">➕ הוסף שדה</button>
+    <button class="btn-primary" id="it-save-btn" style="margin-top:14px">💾 שמור</button>
+    <button class="btn-ghost" id="it-cancel-btn">ביטול</button>
+  </div>
+</div>
+
 <!-- TAB BAR -->
 <nav class="tabs">
-  <button class="tab active" data-page="record">
-    <span class="tab-icon">➕</span>תיעוד
-  </button>
-  <button class="tab" data-page="history">
-    <span class="tab-icon">📋</span>היסטוריה
-  </button>
-  <button class="tab" data-page="stats">
-    <span class="tab-icon">📊</span>סטטיסטיקה
-  </button>
-  <button class="tab" data-page="medical">
-    <span class="tab-icon">🏥</span>רפואי
-  </button>
+  <button class="tab active" data-page="record"><span class="tab-icon">➕</span>תיעוד</button>
+  <button class="tab" data-page="history"><span class="tab-icon">📋</span>היסטוריה</button>
+  <button class="tab" data-page="stats"><span class="tab-icon">📊</span>סטטיסטיקה</button>
+  <button class="tab" data-page="medical"><span class="tab-icon">🏥</span>רפואי</button>
+  <button class="tab" data-page="settings"><span class="tab-icon">⚙️</span>ניהול</button>
 </nav>
 
 <!-- Time picker modal -->
@@ -538,678 +636,684 @@
   </div>
 </div>
 
-<script>
-  // ── Data ──────────────────────────────────────────────────
-  const STORAGE_KEY = 'shira_headaches_v1';
+</div><!-- /app-root -->
 
-  function load() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch { return []; }
+<script type="module">
+import { auth } from './js/firebase.js';
+import { signUp, signIn, signOutUser, onAuthChange, seedDefaultIssueTypeIfEmpty } from './js/auth.js';
+import * as Data from './js/data.js';
+import { Timestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+// ── State ─────────────────────────────────────────────────────
+let currentUser = null;
+let issueTypes = [];
+let selectedRecordIssueTypeId = null;
+let historyFilterId = 'all';
+let statsFilterId = 'all';
+let visits = [];
+let todos = [];
+let pendingFiles = [];
+let charts = {};
+
+// ── Auth UI ───────────────────────────────────────────────────
+let authMode = 'login';
+const authTitle = document.getElementById('auth-title');
+const authNameInput = document.getElementById('auth-name');
+const authEmailInput = document.getElementById('auth-email');
+const authPasswordInput = document.getElementById('auth-password');
+const authError = document.getElementById('auth-error');
+const authSubmitBtn = document.getElementById('auth-submit-btn');
+const authToggleBtn = document.getElementById('auth-toggle-btn');
+
+function setAuthMode(mode) {
+  authMode = mode;
+  authError.textContent = '';
+  if (mode === 'signup') {
+    authTitle.textContent = 'הרשמה';
+    authNameInput.style.display = 'block';
+    authSubmitBtn.textContent = 'הרשמה';
+    authToggleBtn.textContent = 'יש לך כבר חשבון? התחברות';
+  } else {
+    authTitle.textContent = 'התחברות';
+    authNameInput.style.display = 'none';
+    authSubmitBtn.textContent = 'התחברות';
+    authToggleBtn.textContent = 'אין לך חשבון? הרשמה';
   }
-  function save(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
+}
+authToggleBtn.addEventListener('click', () => setAuthMode(authMode === 'login' ? 'signup' : 'login'));
 
-  // ── Level config ──────────────────────────────────────────
-  const LEVEL_META = {
-    1:  { emoji: '😌', color: '#d1fae5', text: '#065f46' },
-    2:  { emoji: '🙂', color: '#d1fae5', text: '#065f46' },
-    3:  { emoji: '😐', color: '#fef9c3', text: '#713f12' },
-    4:  { emoji: '😕', color: '#fef9c3', text: '#713f12' },
-    5:  { emoji: '😟', color: '#ffedd5', text: '#9a3412' },
-    6:  { emoji: '😣', color: '#ffedd5', text: '#9a3412' },
-    7:  { emoji: '😖', color: '#fee2e2', text: '#991b1b' },
-    8:  { emoji: '😭', color: '#fee2e2', text: '#991b1b' },
-    9:  { emoji: '🤯', color: '#fce7f3', text: '#9d174d' },
-    10: { emoji: '💀', color: '#fce7f3', text: '#9d174d' },
-  };
-
-  const BIG_EMOJIS = ['','😌','🙂','😐','😕','😟','😣','😖','😭','🤯','💀'];
-
-  // ── Build gauge ───────────────────────────────────────────
-  const GAUGE_COLORS = ['#14b8a6','#16a34a','#4ade80','#a3e635','#d4d417','#fbbf24','#fb923c','#f97316','#ef4444','#dc2626'];
-  const GCX = 150, GCY = 155, R_OUT = 128, R_IN = 80;
-
-  function gpt(r, deg) {
-    const rad = deg * Math.PI / 180;
-    return [GCX + r * Math.cos(rad), GCY - r * Math.sin(rad)];
-  }
-
-  const segG = document.getElementById('gauge-segments');
-  const segPaths = [];
-  for (let i = 1; i <= 10; i++) {
-    const a1 = (i - 1) * 18 + 2.5, a2 = i * 18 - 2.5;
-    const [ox1,oy1] = gpt(R_OUT, a1), [ox2,oy2] = gpt(R_OUT, a2);
-    const [ix1,iy1] = gpt(R_IN,  a1), [ix2,iy2] = gpt(R_IN,  a2);
-    const d = `M${ox1},${oy1} A${R_OUT},${R_OUT} 0 0,0 ${ox2},${oy2} L${ix2},${iy2} A${R_IN},${R_IN} 0 0,1 ${ix1},${iy1} Z`;
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', d);
-    path.setAttribute('fill', GAUGE_COLORS[i - 1]);
-    path.setAttribute('data-level', i);
-    path.style.cursor = 'pointer';
-    segG.appendChild(path);
-    segPaths.push(path);
-  }
-
-  let selectedLevel = null;
-
-  function selectLevel(n) {
-    selectedLevel = n;
-    // rotate needle: angle from right, counterclockwise
-    const angle = (n - 0.5) * 18;
-    document.getElementById('gauge-needle').style.transform = `rotate(${-angle}deg)`;
-    // dim unselected segments
-    segPaths.forEach(p => p.classList.toggle('dimmed', +p.dataset.level !== n));
-    // show number
-    const numEl = document.getElementById('gauge-num');
-    numEl.textContent = n;
-    numEl.style.fill = GAUGE_COLORS[n - 1];
-    numEl.setAttribute('opacity', '1');
-    document.getElementById('record-emoji').textContent = BIG_EMOJIS[n];
-    document.getElementById('save-btn').disabled = false;
-  }
-
-  // click/tap on gauge SVG
-  document.getElementById('gauge-svg').addEventListener('pointerdown', e => {
-    const svg = e.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    const scaleX = 300 / rect.width;
-    const scaleY = 165 / rect.height;
-    const px = (e.clientX - rect.left) * scaleX;
-    const py = (e.clientY - rect.top)  * scaleY;
-    const dx = px - GCX, dy = GCY - py; // dy flipped: up is positive
-    if (dy < -10) return; // below center
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    if (angle < 0 || angle > 180) return;
-    const level = Math.min(10, Math.max(1, Math.ceil(angle / 18)));
-    selectLevel(level);
-  });
-
-  // ── Custom 30-min time picker ─────────────────────────────
-  const pad = n => String(n).padStart(2, '0');
-  let selectedTime = '00:00';
-
-  const timeGrid = document.getElementById('time-grid');
-  const TIME_OPTS = [];
-  for (let h = 0; h < 24; h++) {
-    for (let m of [0, 30]) {
-      TIME_OPTS.push(`${pad(h)}:${pad(m)}`);
+authSubmitBtn.addEventListener('click', async () => {
+  const email = authEmailInput.value.trim();
+  const password = authPasswordInput.value;
+  authError.textContent = '';
+  if (!email || !password) { authError.textContent = 'נא למלא אימייל וסיסמה'; return; }
+  authSubmitBtn.disabled = true;
+  try {
+    if (authMode === 'signup') {
+      await signUp(email, password, authNameInput.value.trim());
+    } else {
+      await signIn(email, password);
     }
+  } catch (err) {
+    authError.textContent = friendlyAuthError(err);
+  } finally {
+    authSubmitBtn.disabled = false;
   }
-  TIME_OPTS.forEach(t => {
+});
+
+function friendlyAuthError(err) {
+  const code = err?.code || '';
+  if (code.includes('email-already-in-use')) return 'האימייל כבר רשום במערכת';
+  if (code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) return 'אימייל או סיסמה שגויים';
+  if (code.includes('weak-password')) return 'הסיסמה חייבת להכיל לפחות 6 תווים';
+  if (code.includes('invalid-email')) return 'כתובת אימייל לא תקינה';
+  return 'שגיאה: ' + (err?.message || 'נסי שוב');
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => signOutUser());
+
+onAuthChange(async (user) => {
+  currentUser = user;
+  if (user) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-root').style.display = 'block';
+    document.getElementById('header-greeting').textContent = `שלום ${user.displayName || user.email} 👋`;
+    document.getElementById('settings-user-email').textContent = user.email;
+    await loadAllData();
+  } else {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app-root').style.display = 'none';
+  }
+});
+
+function selectRecordIssueType(id) {
+  selectedRecordIssueTypeId = id;
+  renderIssueChipRow('record-issue-chips', issueTypes, selectedRecordIssueTypeId, selectRecordIssueType);
+  renderCustomFields();
+}
+function selectHistoryFilter(id) { historyFilterId = id; renderIssueChipRow('history-filter-chips', issueTypes, historyFilterId, selectHistoryFilter, true); renderHistory(); }
+function selectStatsFilter(id) { statsFilterId = id; renderIssueChipRow('stats-filter-chips', issueTypes, statsFilterId, selectStatsFilter, true); renderStats(); }
+
+async function loadAllData() {
+  await seedDefaultIssueTypeIfEmpty(currentUser.uid);
+  issueTypes = await Data.listIssueTypes(currentUser.uid);
+  if (!selectedRecordIssueTypeId && issueTypes.length) selectedRecordIssueTypeId = issueTypes[0].id;
+  renderIssueChipRow('record-issue-chips', issueTypes, selectedRecordIssueTypeId, selectRecordIssueType);
+  renderIssueChipRow('history-filter-chips', issueTypes, historyFilterId, selectHistoryFilter, true);
+  renderIssueChipRow('stats-filter-chips', issueTypes, statsFilterId, selectStatsFilter, true);
+  renderCustomFields();
+  renderIssueTypesSettings();
+  visits = await Data.listVisits(currentUser.uid);
+  todos = await Data.listTodos(currentUser.uid);
+  renderVisits();
+  renderTodos();
+  await renderHistory();
+  await renderStats();
+}
+
+function renderIssueChipRow(containerId, types, activeId, onSelect, includeAll) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  const items = includeAll ? [{ id: 'all', name: 'הכל', emoji: '🔎' }, ...types] : types;
+  items.forEach(t => {
     const btn = document.createElement('button');
-    btn.className = 'time-opt';
-    btn.textContent = t;
-    btn.dataset.val = t;
-    btn.addEventListener('click', () => {
-      selectedTime = t;
-      document.getElementById('time-display').textContent = t;
-      document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === t));
-      setTimeout(closeTimePicker, 150);
-    });
-    timeGrid.appendChild(btn);
+    btn.className = 'issue-chip' + (t.id === activeId ? ' active' : '');
+    btn.textContent = `${t.emoji || '📌'} ${t.name}`;
+    btn.addEventListener('click', () => onSelect(t.id));
+    el.appendChild(btn);
   });
+}
 
-  function openTimePicker() {
-    document.getElementById('time-modal-backdrop').classList.add('open');
-    // scroll selected into view
-    const sel = timeGrid.querySelector('.time-opt.selected');
-    if (sel) sel.scrollIntoView({ block: 'center' });
-  }
-  function closeTimePicker(e) {
-    if (e && e.target !== document.getElementById('time-modal-backdrop')) return;
-    document.getElementById('time-modal-backdrop').classList.remove('open');
-  }
+// ── Level config / gauge (unchanged mechanics) ───────────────
+const LEVEL_META = {
+  1:{emoji:'😌',color:'#d1fae5',text:'#065f46'}, 2:{emoji:'🙂',color:'#d1fae5',text:'#065f46'},
+  3:{emoji:'😐',color:'#fef9c3',text:'#713f12'}, 4:{emoji:'😕',color:'#fef9c3',text:'#713f12'},
+  5:{emoji:'😟',color:'#ffedd5',text:'#9a3412'}, 6:{emoji:'😣',color:'#ffedd5',text:'#9a3412'},
+  7:{emoji:'😖',color:'#fee2e2',text:'#991b1b'}, 8:{emoji:'😭',color:'#fee2e2',text:'#991b1b'},
+  9:{emoji:'🤯',color:'#fce7f3',text:'#9d174d'}, 10:{emoji:'💀',color:'#fce7f3',text:'#9d174d'},
+};
+const BIG_EMOJIS = ['','😌','🙂','😐','😕','😟','😣','😖','😭','🤯','💀'];
+const GAUGE_COLORS = ['#14b8a6','#16a34a','#4ade80','#a3e635','#d4d417','#fbbf24','#fb923c','#f97316','#ef4444','#dc2626'];
+const GCX = 150, GCY = 155, R_OUT = 128, R_IN = 80;
 
-  // ── Set default date/time to now ─────────────────────────
-  function setDateTimeNow() {
-    const now = new Date();
-    const mins = now.getMinutes() < 30 ? 0 : 30;
-    selectedTime = `${pad(now.getHours())}:${pad(mins)}`;
-    document.getElementById('entry-date').value =
-      `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
-    document.getElementById('time-display').textContent = selectedTime;
-    document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === selectedTime));
-  }
-  setDateTimeNow();
+function gpt(r, deg) {
+  const rad = deg * Math.PI / 180;
+  return [GCX + r * Math.cos(rad), GCY - r * Math.sin(rad)];
+}
+const segG = document.getElementById('gauge-segments');
+const segPaths = [];
+for (let i = 1; i <= 10; i++) {
+  const slot = 11 - i; // mirror: level 1 sits at the left, level 10 at the right
+  const a1 = (slot - 1) * 18 + 2.5, a2 = slot * 18 - 2.5;
+  const [ox1,oy1] = gpt(R_OUT, a1), [ox2,oy2] = gpt(R_OUT, a2);
+  const [ix1,iy1] = gpt(R_IN,  a1), [ix2,iy2] = gpt(R_IN,  a2);
+  const d = `M${ox1},${oy1} A${R_OUT},${R_OUT} 0 0,0 ${ox2},${oy2} L${ix2},${iy2} A${R_IN},${R_IN} 0 0,1 ${ix1},${iy1} Z`;
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('fill', GAUGE_COLORS[i - 1]);
+  path.setAttribute('data-level', i);
+  path.style.cursor = 'pointer';
+  segG.appendChild(path);
+  segPaths.push(path);
+}
+let selectedLevel = null;
+function selectLevel(n) {
+  selectedLevel = n;
+  const slot = 11 - n;
+  const angle = (slot - 0.5) * 18;
+  document.getElementById('gauge-needle').style.transform = `rotate(${-angle}deg)`;
+  segPaths.forEach(p => p.classList.toggle('dimmed', +p.dataset.level !== n));
+  const numEl = document.getElementById('gauge-num');
+  numEl.textContent = n;
+  numEl.style.fill = GAUGE_COLORS[n - 1];
+  numEl.setAttribute('opacity', '1');
+  document.getElementById('record-emoji').textContent = BIG_EMOJIS[n];
+  updateSaveEnabled();
+}
+document.getElementById('gauge-svg').addEventListener('pointerdown', e => {
+  const svg = e.currentTarget;
+  const rect = svg.getBoundingClientRect();
+  const scaleX = 300 / rect.width, scaleY = 165 / rect.height;
+  const px = (e.clientX - rect.left) * scaleX, py = (e.clientY - rect.top) * scaleY;
+  const dx = px - GCX, dy = GCY - py;
+  if (dy < -10) return;
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  if (angle < 0 || angle > 180) return;
+  const slot = Math.min(10, Math.max(1, Math.ceil(angle / 18)));
+  selectLevel(11 - slot);
+});
 
-  // ── Save entry ────────────────────────────────────────────
-  document.getElementById('save-btn').addEventListener('click', () => {
-    if (!selectedLevel) return;
-    const dateVal = document.getElementById('entry-date').value;
-    const timeVal = selectedTime;
-    let ts;
-    try {
-      ts = (dateVal && timeVal)
-        ? new Date(`${dateVal}T${timeVal}:00`).toISOString()
-        : new Date().toISOString();
-      if (ts === 'Invalid Date' || isNaN(new Date(ts))) throw new Error();
-    } catch {
-      ts = new Date().toISOString();
-    }
+function updateSaveEnabled() {
+  document.getElementById('save-btn').disabled = !(selectedLevel && selectedRecordIssueTypeId);
+}
 
-    const entries = load();
-    entries.unshift({
-      id: Date.now(),
-      level: selectedLevel,
-      note: document.getElementById('note-input').value.trim(),
-      ts,
-    });
-    entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-    save(entries);
-
-    // reset
-    selectedLevel = null;
-    document.getElementById('gauge-needle').style.transform = 'rotate(0deg)';
-    segPaths.forEach(p => p.classList.remove('dimmed'));
-    document.getElementById('gauge-num').setAttribute('opacity', '0');
-    document.getElementById('record-emoji').textContent = '🤕';
-    document.getElementById('note-input').value = '';
-    document.getElementById('save-btn').disabled = true;
-    setDateTimeNow();
-
-    showToast('✅ נשמר בהצלחה!');
+// ── Time picker (unchanged) ───────────────────────────────────
+const pad = n => String(n).padStart(2, '0');
+let selectedTime = '00:00';
+const timeGrid = document.getElementById('time-grid');
+const TIME_OPTS = [];
+for (let h = 0; h < 24; h++) for (let m of [0, 30]) TIME_OPTS.push(`${pad(h)}:${pad(m)}`);
+TIME_OPTS.forEach(t => {
+  const btn = document.createElement('button');
+  btn.className = 'time-opt'; btn.textContent = t; btn.dataset.val = t;
+  btn.addEventListener('click', () => {
+    selectedTime = t;
+    document.getElementById('time-display').textContent = t;
+    document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === t));
+    setTimeout(closeTimePicker, 150);
   });
+  timeGrid.appendChild(btn);
+});
+window.openTimePicker = function () {
+  document.getElementById('time-modal-backdrop').classList.add('open');
+  const sel = timeGrid.querySelector('.time-opt.selected');
+  if (sel) sel.scrollIntoView({ block: 'center' });
+};
+window.closeTimePicker = function (e) {
+  if (e && e.target !== document.getElementById('time-modal-backdrop')) return;
+  document.getElementById('time-modal-backdrop').classList.remove('open');
+};
+function setDateTimeNow() {
+  const now = new Date();
+  document.getElementById('entry-date').value = now.toISOString().slice(0, 10);
+  const roundedMin = now.getMinutes() < 30 ? '00' : '30';
+  selectedTime = `${pad(now.getHours())}:${roundedMin}`;
+  document.getElementById('time-display').textContent = selectedTime;
+  document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === selectedTime));
+}
+setDateTimeNow();
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  }
+// ── Open/close + duration toggle ──────────────────────────────
+const openToggle = document.getElementById('entry-open-toggle');
+const durationWrap = document.getElementById('duration-input-wrap');
+openToggle.addEventListener('change', () => {
+  durationWrap.style.display = openToggle.checked ? 'none' : 'block';
+});
 
-  // ── History ───────────────────────────────────────────────
-  function renderHistory() {
-    const entries = load();
-    const el = document.getElementById('history-list');
-    if (!entries.length) {
-      el.innerHTML = `<div class="history-empty"><span class="empty-emoji">🌸</span>אין רשומות עדיין.<br>תעדי את כאב הראש הראשון של שירה!</div>`;
-      return;
-    }
-    el.innerHTML = entries.map(e => {
-      const m = LEVEL_META[e.level];
-      const d = new Date(e.ts);
-      const dateStr = d.toLocaleDateString('he-IL', { weekday:'short', month:'short', day:'numeric' });
-      const timeStr = d.toLocaleTimeString('he-IL', { hour:'2-digit', minute:'2-digit' });
-      return `
-        <div class="entry-card" data-id="${e.id}">
-          <div class="entry-badge" style="background:${m.color}">
-            <span class="badge-emoji">${m.emoji}</span>
-            <span class="badge-num" style="color:${m.text}">${e.level}/10</span>
-          </div>
-          <div class="entry-info">
-            <div class="entry-date">📅 ${dateStr} · ${timeStr}</div>
-            ${e.note ? `<div class="entry-note">📝 ${e.note}</div>` : ''}
-          </div>
-          <button class="entry-delete" data-id="${e.id}" title="Delete">🗑️</button>
-        </div>`;
-    }).join('');
-
-    el.querySelectorAll('.entry-delete').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = +btn.dataset.id;
-        const updated = load().filter(e => e.id !== id);
-        save(updated);
-        renderHistory();
+// ── Custom fields (dynamic, per issue type) ───────────────────
+function currentRecordType() {
+  return issueTypes.find(t => t.id === selectedRecordIssueTypeId);
+}
+function renderCustomFields() {
+  const container = document.getElementById('custom-fields-container');
+  container.innerHTML = '';
+  const type = currentRecordType();
+  if (!type || !type.fields) return;
+  type.fields.forEach(f => {
+    const wrap = document.createElement('div');
+    wrap.className = 'custom-field';
+    const label = document.createElement('label');
+    label.textContent = f.label + (f.unit ? ` (${f.unit})` : '');
+    wrap.appendChild(label);
+    let input;
+    if (f.type === 'select') {
+      input = document.createElement('select');
+      (f.options || []).forEach(opt => {
+        const o = document.createElement('option'); o.value = opt; o.textContent = opt; input.appendChild(o);
       });
-    });
-  }
-
-  // ── Stats ─────────────────────────────────────────────────
-  let chartTimeline, chartDow, chartDist;
-
-  function renderStats() {
-    const entries = load();
-    const grid = document.getElementById('stats-grid');
-
-    if (!entries.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted)">אין נתונים עדיין 🌸</div>`;
-      return;
+    } else if (f.type === 'boolean') {
+      input = document.createElement('select');
+      ['לא','כן'].forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; input.appendChild(o); });
+    } else {
+      input = document.createElement('input');
+      input.type = f.type === 'number' ? 'number' : 'text';
     }
+    input.dataset.fieldId = f.id;
+    input.className = 'custom-field-input';
+    wrap.appendChild(input);
+    container.appendChild(wrap);
+  });
+}
+function collectCustomFieldValues() {
+  const values = {};
+  document.querySelectorAll('.custom-field-input').forEach(el => { values[el.dataset.fieldId] = el.value; });
+  return values;
+}
 
-    const total = entries.length;
-    const avg = (entries.reduce((s, e) => s + e.level, 0) / total).toFixed(1);
-    const max = Math.max(...entries.map(e => e.level));
-    const last7 = entries.filter(e => new Date(e.ts) > new Date(Date.now() - 7*86400000)).length;
+// ── Save / update entry ─────────────────────────────────────────
+let editingEntryId = null;
 
-    grid.innerHTML = `
-      <div class="stat-card"><div class="stat-emoji">📌</div><div class="stat-val">${total}</div><div class="stat-lbl">סה״כ רשומות</div></div>
-      <div class="stat-card"><div class="stat-emoji">📈</div><div class="stat-val">${avg}</div><div class="stat-lbl">ממוצע עוצמה</div></div>
-      <div class="stat-card"><div class="stat-emoji">🔺</div><div class="stat-val">${max}</div><div class="stat-lbl">עוצמה מקסימלית</div></div>
-      <div class="stat-card"><div class="stat-emoji">📅</div><div class="stat-val">${last7}</div><div class="stat-lbl">7 הימים האחרונים</div></div>
-    `;
+function resetRecordForm() {
+  selectedLevel = null;
+  document.getElementById('gauge-num').setAttribute('opacity', '0');
+  segPaths.forEach(p => p.classList.remove('dimmed'));
+  document.getElementById('record-emoji').textContent = '🤕';
+  document.getElementById('note-input').value = '';
+  document.getElementById('entry-duration').value = '';
+  document.getElementById('entry-open-toggle').checked = true;
+  durationWrap.style.display = 'none';
+  setDateTimeNow();
+  renderCustomFields();
+  updateSaveEnabled();
+}
 
-    // Timeline chart (last 30 entries, oldest first)
-    const recent = [...entries].reverse().slice(-30);
-    const tlLabels = recent.map(e => {
-      const d = new Date(e.ts);
-      return `${d.getMonth()+1}/${d.getDate()}`;
-    });
-    const tlData = recent.map(e => e.level);
-    const tlColors = tlData.map(v =>
-      v <= 2 ? '#34d399' : v <= 4 ? '#fbbf24' : v <= 6 ? '#fb923c' : v <= 8 ? '#f87171' : '#f43f5e'
-    );
+function exitEditMode() {
+  editingEntryId = null;
+  document.getElementById('edit-banner').style.display = 'none';
+}
 
-    if (chartTimeline) chartTimeline.destroy();
-    chartTimeline = new Chart(document.getElementById('chart-timeline'), {
-      type: 'bar',
-      data: { labels: tlLabels, datasets: [{ data: tlData, backgroundColor: tlColors, borderRadius: 6, borderSkipped: false }] },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 0, max: 10, ticks: { stepSize: 2 }, grid: { color: '#f3e8ff' } },
-          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-        }
-      }
-    });
+document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+  exitEditMode();
+  resetRecordForm();
+});
 
-    // Day-of-week
-    const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-    const dowCounts = Array(7).fill(0);
-    entries.forEach(e => { dowCounts[new Date(e.ts).getDay()]++; });
-    if (chartDow) chartDow.destroy();
-    chartDow = new Chart(document.getElementById('chart-dow'), {
-      type: 'bar',
-      data: {
-        labels: days,
-        datasets: [{ data: dowCounts, backgroundColor: '#c4b5fd', borderRadius: 8, borderSkipped: false }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f3e8ff' } },
-          x: { grid: { display: false } }
-        }
-      }
-    });
+function loadEntryIntoForm(entry) {
+  editingEntryId = entry.id;
+  document.getElementById('edit-banner').style.display = 'flex';
+  selectRecordIssueType(entry.issueTypeId);
+  selectLevel(entry.severity);
+  const d = toDate(entry.startAt);
+  document.getElementById('entry-date').value = d.toISOString().slice(0, 10);
+  selectedTime = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  document.getElementById('time-display').textContent = selectedTime;
+  document.querySelectorAll('.time-opt').forEach(b => b.classList.toggle('selected', b.dataset.val === selectedTime));
+  const isOpen = entry.status === 'open';
+  document.getElementById('entry-open-toggle').checked = isOpen;
+  durationWrap.style.display = isOpen ? 'none' : 'block';
+  document.getElementById('entry-duration').value = entry.durationHours ?? '';
+  document.getElementById('note-input').value = entry.comments?.[0]?.text || '';
+  Object.entries(entry.customFieldValues || {}).forEach(([fieldId, val]) => {
+    const el = document.querySelector(`.custom-field-input[data-field-id="${fieldId}"]`);
+    if (el) el.value = val;
+  });
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab[data-page="record"]').classList.add('active');
+  document.getElementById('page-record').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    // Level distribution
-    const dist = Array(10).fill(0);
-    entries.forEach(e => dist[e.level - 1]++);
-    const distColors = ['#34d399','#6ee7b7','#fde047','#fbbf24','#fb923c','#f97316','#f87171','#ef4444','#f43f5e','#e11d48'];
-    if (chartDist) chartDist.destroy();
-    chartDist = new Chart(document.getElementById('chart-dist'), {
-      type: 'bar',
-      data: {
-        labels: ['1','2','3','4','5','6','7','8','9','10'],
-        datasets: [{ data: dist, backgroundColor: distColors, borderRadius: 8, borderSkipped: false }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f3e8ff' } },
-          x: { grid: { display: false } }
-        }
-      }
-    });
-  }
+document.getElementById('save-btn').addEventListener('click', async () => {
+  if (!selectedLevel || !selectedRecordIssueTypeId) return;
+  const [h, m] = selectedTime.split(':').map(Number);
+  const startAt = new Date(document.getElementById('entry-date').value);
+  startAt.setHours(h, m, 0, 0);
+  const note = document.getElementById('note-input').value.trim();
+  const isOpen = document.getElementById('entry-open-toggle').checked;
+  const durationHours = isOpen ? null : parseFloat(document.getElementById('entry-duration').value) || 0;
+  const customFieldValues = collectCustomFieldValues();
+  const comments = note ? [{ text: note, createdAt: new Date().toISOString() }] : [];
 
-  // ── Infographic & WhatsApp share ─────────────────────────
-  async function shareInfographic() {
-    const entries = load();
-    if (!entries.length) { showToast('אין נתונים לשיתוף עדיין'); return; }
-
-    const W = 900, H = 1400;
-    const canvas = document.getElementById('infographic-canvas');
-    canvas.width = W; canvas.height = H;
-    const ctx = canvas.getContext('2d');
-
-    const rr = (x,y,w,h,r) => {
-      ctx.beginPath();
-      ctx.moveTo(x+r, y);
-      ctx.lineTo(x+w-r, y); ctx.arcTo(x+w,y,x+w,y+r,r);
-      ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-      ctx.lineTo(x+r, y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
-      ctx.lineTo(x, y+r); ctx.arcTo(x,y,x+r,y,r);
-      ctx.closePath();
+  if (editingEntryId) {
+    const patch = {
+      issueTypeId: selectedRecordIssueTypeId,
+      startAt: Timestamp.fromDate(startAt),
+      severity: selectedLevel,
+      customFieldValues,
+      comments,
+      status: isOpen ? 'open' : 'closed',
+      endAt: isOpen ? null : Timestamp.fromDate(new Date(startAt.getTime() + durationHours * 3600000)),
+      durationHours: isOpen ? null : durationHours
     };
-
-    // ── background
-    ctx.fillStyle = '#fdf4ff';
-    ctx.fillRect(0, 0, W, H);
-
-    // subtle dot pattern
-    ctx.fillStyle = 'rgba(168,85,247,0.06)';
-    for (let x=20;x<W;x+=40) for (let y=20;y<H;y+=40) { ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill(); }
-
-    // ── header gradient card
-    const hg = ctx.createLinearGradient(0,0,W,200);
-    hg.addColorStop(0,'#ff6b9d'); hg.addColorStop(1,'#a855f7');
-    ctx.fillStyle = hg;
-    rr(30,30,W-60,200,28); ctx.fill();
-
-    // header glow blob
-    ctx.save(); ctx.globalAlpha=0.18;
-    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(W-120,80,90,0,Math.PI*2); ctx.fill();
-    ctx.restore();
-
-    ctx.font='bold 72px serif'; ctx.textAlign='center'; ctx.fillStyle='white';
-    ctx.fillText('🌸', 120, 155);
-    ctx.font='bold 40px -apple-system,Arial Hebrew,sans-serif'; ctx.textAlign='right';
-    ctx.fillText('מעקב כאבי ראש – שירה', W-60, 110);
-    ctx.font='24px -apple-system,Arial Hebrew,sans-serif'; ctx.globalAlpha=0.85;
-    ctx.fillText('דוח אישי', W-60, 155);
-    ctx.globalAlpha=1;
-    const now = new Date();
-    ctx.font='22px -apple-system,Arial Hebrew,sans-serif'; ctx.globalAlpha=0.75;
-    ctx.fillText(`${now.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}`, W-60, 195);
-    ctx.globalAlpha=1;
-
-    // ── stats calculations
-    const total = entries.length;
-    const avg   = (entries.reduce((s,e)=>s+e.level,0)/total).toFixed(1);
-    const maxLv = Math.max(...entries.map(e=>e.level));
-    const last7 = entries.filter(e=>new Date(e.ts)>new Date(Date.now()-7*864e5)).length;
-    const recent30 = entries.filter(e=>new Date(e.ts)>new Date(Date.now()-30*864e5)).length;
-
-    // ── 4 stat cards  row 1
-    const STAT_COLORS = ['#ede9fe','#d1fae5','#fee2e2','#fef9c3'];
-    const STAT_TXT    = ['#7c3aed','#065f46','#991b1b','#713f12'];
-    const stats = [
-      {emoji:'📌', val:total,      lbl:'סה"כ\nרשומות'},
-      {emoji:'📈', val:avg,        lbl:'ממוצע\nעוצמה'},
-      {emoji:'🔺', val:maxLv,      lbl:'עוצמה\nמקסימלית'},
-      {emoji:'📅', val:last7,      lbl:'7 ימים\nאחרונים'},
-    ];
-    const cw=(W-90)/2, ch=180, cy=270, gap=30;
-    stats.forEach((s,i)=>{
-      const col=i%2, row=Math.floor(i/2);
-      const cx2 = 30 + col*(cw+gap);
-      const cy2 = cy + row*(ch+gap);
-      ctx.fillStyle = STAT_COLORS[i];
-      rr(cx2,cy2,cw,ch,20); ctx.fill();
-      ctx.font='48px serif'; ctx.textAlign='center';
-      ctx.fillText(s.emoji, cx2+cw/2, cy2+62);
-      ctx.font=`bold 52px -apple-system,Arial Hebrew,sans-serif`;
-      ctx.fillStyle=STAT_TXT[i]; ctx.textAlign='center';
-      ctx.fillText(s.val, cx2+cw/2, cy2+115);
-      ctx.font=`20px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='#6b7280';
-      s.lbl.split('\n').forEach((l,li)=>ctx.fillText(l, cx2+cw/2, cy2+143+li*22));
+    await Data.updateEntry(currentUser.uid, editingEntryId, patch);
+    exitEditMode();
+    showToast('✅ עודכן!');
+  } else {
+    const entryRef = await Data.createEntry(currentUser.uid, {
+      issueTypeId: selectedRecordIssueTypeId,
+      startAt: Timestamp.fromDate(startAt),
+      severity: selectedLevel,
+      customFieldValues,
+      comments
     });
-
-    // ── pain level bar (last 14 entries)
-    const sectionY = 710;
-    ctx.fillStyle='white'; rr(30,sectionY,W-60,200,20); ctx.fill();
-    ctx.shadowColor='rgba(168,85,247,0.1)'; ctx.shadowBlur=12;
-    ctx.fillStyle='white'; rr(30,sectionY,W-60,200,20); ctx.fill();
-    ctx.shadowBlur=0;
-
-    ctx.font=`bold 26px -apple-system,Arial Hebrew,sans-serif`;
-    ctx.fillStyle='#2d1b69'; ctx.textAlign='right';
-    ctx.fillText('עוצמת כאב – 14 האירועים האחרונים', W-60, sectionY+44);
-
-    const recent14 = [...entries].slice(0,14).reverse();
-    const barW = (W-100) / 14;
-    const barMaxH = 110;
-    const barBX = 50, barBY = sectionY+60;
-    const barColors=['#14b8a6','#16a34a','#4ade80','#a3e635','#d4d417','#fbbf24','#fb923c','#f97316','#ef4444','#dc2626'];
-    recent14.forEach((e,i)=>{
-      const bh = (e.level/10)*barMaxH;
-      ctx.fillStyle = barColors[e.level-1];
-      rr(barBX+i*barW+2, barBY+barMaxH-bh, barW-4, bh, 4);
-      ctx.fill();
-      ctx.font=`bold 18px -apple-system,sans-serif`; ctx.fillStyle='#374151'; ctx.textAlign='center';
-      ctx.fillText(e.level, barBX+i*barW+barW/2, barBY+barMaxH+22);
-    });
-
-    // ── recent entries list
-    const listY = 940;
-    ctx.fillStyle='white'; rr(30,listY,W-60,360,20); ctx.fill();
-    ctx.font=`bold 26px -apple-system,Arial Hebrew,sans-serif`;
-    ctx.fillStyle='#2d1b69'; ctx.textAlign='right';
-    ctx.fillText('5 האירועים האחרונים', W-60, listY+44);
-
-    const LEVEL_EMOJI=['','😌','🙂','😐','😕','😟','😣','😖','😭','🤯','💀'];
-    entries.slice(0,5).forEach((e,i)=>{
-      const ey=listY+80+i*54;
-      const lvlColor = barColors[e.level-1];
-      // pill badge
-      ctx.fillStyle=lvlColor+'33'; rr(W-110,ey-28,76,36,12); ctx.fill();
-      ctx.font=`bold 22px -apple-system,sans-serif`; ctx.fillStyle=lvlColor;
-      ctx.textAlign='center'; ctx.fillText(`${e.level}/10`, W-72, ey-4);
-      // emoji
-      ctx.font='28px serif'; ctx.textAlign='right';
-      ctx.fillText(LEVEL_EMOJI[e.level], W-120, ey-2);
-      // date
-      const d=new Date(e.ts);
-      const ds=d.toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'numeric'});
-      const ts2=d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
-      ctx.font=`22px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='#374151';
-      ctx.textAlign='right'; ctx.fillText(`${ds}  ${ts2}`, W-160, ey-2);
-      if(e.note){ ctx.font=`18px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='#9ca3af'; ctx.fillText(e.note.slice(0,30), W-160, ey+22); }
-      // separator
-      if(i<4){ ctx.strokeStyle='#f3e8ff'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(50,ey+34); ctx.lineTo(W-50,ey+34); ctx.stroke(); }
-    });
-
-    // ── footer
-    const footG=ctx.createLinearGradient(0,H-80,W,H);
-    footG.addColorStop(0,'#ff6b9d'); footG.addColorStop(1,'#a855f7');
-    ctx.fillStyle=footG; rr(30,H-70,W-60,50,16); ctx.fill();
-    ctx.font=`bold 22px -apple-system,Arial Hebrew,sans-serif`; ctx.fillStyle='white'; ctx.textAlign='center';
-    ctx.fillText('נוצר באפליקציית מעקב כאבי ראש של שירה 🌸', W/2, H-38);
-
-    // ── share
-    canvas.toBlob(async blob=>{
-      const file=new File([blob],'shira-headache-report.png',{type:'image/png'});
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        try{ await navigator.share({files:[file], title:'דוח כאבי ראש – שירה', text:'דוח כאבי ראש של שירה 🌸'}); return; }
-        catch(e){ if(e.name==='AbortError') return; }
-      }
-      // fallback: download image + open WhatsApp
-      const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-      a.download='shira-headache-report.png'; a.click();
-      setTimeout(()=>window.open(`https://wa.me/?text=${encodeURIComponent('דוח כאבי ראש של שירה 🌸\nמצורפת תמונת הדוח')}`,'_blank'),800);
-    },'image/png');
+    if (!isOpen) {
+      const endAt = new Date(startAt.getTime() + durationHours * 3600000);
+      await Data.closeEntry(currentUser.uid, entryRef.id, Timestamp.fromDate(endAt));
+    }
+    showToast('✅ נשמר!');
   }
 
-  // ── Tab navigation ────────────────────────────────────────
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const page = tab.dataset.page;
-      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
-      document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${page}`));
-      if (page === 'history') renderHistory();
-      if (page === 'stats') renderStats();
-      if (page === 'medical') { renderVisits(); renderTodos(); }
-    });
+  resetRecordForm();
+  await renderHistory();
+  await renderStats();
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ── History ───────────────────────────────────────────────────
+let historyEntriesCache = [];
+async function renderHistory() {
+  if (!currentUser) return;
+  const el = document.getElementById('history-list');
+  const entries = await Data.listEntries(currentUser.uid, {
+    issueTypeId: historyFilterId === 'all' ? undefined : historyFilterId
   });
-
-  // ── Medical data ─────────────────────────────────────────
-  const MED_KEY  = 'shira_medical_v1';
-  const TODO_KEY = 'shira_todos_v1';
-
-  function loadVisits()  { try { return JSON.parse(localStorage.getItem(MED_KEY))  || []; } catch { return []; } }
-  function saveVisits(d) { localStorage.setItem(MED_KEY,  JSON.stringify(d)); }
-  function loadTodos()   { try { return JSON.parse(localStorage.getItem(TODO_KEY)) || []; } catch { return []; } }
-  function saveTodos(d)  { localStorage.setItem(TODO_KEY, JSON.stringify(d)); }
-
-  // ── Visit form ────────────────────────────────────────────
-  let pendingFiles = []; // {name, type, data}
-
-  function toggleVisitForm(open) {
-    document.getElementById('visit-form').classList.toggle('open', open);
-    document.getElementById('add-visit-trigger').style.display = open ? 'none' : 'flex';
-    if (!open) { resetVisitForm(); }
+  historyEntriesCache = entries;
+  if (!entries.length) {
+    el.innerHTML = `<div class="history-empty"><span class="empty-emoji">🌸</span>אין רשומות עדיין.<br>תעדי את הרשומה הראשונה שלך!</div>`;
+    return;
   }
-  document.getElementById('add-visit-trigger').addEventListener('click', () => toggleVisitForm(true));
-
-  function resetVisitForm() {
-    document.getElementById('v-doctor').value = '';
-    document.getElementById('v-date').value = '';
-    document.getElementById('v-summary').value = '';
-    document.getElementById('v-files-preview').innerHTML = '';
-    pendingFiles = [];
-  }
-
-  function previewFiles(input) {
-    const preview = document.getElementById('v-files-preview');
-    Array.from(input.files).forEach(file => {
-      if (file.size > 4 * 1024 * 1024) { showToast('קובץ גדול מדי (מקסימום 4MB)'); return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        pendingFiles.push({ name: file.name, type: file.type, data: e.target.result });
-        const chip = document.createElement('div');
-        chip.className = 'file-preview-chip';
-        const icon = file.type.startsWith('image/') ? '🖼️' : '📄';
-        chip.innerHTML = `${icon} ${file.name.slice(0,20)} <button onclick="removeFile(this,'${file.name}')">×</button>`;
-        preview.appendChild(chip);
-      };
-      reader.readAsDataURL(file);
-    });
-    input.value = '';
-  }
-
-  function removeFile(btn, name) {
-    pendingFiles = pendingFiles.filter(f => f.name !== name);
-    btn.closest('.file-preview-chip').remove();
-  }
-
-  function saveVisit() {
-    const doctor  = document.getElementById('v-doctor').value.trim();
-    const date    = document.getElementById('v-date').value;
-    const summary = document.getElementById('v-summary').value.trim();
-    if (!doctor || !date) { showToast('נא למלא שם רופא ותאריך'); return; }
-    const visits = loadVisits();
-    visits.unshift({ id: Date.now(), doctor, date, summary, files: [...pendingFiles] });
-    saveVisits(visits);
-    toggleVisitForm(false);
-    renderVisits();
-    showToast('✅ הביקור נשמר!');
-  }
-
-  function renderVisits() {
-    const visits = loadVisits();
-    const el = document.getElementById('visits-list');
-    if (!visits.length) {
-      el.innerHTML = `<div class="med-empty"><span class="med-empty-emoji">🏥</span>אין ביקורים עדיין.<br>הוסיפי את הביקור הראשון!</div>`;
-      return;
-    }
-    el.innerHTML = visits.map(v => {
-      const d = new Date(v.date);
-      const ds = d.toLocaleDateString('he-IL', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
-      const filesHtml = v.files && v.files.length
-        ? `<div class="visit-files">${v.files.map(f => {
-            const icon = f.type && f.type.startsWith('image/') ? '🖼️' : '📄';
-            return `<a class="file-chip" href="${f.data}" download="${f.name}" target="_blank">${icon} ${f.name.slice(0,22)}</a>`;
-          }).join('')}</div>` : '';
-      return `
-        <div class="visit-card" id="vc-${v.id}">
-          <div class="visit-header" onclick="toggleVisitCard(${v.id})">
-            <div class="visit-icon">🩺</div>
-            <div class="visit-meta">
-              <div class="v-doctor">${v.doctor}</div>
-              <div class="v-date">📅 ${ds}</div>
-            </div>
-            <span class="visit-chevron">⌄</span>
-          </div>
-          <div class="visit-body">
-            ${v.summary ? `<div class="visit-summary">${v.summary}</div>` : ''}
-            ${filesHtml}
-            <button class="visit-delete-btn" onclick="deleteVisit(${v.id})">🗑️ מחק ביקור</button>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  function toggleVisitCard(id) {
-    document.getElementById(`vc-${id}`).classList.toggle('open');
-  }
-
-  function deleteVisit(id) {
-    saveVisits(loadVisits().filter(v => v.id !== id));
-    renderVisits();
-  }
-
-  // ── Todos ─────────────────────────────────────────────────
-  const QUICK_TASKS = [
-    'תיאום תור מעקב','בדיקת דם','MRI / CT','קנייה בבית מרקחת',
-    'צור קשר עם ביטוח','רשימת תרופות','בדיקת עיניים','ייעוץ שני'
-  ];
-
-  const qc = document.getElementById('quick-chips');
-  QUICK_TASKS.forEach(t => {
-    const btn = document.createElement('button');
-    btn.className = 'quick-chip';
-    btn.textContent = t;
-    btn.addEventListener('click', () => { addTodoText(t); });
-    qc.appendChild(btn);
-  });
-
-  document.getElementById('todo-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addTodo();
-  });
-
-  function addTodo() {
-    const inp = document.getElementById('todo-input');
-    addTodoText(inp.value.trim());
-    inp.value = '';
-  }
-
-  function addTodoText(text) {
-    if (!text) return;
-    const todos = loadTodos();
-    todos.unshift({ id: Date.now(), text, done: false, ts: new Date().toISOString() });
-    saveTodos(todos);
-    renderTodos();
-  }
-
-  function renderTodos() {
-    const todos = loadTodos();
-    const el = document.getElementById('todos-list');
-    if (!todos.length) {
-      el.innerHTML = `<div class="med-empty"><span class="med-empty-emoji">✅</span>אין משימות פתוחות.<br>הוסיפי משימה או בחרי מהרשימה המהירה!</div>`;
-      return;
-    }
-    const pending  = todos.filter(t => !t.done);
-    const done     = todos.filter(t =>  t.done);
-    let html = '';
-    if (pending.length) {
-      html += pending.map(t => todoHtml(t)).join('');
-    }
-    if (done.length) {
-      html += `<div class="todo-group-title">הושלמו ✓</div>`;
-      html += done.map(t => todoHtml(t)).join('');
-    }
-    el.innerHTML = html;
-  }
-
-  function todoHtml(t) {
+  el.innerHTML = entries.map(e => {
+    const type = issueTypes.find(t => t.id === e.issueTypeId);
+    const meta = LEVEL_META[e.severity] || LEVEL_META[5];
+    const date = e.startAt?.toDate ? e.startAt.toDate() : new Date(e.startAt);
+    const note = e.comments && e.comments[0] ? e.comments[0].text : '';
+    const statusHtml = e.status === 'open'
+      ? `<div class="entry-status open">🟠 פתוח</div>`
+      : `<div class="entry-status closed">${e.durationHours != null ? `⏱ ${e.durationHours.toFixed(1)} שעות` : '✅ סגור'}</div>`;
+    const closeBtn = e.status === 'open' ? `<button class="entry-close-btn" data-close="${e.id}">✔️ סגור עכשיו</button>` : '';
     return `
-      <div class="todo-item${t.done ? ' done' : ''}" id="td-${t.id}">
-        <button class="todo-check" onclick="toggleTodo(${t.id})">${t.done ? '✓' : ''}</button>
-        <span class="todo-text">${t.text}</span>
-        <button class="todo-del" onclick="deleteTodo(${t.id})">🗑️</button>
+      <div class="entry-card">
+        <div class="entry-badge" style="background:${meta.color};color:${meta.text}">
+          <span class="badge-emoji">${type?.emoji || '📌'}</span>
+          <span class="badge-num">${e.severity}</span>
+        </div>
+        <div class="entry-info">
+          <div class="entry-date">${type?.name || ''} · ${date.toLocaleDateString('he-IL')} ${date.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</div>
+          ${note ? `<div class="entry-note">${escapeHtml(note)}</div>` : ''}
+          ${statusHtml}
+        </div>
+        <div class="entry-actions">
+          ${closeBtn}
+          <button class="entry-close-btn" data-edit="${e.id}">✏️ ערוך</button>
+          <button class="entry-delete" data-del="${e.id}">🗑</button>
+        </div>
       </div>`;
-  }
+  }).join('');
+  el.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', async () => {
+    await Data.deleteEntry(currentUser.uid, btn.dataset.del);
+    await renderHistory(); await renderStats();
+  }));
+  el.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', async () => {
+    await Data.closeEntry(currentUser.uid, btn.dataset.close, Timestamp.now());
+    await renderHistory(); await renderStats();
+  }));
+  el.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
+    const entry = historyEntriesCache.find(x => x.id === btn.dataset.edit);
+    if (entry) loadEntryIntoForm(entry);
+  }));
+}
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-  function toggleTodo(id) {
-    const todos = loadTodos();
-    const t = todos.find(t => t.id === id);
-    if (t) t.done = !t.done;
-    saveTodos(todos);
-    renderTodos();
-  }
-
-  function deleteTodo(id) {
-    saveTodos(loadTodos().filter(t => t.id !== id));
-    renderTodos();
-  }
-
-  // ── Medical sub-tabs ──────────────────────────────────────
-  document.querySelectorAll('.med-subtab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.med-subtab').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.med-section').forEach(s => s.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(`mt-${btn.dataset.mt}`).classList.add('active');
-      if (btn.dataset.mt === 'todos') renderTodos();
-    });
+// ── Stats ─────────────────────────────────────────────────────
+async function renderStats() {
+  if (!currentUser) return;
+  const entries = await Data.listEntries(currentUser.uid, {
+    issueTypeId: statsFilterId === 'all' ? undefined : statsFilterId
   });
+  const grid = document.getElementById('stats-grid');
+  const avg = entries.length ? (entries.reduce((s,e)=>s+e.severity,0)/entries.length).toFixed(1) : '–';
+  const openCount = entries.filter(e => e.status === 'open').length;
+  const last30 = entries.filter(e => {
+    const d = e.startAt?.toDate ? e.startAt.toDate() : new Date(e.startAt);
+    return (Date.now() - d.getTime()) < 30*24*3600000;
+  }).length;
+  grid.innerHTML = `
+    <div class="stat-card"><div class="stat-emoji">📈</div><div class="stat-val">${entries.length}</div><div class="stat-lbl">סה"כ רשומות</div></div>
+    <div class="stat-card"><div class="stat-emoji">🌡️</div><div class="stat-val">${avg}</div><div class="stat-lbl">עוצמה ממוצעת</div></div>
+    <div class="stat-card"><div class="stat-emoji">🟠</div><div class="stat-val">${openCount}</div><div class="stat-lbl">אירועים פתוחים</div></div>
+    <div class="stat-card"><div class="stat-emoji">🗓️</div><div class="stat-val">${last30}</div><div class="stat-lbl">ב-30 יום אחרונים</div></div>
+  `;
 
-  // ── Service Worker ────────────────────────────────────────
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js');
+  const sorted = [...entries].sort((a,b) => toDate(a.startAt) - toDate(b.startAt));
+  const timelineLabels = sorted.map(e => toDate(e.startAt).toLocaleDateString('he-IL'));
+  const timelineData = sorted.map(e => e.severity);
+
+  const dowCounts = [0,0,0,0,0,0,0];
+  entries.forEach(e => dowCounts[toDate(e.startAt).getDay()]++);
+  const dowLabels = ['א','ב','ג','ד','ה','ו','ש'];
+
+  const distCounts = Array(10).fill(0);
+  entries.forEach(e => distCounts[e.severity-1]++);
+
+  renderChart('chart-timeline', 'line', timelineLabels, [{ label: 'עוצמה', data: timelineData, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.15)', fill: true, tension: 0.3 }]);
+  renderChart('chart-dow', 'bar', dowLabels, [{ label: 'כמות', data: dowCounts, backgroundColor: '#60a5fa' }]);
+  renderChart('chart-dist', 'bar', Array.from({length:10},(_,i)=>i+1), [{ label: 'כמות', data: distCounts, backgroundColor: GAUGE_COLORS }]);
+}
+function toDate(ts) { return ts?.toDate ? ts.toDate() : new Date(ts); }
+function renderChart(canvasId, type, labels, datasets) {
+  if (charts[canvasId]) charts[canvasId].destroy();
+  charts[canvasId] = new Chart(document.getElementById(canvasId), {
+    type, data: { labels, datasets },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+// ── Medical: tab switching ────────────────────────────────────
+document.querySelectorAll('.med-subtab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.med-subtab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.med-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('mt-' + btn.dataset.mt).classList.add('active');
+  });
+});
+
+// ── Visits ────────────────────────────────────────────────────
+document.getElementById('add-visit-trigger').addEventListener('click', () => toggleVisitForm(true));
+window.toggleVisitForm = function (open) {
+  document.getElementById('visit-form').classList.toggle('open', open);
+  if (!open) resetVisitForm();
+};
+function resetVisitForm() {
+  document.getElementById('v-doctor').value = '';
+  document.getElementById('v-date').value = '';
+  document.getElementById('v-summary').value = '';
+  document.getElementById('v-files-preview').innerHTML = '';
+  pendingFiles = [];
+}
+window.previewFiles = function (input) {
+  const preview = document.getElementById('v-files-preview');
+  [...input.files].forEach(file => {
+    if (file.size > 500 * 1024) { showToast('⚠️ קובץ גדול מדי (מקס 500KB)'); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      pendingFiles.push({ name: file.name, type: file.type, dataUrl: reader.result });
+      const chip = document.createElement('span');
+      chip.className = 'file-preview-chip';
+      chip.innerHTML = `📎 ${file.name} <button type="button">✕</button>`;
+      chip.querySelector('button').addEventListener('click', () => { removeFile(chip, file.name); });
+      preview.appendChild(chip);
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+};
+function removeFile(chipEl, name) {
+  pendingFiles = pendingFiles.filter(f => f.name !== name);
+  chipEl.remove();
+}
+window.saveVisit = async function () {
+  const doctorName = document.getElementById('v-doctor').value.trim();
+  const date = document.getElementById('v-date').value;
+  const summary = document.getElementById('v-summary').value.trim();
+  if (!doctorName || !date) { showToast('⚠️ נא למלא שם רופא ותאריך'); return; }
+  await Data.createVisit(currentUser.uid, { doctorName, date, summary, attachments: pendingFiles });
+  toggleVisitForm(false);
+  visits = await Data.listVisits(currentUser.uid);
+  renderVisits();
+  showToast('✅ ביקור נשמר!');
+};
+function renderVisits() {
+  const el = document.getElementById('visits-list');
+  if (!visits.length) {
+    el.innerHTML = `<div class="med-empty"><span class="med-empty-emoji">🏥</span>אין ביקורים רשומים עדיין.</div>`;
+    return;
   }
+  el.innerHTML = visits.map(v => `
+    <div class="visit-card" id="visit-${v.id}">
+      <div class="visit-header" data-toggle="${v.id}">
+        <div class="visit-icon">👨‍⚕️</div>
+        <div class="visit-meta">
+          <div class="v-doctor">${escapeHtml(v.doctorName)}</div>
+          <div class="v-date">${new Date(v.date).toLocaleDateString('he-IL')}</div>
+        </div>
+        <div class="visit-chevron">▾</div>
+      </div>
+      <div class="visit-body">
+        ${v.summary ? `<div class="visit-summary">${escapeHtml(v.summary)}</div>` : ''}
+        ${v.attachments?.length ? `<div class="visit-files">${v.attachments.map(f => `<a class="file-chip" href="${f.dataUrl}" download="${f.name}">📎 ${f.name}</a>`).join('')}</div>` : ''}
+        <button class="visit-delete-btn" data-del-visit="${v.id}">🗑 מחק ביקור</button>
+      </div>
+    </div>`).join('');
+  el.querySelectorAll('[data-toggle]').forEach(h => h.addEventListener('click', () => {
+    document.getElementById('visit-' + h.dataset.toggle).classList.toggle('open');
+  }));
+  el.querySelectorAll('[data-del-visit]').forEach(b => b.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    await Data.deleteVisit(currentUser.uid, b.dataset.delVisit);
+    visits = await Data.listVisits(currentUser.uid);
+    renderVisits();
+  }));
+}
+
+// ── Todos ─────────────────────────────────────────────────────
+window.addTodo = async function () {
+  const input = document.getElementById('todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  await Data.createTodo(currentUser.uid, text);
+  input.value = '';
+  todos = await Data.listTodos(currentUser.uid);
+  renderTodos();
+};
+function renderTodos() {
+  const el = document.getElementById('todos-list');
+  if (!todos.length) {
+    el.innerHTML = `<div class="med-empty"><span class="med-empty-emoji">✅</span>אין משימות עדיין.</div>`;
+    return;
+  }
+  el.innerHTML = todos.map(t => `
+    <div class="todo-item ${t.done ? 'done' : ''}">
+      <button class="todo-check" data-toggle-todo="${t.id}">${t.done ? '✓' : ''}</button>
+      <span class="todo-text">${escapeHtml(t.text)}</span>
+      <button class="todo-del" data-del-todo="${t.id}">🗑</button>
+    </div>`).join('');
+  el.querySelectorAll('[data-toggle-todo]').forEach(b => b.addEventListener('click', async () => {
+    const t = todos.find(x => x.id === b.dataset.toggleTodo);
+    await Data.updateTodo(currentUser.uid, t.id, { done: !t.done });
+    todos = await Data.listTodos(currentUser.uid);
+    renderTodos();
+  }));
+  el.querySelectorAll('[data-del-todo]').forEach(b => b.addEventListener('click', async () => {
+    await Data.deleteTodo(currentUser.uid, b.dataset.delTodo);
+    todos = await Data.listTodos(currentUser.uid);
+    renderTodos();
+  }));
+}
+
+// ── Settings: issue types management ──────────────────────────
+let editingFields = [];
+document.getElementById('add-issue-type-trigger').addEventListener('click', () => {
+  editingFields = [];
+  document.getElementById('it-name').value = '';
+  document.getElementById('it-emoji').value = '';
+  renderFieldsBuilder();
+  document.getElementById('issue-type-form').classList.add('open');
+});
+document.getElementById('it-cancel-btn').addEventListener('click', () => {
+  document.getElementById('issue-type-form').classList.remove('open');
+});
+document.getElementById('it-add-field-btn').addEventListener('click', () => {
+  editingFields.push({ id: 'f' + Date.now(), label: '', type: 'number', unit: '', options: [] });
+  renderFieldsBuilder();
+});
+function renderFieldsBuilder() {
+  const el = document.getElementById('it-fields-list');
+  el.innerHTML = editingFields.map((f, i) => `
+    <div class="custom-field-row">
+      <input class="field-input" style="flex:2" placeholder="שם שדה" data-cf-label="${i}" value="${escapeHtml(f.label)}" />
+      <select class="field-input" style="flex:1" data-cf-type="${i}">
+        <option value="number" ${f.type==='number'?'selected':''}>מספר</option>
+        <option value="text" ${f.type==='text'?'selected':''}>טקסט</option>
+        <option value="select" ${f.type==='select'?'selected':''}>בחירה</option>
+        <option value="boolean" ${f.type==='boolean'?'selected':''}>כן/לא</option>
+      </select>
+      <button type="button" class="cf-del" data-cf-del="${i}">✕</button>
+    </div>
+    ${f.type === 'select' ? `<input class="field-input" placeholder="אפשרויות מופרדות בפסיק" data-cf-options="${i}" value="${escapeHtml((f.options||[]).join(', '))}" />` : ''}
+  `).join('');
+  el.querySelectorAll('[data-cf-label]').forEach(inp => inp.addEventListener('input', () => { editingFields[+inp.dataset.cfLabel].label = inp.value; }));
+  el.querySelectorAll('[data-cf-type]').forEach(sel => sel.addEventListener('change', () => { editingFields[+sel.dataset.cfType].type = sel.value; renderFieldsBuilder(); }));
+  el.querySelectorAll('[data-cf-options]').forEach(inp => inp.addEventListener('input', () => { editingFields[+inp.dataset.cfOptions].options = inp.value.split(',').map(s=>s.trim()).filter(Boolean); }));
+  el.querySelectorAll('[data-cf-del]').forEach(btn => btn.addEventListener('click', () => { editingFields.splice(+btn.dataset.cfDel, 1); renderFieldsBuilder(); }));
+}
+document.getElementById('it-save-btn').addEventListener('click', async () => {
+  const name = document.getElementById('it-name').value.trim();
+  const emoji = document.getElementById('it-emoji').value.trim();
+  if (!name) { showToast('⚠️ נא להזין שם'); return; }
+  await Data.createIssueType(currentUser.uid, { name, emoji, fields: editingFields.filter(f => f.label) });
+  document.getElementById('issue-type-form').classList.remove('open');
+  issueTypes = await Data.listIssueTypes(currentUser.uid);
+  if (!selectedRecordIssueTypeId) selectedRecordIssueTypeId = issueTypes[0]?.id;
+  renderIssueTypesSettings();
+  renderIssueChipRow('record-issue-chips', issueTypes, selectedRecordIssueTypeId, selectRecordIssueType);
+  renderIssueChipRow('history-filter-chips', issueTypes, historyFilterId, selectHistoryFilter, true);
+  renderIssueChipRow('stats-filter-chips', issueTypes, statsFilterId, selectStatsFilter, true);
+  renderCustomFields();
+});
+function renderIssueTypesSettings() {
+  const el = document.getElementById('issue-types-list');
+  el.innerHTML = issueTypes.map(t => `
+    <div class="issue-type-card">
+      <span class="it-emoji">${t.emoji || '📌'}</span>
+      <span class="it-name">${escapeHtml(t.name)}</span>
+      <span class="it-fields-count">${(t.fields||[]).length} שדות</span>
+      <button class="todo-del" data-del-type="${t.id}">🗑</button>
+    </div>`).join('');
+  el.querySelectorAll('[data-del-type]').forEach(btn => btn.addEventListener('click', async () => {
+    await Data.deleteIssueType(currentUser.uid, btn.dataset.delType);
+    if (selectedRecordIssueTypeId === btn.dataset.delType) selectedRecordIssueTypeId = null;
+    await loadAllData();
+  }));
+}
+
+// ── Tab navigation ────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.page).classList.add('active');
+  });
+});
 </script>
 </body>
 </html>

@@ -1,11 +1,13 @@
-const CACHE = 'shira-headache-v1';
+const CACHE = 'healthmonitor-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './shira.png',
   './icon-192.png',
   './icon-512.png',
+  './js/firebase.js',
+  './js/auth.js',
+  './js/data.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
 ];
 

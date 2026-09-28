@@ -1,7 +1,7 @@
 {
-  "name": "מעקב כאבי ראש – שירה",
-  "short_name": "כאבי ראש",
-  "description": "מעקב כאבי ראש אישי לשירה",
+  "name": "מעקב בריאות",
+  "short_name": "מעקב בריאות",
+  "description": "מעקב אישי אחר בעיות בריאות ותסמינים",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
