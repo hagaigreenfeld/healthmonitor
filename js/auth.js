@@ -47,6 +47,14 @@ export function onAuthChange(callback) {
   return onAuthStateChanged(auth, callback);
 }
 
+// Keeps users/{uid} carrying email + name so the admin account switcher can
+// label accounts (older users only had displayName stored at sign-up).
+export function syncUserDoc(user) {
+  const patch = { email: user.email || '' };
+  if (user.displayName) patch.displayName = user.displayName;
+  return setDoc(doc(db, 'users', user.uid), patch, { merge: true });
+}
+
 export async function seedDefaultIssueTypeIfEmpty(uid) {
   const q = query(collection(db, 'users', uid, 'issueTypes'), limit(1));
   const snap = await getDocs(q);

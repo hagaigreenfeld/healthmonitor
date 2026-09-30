@@ -6,17 +6,71 @@ service cloud.firestore {
   }
 
   match /databases/{database}/documents {
+    // ── Sharing ──
+    // users/{owner}/shares/{granteeEmail} grants another account access:
+    //   role: 'viewer' | 'editor'; scope: 'all' | 'types' (typeIds = allowed issue types).
+    // 'types' grants entries + issue types for those types only; 'all' also covers visits/todos.
+    function shareRef(owner) {
+      return /databases/$(database)/documents/users/$(owner)/shares/$(request.auth.token.email.lower());
+    }
+    function hasShare(owner) {
+      return request.auth != null && request.auth.token.email != null && exists(shareRef(owner));
+    }
+    function isEditor(owner) { return hasShare(owner) && get(shareRef(owner)).data.role == 'editor'; }
+    function fullScope(owner) { return hasShare(owner) && get(shareRef(owner)).data.scope == 'all'; }
+    function typeOk(owner, typeId) {
+      return hasShare(owner) && (get(shareRef(owner)).data.scope == 'all' || typeId in get(shareRef(owner)).data.typeIds);
+    }
+
     match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
+      // Admins can switch into any account in read-only mode.
+      allow read: if isAdmin();
 
       match /{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
+        allow read: if isAdmin();
       }
+
+      match /shares/{shareId} {
+        // A grantee can read their own grant (used to discover "shared with me").
+        allow read: if request.auth != null && request.auth.token.email.lower() == shareId;
+      }
+      match /issueTypes/{typeId} {
+        allow read: if typeOk(uid, typeId);
+      }
+      match /entries/{entryId} {
+        allow read: if typeOk(uid, resource.data.issueTypeId);
+        allow create: if isEditor(uid) && typeOk(uid, request.resource.data.issueTypeId);
+        allow update: if isEditor(uid) && typeOk(uid, resource.data.issueTypeId)
+                      && typeOk(uid, request.resource.data.issueTypeId);
+        allow delete: if isEditor(uid) && typeOk(uid, resource.data.issueTypeId);
+      }
+      match /visits/{visitId} {
+        allow read: if fullScope(uid);
+        allow write: if isEditor(uid) && fullScope(uid);
+      }
+      match /todos/{todoId} {
+        allow read: if fullScope(uid);
+        allow write: if isEditor(uid) && fullScope(uid);
+      }
+    }
+
+    // Lets a grantee list every account shared with them (collection-group query on email).
+    match /{path=**}/shares/{shareId} {
+      allow read: if request.auth != null && request.auth.token.email != null
+                  && resource.data.email == request.auth.token.email.lower();
     }
 
     // Admin-managed catalog of issue types every signed-in user can browse
     // and copy into their own users/{uid}/issueTypes.
     match /globalIssueTypes/{id} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Admin-managed library of reusable questions that issue-type fields can reference.
+    match /globalQuestions/{id} {
       allow read: if request.auth != null;
       allow write: if isAdmin();
     }

@@ -9,17 +9,13 @@
         ".firebaserc",
         "**/.*",
         "**/node_modules/**",
-        ".claude/**"
+        ".claude/**",
+        "scripts/**"
       ],
       "headers": [
         {
           "source": "**/*.@(js|html|json)",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "no-cache"
-            }
-          ]
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
         }
       ]
     },
@@ -32,17 +28,13 @@
         ".firebaserc",
         "**/.*",
         "**/node_modules/**",
-        ".claude/**"
+        ".claude/**",
+        "scripts/**"
       ],
       "headers": [
         {
           "source": "**/*.@(js|html|json)",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "no-cache"
-            }
-          ]
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
         }
       ]
     }

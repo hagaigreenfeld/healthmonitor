@@ -61,6 +61,71 @@
       opacity: 0.92; text-shadow: 0 1px 6px rgba(0,0,0,0.4);
     }
 
+
+    /* ── Home ── */
+    .home-section { margin-bottom: 20px; }
+    .home-title {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 10px;
+    }
+    .home-link { background: none; border: none; color: var(--purple); font-size: 13px; font-weight: 700; cursor: pointer; }
+    .home-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .home-stat {
+      background: white; border-radius: 16px; padding: 12px 6px; text-align: center;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .home-stat .hs-val { font-size: 22px; font-weight: 800; color: var(--purple); }
+    .home-stat .hs-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .home-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .home-quick-btn {
+      display: flex; align-items: center; gap: 10px; padding: 14px 12px;
+      background: white; border: 2px solid #e9d5ff; border-radius: 16px;
+      font-size: 14px; font-weight: 700; color: var(--text); cursor: pointer; text-align: start;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .home-quick-btn .hq-emoji { font-size: 26px; }
+    .home-quick-btn:active { transform: scale(0.97); }
+    .home-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .home-action {
+      display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px;
+      background: white; border: none; border-radius: 16px; font-size: 24px; cursor: pointer;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .home-action span { font-size: 12px; font-weight: 700; color: var(--text); text-align: center; }
+    .home-empty { background: white; border-radius: 16px; padding: 16px; text-align: center; color: var(--muted); font-size: 14px; }
+    .home-visit { background: white; border-radius: 16px; padding: 14px; box-shadow: 0 2px 10px rgba(168,85,247,0.08); }
+    .home-visit .hv-name { font-weight: 800; }
+    .home-visit .hv-date { font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
+    .home-visit .hv-summary { font-size: 14px; white-space: pre-wrap; }
+
+    /* ── Sharing / report ── */
+    body.viewing-shared .tab[data-page="settings"],
+    body.scope-types .tab[data-page="medical"],
+    body.scope-types .full-only { display: none !important; }
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      z-index: 300; align-items: flex-end; justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: white; border-radius: 24px 24px 0 0; padding: 20px 16px 28px;
+      width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+    }
+    .modal-title { text-align: center; font-size: 17px; font-weight: 800; color: var(--purple); margin-bottom: 14px; }
+    .check-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; }
+    .check-row input { width: 18px; height: 18px; accent-color: var(--purple); }
+    .modal .status-row { margin-bottom: 14px; }
+    .report-result { display: none; background: #faf5ff; border-radius: 14px; padding: 12px; margin-top: 12px; }
+    .report-result.show { display: block; }
+    .report-result .btn-primary, .report-result .btn-ghost { margin-bottom: 8px; }
+    .share-item {
+      display: flex; align-items: center; gap: 8px; background: white; border-radius: 14px;
+      padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 2px 10px rgba(168,85,247,0.08); font-size: 13px;
+    }
+    .share-item .si-main { flex: 1; min-width: 0; }
+    .share-item .si-email { font-weight: 700; overflow-wrap: anywhere; }
+    .share-item .si-meta { color: var(--muted); font-size: 12px; }
+
     /* ── Tab bar ── */
     .tabs {
       position: fixed;
@@ -386,6 +451,12 @@
     .entry-info { flex: 1; min-width: 0; }
     .entry-info .entry-date { font-size: 13px; color: var(--muted); }
     .entry-info .entry-note { font-size: 14px; margin-top: 2px; color: var(--text); }
+    .entry-fields { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .entry-field-chip {
+      font-size: 11px; background: #f3e8ff; color: var(--purple);
+      border-radius: 8px; padding: 2px 8px;
+    }
+    .entry-field-chip b { font-weight: 700; }
     .entry-info .entry-status { font-size: 12px; font-weight: 700; margin-top: 2px; }
     .entry-info .entry-status.open { color: var(--orange); }
     .entry-info .entry-status.closed { color: var(--muted); }
@@ -417,7 +488,16 @@
       box-shadow: 0 2px 10px rgba(168,85,247,0.08); margin-bottom: 16px;
     }
     .chart-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
-    .chart-card canvas { max-height: 200px; }
+    .chart-card canvas { max-height: 220px; }
+    .chart-hint { font-size: 12px; color: var(--muted); margin: -8px 0 10px; }
+    .insights-card {
+      background: linear-gradient(135deg, #faf5ff, #fdf2f8); border-radius: 18px;
+      padding: 14px 16px; margin-bottom: 16px; border: 1px solid #f3e8ff;
+    }
+    .insights-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--purple); }
+    .insights-card ul { list-style: none; }
+    .insights-card li { font-size: 13px; line-height: 1.6; color: var(--text); padding-inline-start: 4px; }
+    .insights-card li::before { content: '•'; color: var(--purple); font-weight: 800; margin-inline-end: 6px; }
 
     /* ── Auth screen ── */
     .auth-screen {
@@ -432,6 +512,52 @@
     .auth-logo { font-size: 48px; margin-bottom: 8px; }
     .auth-card h1 { font-size: 20px; font-weight: 800; margin-bottom: 20px; color: var(--text); }
     .auth-error { color: var(--red); font-size: 13px; font-weight: 600; margin: -6px 0 12px; min-height: 16px; }
+
+    /* ── Admin account switcher / read-only view ── */
+    .account-switcher-wrap { position: absolute; top: 12px; left: 16px; z-index: 3; max-width: 62%; }
+    .account-switcher {
+      width: 100%; background: rgba(255,255,255,0.92); color: var(--text);
+      border: none; border-radius: 12px; padding: 6px 10px;
+      font-size: 13px; font-weight: 700; font-family: inherit;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18); cursor: pointer;
+    }
+    .view-banner {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: #fef3c7; color: #92400e; font-size: 13px; font-weight: 600;
+      padding: 10px 16px; border-bottom: 1px solid #fde68a;
+    }
+    .view-banner button {
+      background: #92400e; color: white; border: none; border-radius: 10px;
+      padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    }
+    body.viewing-other .write-only,
+    body.viewing-other .tab[data-page="record"],
+    body.viewing-other #home-todos-list .todo-del,
+    body.viewing-other .entry-actions,
+    body.viewing-other #add-visit-trigger,
+    body.viewing-other #visit-form,
+    body.viewing-other .visit-delete-btn,
+    body.viewing-other .todo-add-row,
+    body.viewing-other #todos-list .todo-del,
+    body.viewing-other #issue-types-list .todo-del,
+    body.viewing-other #add-issue-type-trigger { display: none !important; }
+    body.viewing-other .todo-check { pointer-events: none; }
+
+    /* ── Admin: users' manual issue types ── */
+    .ut-card {
+      background: white; border-radius: 16px; padding: 12px 14px; margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(168,85,247,0.08);
+    }
+    .ut-head { display: flex; align-items: center; gap: 12px; }
+    .ut-head .it-emoji { font-size: 26px; }
+    .ut-title { flex: 1; min-width: 0; }
+    .ut-owner { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .ut-meta { font-size: 12px; color: var(--purple); font-weight: 600; margin: 8px 0 6px; }
+    .ut-fields { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ut-field {
+      background: #f5f3ff; border-radius: 10px; padding: 4px 8px; font-size: 12px; font-weight: 600;
+    }
+    .ut-field small { color: var(--muted); font-weight: 500; margin-inline-start: 4px; }
 
     /* ── Settings page ── */
     .settings-user-row {
@@ -454,6 +580,25 @@
       padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
     }
     .catalog-add-btn:disabled { background: #e5e7eb; color: var(--muted); cursor: default; }
+    .scale-config { background: #faf5ff; border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+    .scale-config .field-input { margin-bottom: 0; }
+    .scale-range-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .scale-range-row label { font-size: 12px; font-weight: 700; color: var(--purple); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .scale-range-row label .field-input { width: 58px; padding: 8px; text-align: center; }
+    .scale-range-row select.field-input { flex: 1; min-width: 0; padding: 8px; font-size: 13px; }
+    .scale-label-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+    .scale-label-row span { width: 22px; font-weight: 800; color: var(--purple); text-align: center; }
+    .custom-field.scale-field { grid-column: 1 / -1; }
+    .scale-row { display: flex; gap: 4px; direction: ltr; }
+    .scale-btn {
+      flex: 1; padding: 8px 0; border-radius: 10px; border: 2px solid #e9d5ff; background: white;
+      color: var(--purple); font-size: 14px; font-weight: 800; cursor: pointer; min-width: 0;
+    }
+    .scale-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+    .scale-ends { display: flex; justify-content: space-between; direction: ltr; gap: 8px; font-size: 10px; color: var(--muted); margin-top: 3px; }
+    .scale-caption { font-size: 11px; font-weight: 700; color: var(--purple); text-align: center; min-height: 14px; margin-top: 3px; }
+    .linked-q { flex: 1; background: #f3e8ff; color: var(--purple); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; }
+    .linked-q small { font-weight: 600; opacity: 0.8; }
     .custom-field-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
     .custom-field-row input, .custom-field-row select { margin-bottom: 0; }
     .custom-field-row .cf-del { background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; }
@@ -482,12 +627,71 @@
     <h1>מעקב בריאות</h1>
     <div class="header-greeting" id="header-greeting">שלום 👋</div>
   </div>
+  <div class="account-switcher-wrap" id="account-switcher-wrap" style="display:none">
+    <select class="account-switcher" id="account-switcher" aria-label="החלפת חשבון"></select>
+  </div>
+</div>
+
+<div class="view-banner" id="view-banner" style="display:none">
+  <span><span id="view-banner-mode">👀 צפייה בלבד</span> · <b id="view-banner-name"></b></span>
+  <button type="button" id="view-banner-back">חזרה לחשבון שלי</button>
 </div>
 
 <div class="toast" id="toast">✅ נשמר!</div>
 
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="home-stats" id="home-stats"></div>
+
+  <div class="home-section write-only">
+    <div class="home-title">⚡ תיעוד מהיר</div>
+    <div class="home-quick-grid" id="home-quick-record"></div>
+  </div>
+
+  <div class="home-section" id="home-open-section" style="display:none">
+    <div class="home-title">🟠 אירועים פתוחים</div>
+    <div id="home-open-list"></div>
+  </div>
+
+  <div class="home-section">
+    <div class="home-title">🕘 3 אירועים אחרונים
+      <button type="button" class="home-link" data-go="history">הכל ›</button>
+    </div>
+    <div id="home-recent-list"></div>
+  </div>
+
+  <div class="home-section">
+    <div class="home-title">🏥 פעולות מהירות</div>
+    <div class="home-actions">
+      <button type="button" class="home-action" id="home-share-report">📤<span>שיתוף דוח (PDF)</span></button>
+      <button type="button" class="home-action full-only" id="home-add-instruction">📝<span>הוראה רפואית / ביקור רופא</span></button>
+      <button type="button" class="home-action" data-go="stats">📊<span>סטטיסטיקה ותובנות</span></button>
+      <button type="button" class="home-action" data-go="history">📋<span>כל ההיסטוריה</span></button>
+      <button type="button" class="home-action write-only" data-go="settings">⚙️<span>ניהול סוגי בעיות</span></button>
+    </div>
+  </div>
+
+  <div class="home-section full-only">
+    <div class="home-title">✅ משימות
+      <button type="button" class="home-link" id="home-todos-all">הכל ›</button>
+    </div>
+    <div class="todo-add-row write-only">
+      <input class="field-input" id="home-todo-input" type="text" placeholder="משימה חדשה..." />
+      <button class="todo-add-btn" id="home-todo-add">➕</button>
+    </div>
+    <div id="home-todos-list"></div>
+  </div>
+
+  <div class="home-section full-only">
+    <div class="home-title">👨‍⚕️ ביקור רופא אחרון
+      <button type="button" class="home-link" id="home-visits-all">הכל ›</button>
+    </div>
+    <div id="home-last-visit"></div>
+  </div>
+</div>
+
 <!-- RECORD -->
-<div class="page active" id="page-record">
+<div class="page" id="page-record">
   <div class="edit-banner" id="edit-banner" style="display:none">
     <span>✏️ עריכת רשומה</span>
     <button class="btn-ghost" id="cancel-edit-btn">ביטול</button>
@@ -521,8 +725,8 @@
 
     <div id="status-section">
       <div class="status-row">
-        <button type="button" class="status-btn active" data-status="open">🟠 פתוח</button>
-        <button type="button" class="status-btn" data-status="closed">✅ נסגר</button>
+        <button type="button" class="status-btn active" data-status="open">🟠 אירוע התחיל</button>
+        <button type="button" class="status-btn" data-status="closed">✅ אירוע הסתיים</button>
       </div>
       <div id="duration-input-wrap" style="display:none">
         <input class="field-input" id="entry-duration" type="number" min="0" step="0.5" placeholder="משך בשעות" style="margin-bottom:0" />
@@ -539,28 +743,27 @@
 
 <!-- HISTORY -->
 <div class="page" id="page-history">
-  <div class="section-title">📋 כל הרשומות</div>
+  <div class="section-title">📋 כל הרשומות
+    <button type="button" class="home-link" data-open-report>📤 שתף דוח</button>
+  </div>
   <div class="issue-chip-row" id="history-filter-chips"></div>
   <div id="history-list"></div>
 </div>
 
 <!-- STATS -->
 <div class="page" id="page-stats">
-  <div class="section-title">📊 סטטיסטיקות</div>
+  <div class="section-title">📊 סטטיסטיקות
+    <button type="button" class="home-link" data-open-report>📤 שתף דוח</button>
+  </div>
   <div class="issue-chip-row" id="stats-filter-chips"></div>
+  <div class="status-row" id="stats-range-row" style="margin-bottom:14px">
+    <button type="button" class="status-btn active" data-range="all">כל הזמנים</button>
+    <button type="button" class="status-btn" data-range="30">30 ימים</button>
+    <button type="button" class="status-btn" data-range="7">שבוע</button>
+  </div>
   <div class="stats-grid" id="stats-grid"></div>
-  <div class="chart-card">
-    <h3>עוצמת כאב לאורך זמן</h3>
-    <canvas id="chart-timeline"></canvas>
-  </div>
-  <div class="chart-card">
-    <h3>תדירות לפי יום בשבוע</h3>
-    <canvas id="chart-dow"></canvas>
-  </div>
-  <div class="chart-card">
-    <h3>התפלגות עוצמות</h3>
-    <canvas id="chart-dist"></canvas>
-  </div>
+  <div id="stats-insights"></div>
+  <div id="stats-charts"></div>
 </div>
 
 <!-- MEDICAL -->
@@ -607,14 +810,56 @@
     <span id="settings-user-email"></span>
     <button class="btn-ghost" id="logout-btn">התנתקות</button>
   </div>
-  <div class="add-panel open" style="margin-bottom:20px">
+  <div class="add-panel open write-only" style="margin-bottom:20px">
     <label class="field-label">שם תצוגה</label>
     <input class="field-input" id="settings-name-input" type="text" placeholder="השם שלך" style="margin-bottom:8px" />
     <button class="btn-primary" id="settings-save-name-btn" style="margin-bottom:0">💾 שמור שם</button>
   </div>
+  <div class="add-panel open write-only" style="margin-bottom:20px">
+    <label class="field-label">פרטי פרופיל <span style="font-weight:600;color:var(--muted)">(לא חובה)</span></label>
+    <label class="field-label" style="font-weight:600">תאריך לידה <span id="profile-age" style="color:var(--muted)"></span></label>
+    <input class="field-input" id="profile-birth" type="date" style="margin-bottom:10px" />
+    <label class="field-label" style="font-weight:600">משקל (ק"ג)</label>
+    <input class="field-input" id="profile-weight" type="number" inputmode="decimal" min="1" max="500" step="0.1" placeholder="למשל 68.5" style="margin-bottom:10px" />
+    <label class="field-label" style="font-weight:600">מין</label>
+    <div class="status-row" id="profile-gender-row" style="margin-bottom:12px">
+      <button type="button" class="status-btn active" data-gender="">לא צוין</button>
+      <button type="button" class="status-btn" data-gender="female">נקבה</button>
+      <button type="button" class="status-btn" data-gender="male">זכר</button>
+      <button type="button" class="status-btn" data-gender="other">אחר</button>
+    </div>
+    <button class="btn-primary" id="profile-save-btn" style="margin-bottom:0">💾 שמור פרטים</button>
+  </div>
 
-  <div class="section-title" style="font-size:15px">הוסף מהקטלוג</div>
-  <div id="catalog-list"></div>
+  <div class="section-title write-only" style="font-size:15px">הוסף מהקטלוג</div>
+  <div id="catalog-list" class="write-only"></div>
+
+  <div class="section-title write-only" style="font-size:15px">🤝 שיתוף גישה</div>
+  <div class="write-only" id="shares-section">
+    <div class="muted-note" style="font-size:12px;color:var(--muted);margin-bottom:8px">הוסיפי רופא או בן משפחה לפי אימייל. הם יראו את החשבון שלך ברשימת החשבונות אחרי שיתחברו עם אותו אימייל.</div>
+    <div id="shares-list"></div>
+    <button class="add-trigger-btn" id="add-share-trigger">➕ שתף עם מישהו</button>
+    <div class="add-panel" id="share-form">
+      <label class="field-label">אימייל</label>
+      <input class="field-input" id="share-email" type="email" placeholder="doctor@example.com" />
+      <label class="field-label">הרשאה</label>
+      <div class="status-row" id="share-role-row">
+        <button type="button" class="status-btn active" data-role="viewer">👀 צפייה בלבד</button>
+        <button type="button" class="status-btn" data-role="editor">✏️ עריכה (תיעוד, ביקורים, משימות)</button>
+      </div>
+      <label class="field-label">מה לשתף</label>
+      <div class="status-row" id="share-scope-row">
+        <button type="button" class="status-btn active" data-scope="all">הכל</button>
+        <button type="button" class="status-btn" data-scope="types">סוגי בעיות נבחרים</button>
+      </div>
+      <div id="share-types-wrap" style="display:none;margin-bottom:12px">
+        <div class="muted-note" style="font-size:12px;color:var(--muted);margin-bottom:4px">בשיתוף סלקטיבי מוצגים רק האירועים, הגרפים והדוחות של הסוגים שנבחרו (ללא ביקורים ומשימות).</div>
+        <div id="share-types-list"></div>
+      </div>
+      <button class="btn-primary" id="share-save-btn">💾 שמור שיתוף</button>
+      <button class="btn-ghost" id="share-cancel-btn">ביטול</button>
+    </div>
+  </div>
 
   <div class="section-title" style="font-size:15px">סוגי הבעיות שלי</div>
   <div id="issue-types-list"></div>
@@ -625,6 +870,22 @@
     <div class="section-title" style="font-size:15px">ניהול קטלוג גלובלי (מנהל)</div>
     <div id="admin-catalog-list"></div>
     <button class="add-trigger-btn" id="add-global-type-trigger">➕ הוסף סוג גלובלי לכולם</button>
+
+    <div class="section-title" style="font-size:15px">סוגים ידניים של משתמשים (מנהל)</div>
+    <div id="admin-user-types-list"></div>
+  </div>
+
+  <div id="admin-questions-section" style="display:none">
+    <div class="section-title" style="font-size:15px">ספריית שאלות משותפות (מנהל)</div>
+    <div id="admin-questions-list"></div>
+    <button class="add-trigger-btn" id="add-question-trigger">➕ הוסף שאלה לספרייה</button>
+  </div>
+
+  <div class="add-panel" id="question-form">
+    <label class="field-label">שאלה משותפת</label>
+    <div id="q-fields-list"></div>
+    <button class="btn-primary" id="q-save-btn" style="margin-top:6px">💾 שמור שאלה</button>
+    <button class="btn-ghost" id="q-cancel-btn">ביטול</button>
   </div>
 
   <div class="add-panel" id="issue-type-form">
@@ -648,6 +909,11 @@
     <label class="field-label">שדות מותאמים אישית</label>
     <div id="it-fields-list"></div>
     <button class="btn-ghost" type="button" id="it-add-field-btn">➕ הוסף שדה</button>
+    <select class="field-input" id="it-question-picker" style="display:none; margin-top:8px; margin-bottom:0"></select>
+    <label id="it-push-catalog-row" style="display:none; align-items:center; gap:8px; margin-top:12px; font-size:13px; font-weight:700; color:var(--purple)">
+      <input type="checkbox" id="it-push-catalog" style="width:18px; height:18px" />
+      עדכן גם את הקטלוג הגלובלי (יופיע לכל המשתמשים)
+    </label>
     <button class="btn-primary" id="it-save-btn" style="margin-top:14px">💾 שמור</button>
     <button class="btn-ghost" id="it-cancel-btn">ביטול</button>
   </div>
@@ -655,12 +921,49 @@
 
 <!-- TAB BAR -->
 <nav class="tabs">
-  <button class="tab active" data-page="record"><span class="tab-icon">➕</span>תיעוד</button>
+  <button class="tab active" data-page="home"><span class="tab-icon">🏠</span>בית</button>
+  <button class="tab" data-page="record"><span class="tab-icon">➕</span>תיעוד</button>
   <button class="tab" data-page="history"><span class="tab-icon">📋</span>היסטוריה</button>
   <button class="tab" data-page="stats"><span class="tab-icon">📊</span>סטטיסטיקה</button>
   <button class="tab" data-page="medical"><span class="tab-icon">🏥</span>רפואי</button>
   <button class="tab" data-page="settings"><span class="tab-icon">⚙️</span>ניהול</button>
 </nav>
+
+<!-- Report modal -->
+<div class="modal-backdrop" id="report-backdrop">
+  <div class="modal">
+    <div class="modal-title">📤 יצירת דוח ושיתוף</div>
+
+    <label class="field-label">תקופה</label>
+    <div class="status-row" id="report-range-row">
+      <button type="button" class="status-btn" data-days="7">שבוע</button>
+      <button type="button" class="status-btn active" data-days="30">30 ימים</button>
+      <button type="button" class="status-btn" data-days="90">90 ימים</button>
+      <button type="button" class="status-btn" data-days="0">הכל</button>
+    </div>
+
+    <label class="field-label">אילו סוגי בעיות</label>
+    <div id="report-types"></div>
+
+    <label class="field-label" style="margin-top:10px">מה לכלול</label>
+    <label class="check-row"><input type="checkbox" id="rp-summary" checked> סיכום</label>
+    <label class="check-row"><input type="checkbox" id="rp-charts" checked> גרפים</label>
+    <label class="check-row"><input type="checkbox" id="rp-history" checked> היסטוריית אירועים</label>
+    <label class="check-row full-only"><input type="checkbox" id="rp-visits" checked> ביקורי רופא והוראות</label>
+    <label class="check-row full-only"><input type="checkbox" id="rp-todos"> משימות</label>
+
+    <button class="btn-primary" id="report-generate-btn" style="margin-top:14px">📄 צור PDF</button>
+    <div class="report-result" id="report-result">
+      <div id="report-status" style="font-weight:700;margin-bottom:10px"></div>
+      <button class="btn-primary" id="report-share-btn">📲 שתף (וואטסאפ, מייל…)</button>
+      <button class="btn-ghost" id="report-whatsapp-btn">💬 וואטסאפ</button>
+      <button class="btn-ghost" id="report-mail-btn">✉️ מייל</button>
+      <button class="btn-ghost" id="report-download-btn">⬇️ הורד PDF</button>
+      <div id="report-hint" style="font-size:12px;color:var(--muted)"></div>
+    </div>
+    <button class="btn-ghost" id="report-close-btn" style="margin-top:6px">סגור</button>
+  </div>
+</div>
 
 <!-- Time picker modal -->
 <div class="time-modal-backdrop" id="time-modal-backdrop" onclick="closeTimePicker(event)">
@@ -674,23 +977,31 @@
 
 <script type="module">
 import { auth } from './js/firebase.js';
-import { signUp, signIn, signOutUser, onAuthChange, seedDefaultIssueTypeIfEmpty } from './js/auth.js';
+import { signUp, signIn, signOutUser, onAuthChange, seedDefaultIssueTypeIfEmpty, syncUserDoc } from './js/auth.js';
 import * as Data from './js/data.js';
 import { Timestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 import { isAdmin } from './js/admin.js';
+import * as Report from './js/report.js';
 
 // ── State ─────────────────────────────────────────────────────
 let currentUser = null;
+// Whose data is on screen. Equals currentUser.uid unless an admin switched
+// into another account (read-only).
+let activeUid = null;
+let accounts = [];
 let issueTypes = [];
 let globalIssueTypes = [];
+let globalQuestions = [];
 let selectedRecordIssueTypeId = null;
 let historyFilterId = 'all';
 let statsFilterId = 'all';
 let visits = [];
 let todos = [];
 let pendingFiles = [];
-let charts = {};
+// Access the signed-in user has to the account on screen (null = own account).
+let activeAccess = null; // { role: 'viewer'|'editor', scope: 'all'|'types', typeIds, admin }
+let sharedAccounts = [];
 
 // ── Auth UI ───────────────────────────────────────────────────
 let authMode = 'login';
@@ -760,24 +1071,172 @@ document.getElementById('settings-save-name-btn').addEventListener('click', asyn
   const name = document.getElementById('settings-name-input').value.trim();
   if (!name) return;
   await updateProfile(currentUser, { displayName: name });
+  await syncUserDoc(currentUser);
   refreshGreeting();
   showToast('✅ נשמר!');
 });
 
+// ── Profile details (all optional) ────────────────────────────
+let profileGender = '';
+function setProfileGender(g) {
+  profileGender = g;
+  document.querySelectorAll('#profile-gender-row .status-btn').forEach(b => b.classList.toggle('active', b.dataset.gender === g));
+}
+document.querySelectorAll('#profile-gender-row .status-btn').forEach(btn => {
+  btn.addEventListener('click', () => setProfileGender(btn.dataset.gender));
+});
+function updateProfileAge() {
+  const v = document.getElementById('profile-birth').value;
+  const el = document.getElementById('profile-age');
+  if (!v) { el.textContent = ''; return; }
+  const b = new Date(v), now = new Date();
+  let age = now.getFullYear() - b.getFullYear();
+  if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) age--;
+  el.textContent = age >= 0 ? `(גיל ${age})` : '';
+}
+document.getElementById('profile-birth').addEventListener('input', updateProfileAge);
+async function loadProfile() {
+  if (!currentUser) return;
+  const p = await Data.getProfile(currentUser.uid);
+  document.getElementById('profile-birth').value = p.birthDate;
+  document.getElementById('profile-weight').value = p.weightKg;
+  setProfileGender(p.gender);
+  updateProfileAge();
+}
+document.getElementById('profile-save-btn').addEventListener('click', async () => {
+  const birthDate = document.getElementById('profile-birth').value;
+  const weight = document.getElementById('profile-weight').value;
+  if (birthDate && new Date(birthDate) > new Date()) { showToast('⚠️ תאריך לידה עתידי'); return; }
+  if (weight !== '' && !(Number(weight) > 0 && Number(weight) < 500)) { showToast('⚠️ משקל לא תקין'); return; }
+  try {
+    await Data.saveProfile(currentUser.uid, { birthDate, weightKg: weight, gender: profileGender });
+    showToast('✅ נשמר!');
+  } catch (err) {
+    console.error('saveProfile failed:', err);
+    showToast('⚠️ השמירה נכשלה');
+  }
+});
+
 onAuthChange(async (user) => {
   currentUser = user;
+  activeUid = user?.uid || null;
+  activeAccess = null;
+  sharedAccounts = [];
+  Data.setTypeRestriction(activeUid, null);
+  accounts = [];
+  applyViewMode();
   if (user) {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app-root').style.display = 'block';
     refreshGreeting();
     document.getElementById('settings-user-email').textContent = user.email;
     document.getElementById('settings-name-input').value = user.displayName || '';
+    syncUserDoc(user).catch(err => console.error('syncUserDoc failed:', err));
+    loadProfile().catch(err => console.error('loadProfile failed:', err));
+    document.getElementById('account-switcher-wrap').style.display = 'none';
+    loadSharedAccounts();
+    if (isAdmin(user)) loadAccounts().then(loadUserIssueTypes);
     await loadAllData();
   } else {
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('app-root').style.display = 'none';
   }
 });
+
+// ── Admin account switcher (read-only view of other accounts) ─
+const accountSwitcher = document.getElementById('account-switcher');
+const isViewingOther = () => !!currentUser && activeUid !== currentUser.uid;
+const accountLabel = a => a.displayName || a.email || a.uid.slice(0, 8);
+
+async function loadAccounts() {
+  try {
+    accounts = await Data.listUsers();
+  } catch (err) {
+    console.error('listUsers failed:', err);
+    accounts = [];
+  }
+  renderSwitcher();
+}
+
+async function loadSharedAccounts() {
+  try {
+    sharedAccounts = (await Data.listSharedWithMe(currentUser.email)).filter(a => a.ownerUid !== currentUser.uid);
+  } catch (err) {
+    console.error('listSharedWithMe failed:', err);
+    sharedAccounts = [];
+  }
+  renderSwitcher();
+}
+
+function renderSwitcher() {
+  const sharedUids = new Set(sharedAccounts.map(a => a.ownerUid));
+  const shared = sharedAccounts.map(a => {
+    const mode = a.role === 'editor' ? 'עריכה' : 'צפייה';
+    const scope = a.scope === 'types' ? ' · סוגים נבחרים' : '';
+    return `<option value="${a.ownerUid}">🤝 ${escapeHtml(a.ownerName || a.ownerEmail || a.ownerUid.slice(0, 8))} (${mode}${scope})</option>`;
+  });
+  const others = accounts.filter(a => a.uid !== currentUser.uid && !sharedUids.has(a.uid))
+    .sort((a, b) => accountLabel(a).localeCompare(accountLabel(b), 'he'));
+  accountSwitcher.innerHTML = [
+    `<option value="${currentUser.uid}">👤 החשבון שלי</option>`,
+    ...shared,
+    ...others.map(a => `<option value="${a.uid}">${a.seeded ? '🧪 ' : ''}${escapeHtml(accountLabel(a))}${a.email ? ` · ${escapeHtml(a.email)}` : ''}</option>`)
+  ].join('');
+  accountSwitcher.value = activeUid;
+  document.getElementById('account-switcher-wrap').style.display = (shared.length || others.length) ? 'block' : 'none';
+}
+
+function accessFor(uid) {
+  if (uid === currentUser.uid) return null;
+  const s = sharedAccounts.find(a => a.ownerUid === uid);
+  if (s) return { role: s.role, scope: s.scope, typeIds: s.typeIds || [], admin: false, name: s.ownerName || s.ownerEmail };
+  return { role: 'viewer', scope: 'all', typeIds: [], admin: true };
+}
+
+accountSwitcher.addEventListener('change', () => switchAccount(accountSwitcher.value));
+document.getElementById('view-banner-back').addEventListener('click', () => switchAccount(currentUser.uid));
+
+async function switchAccount(uid) {
+  if (uid === activeUid) return;
+  activeUid = uid;
+  activeAccess = accessFor(uid);
+  Data.setTypeRestriction(uid, activeAccess?.scope === 'types' ? activeAccess.typeIds : null);
+  accountSwitcher.value = uid;
+  selectedRecordIssueTypeId = null;
+  historyFilterId = 'all';
+  statsFilterId = 'all';
+  exitEditMode();
+  toggleVisitForm(false);
+  document.getElementById('issue-type-form').classList.remove('open');
+  applyViewMode();
+  await loadAllData();
+}
+
+// Viewing someone else's account hides every control that writes to it.
+function applyViewMode() {
+  const other = isViewingOther();
+  const readOnly = other && activeAccess?.role !== 'editor';
+  const sharedNonAdmin = other && !activeAccess?.admin;
+  document.body.classList.toggle('viewing-other', readOnly);
+  document.body.classList.toggle('viewing-shared', sharedNonAdmin);
+  document.body.classList.toggle('scope-types', other && activeAccess?.scope === 'types');
+  document.getElementById('view-banner').style.display = other ? 'flex' : 'none';
+  if (other) {
+    const a = accounts.find(x => x.uid === activeUid);
+    document.getElementById('view-banner-mode').textContent = readOnly ? '👀 צפייה בלבד' : '✏️ מצב עריכה';
+    document.getElementById('view-banner-name').textContent = activeAccess?.name || (a ? accountLabel(a) : activeUid);
+    if (readOnly && document.getElementById('page-record').classList.contains('active')) showPage('home');
+    if (sharedNonAdmin && document.getElementById('page-settings').classList.contains('active')) showPage('home');
+    if (activeAccess?.scope === 'types' && document.getElementById('page-medical').classList.contains('active')) showPage('home');
+  }
+}
+
+function showPage(page) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
+  if (page === 'home') renderHome();
+  window.scrollTo({ top: 0 });
+}
 
 function selectRecordIssueType(id) {
   selectedRecordIssueTypeId = id;
@@ -787,10 +1246,36 @@ function selectRecordIssueType(id) {
 function selectHistoryFilter(id) { historyFilterId = id; renderIssueChipRow('history-filter-chips', issueTypes, historyFilterId, selectHistoryFilter, true); renderHistory(); }
 function selectStatsFilter(id) { statsFilterId = id; renderIssueChipRow('stats-filter-chips', issueTypes, statsFilterId, selectStatsFilter, true); renderStats(); }
 
+// A catalog type is copied into each user's list when added, so fields the admin
+// adds to the catalog later must be appended to existing copies. Only fields not
+// yet offered to that copy (syncedFieldIds) are added, so a field the user
+// removed from their copy does not come back.
+async function syncCatalogFields() {
+  if (isViewingOther()) return;
+  for (const t of issueTypes) {
+    const g = t.sourceGlobalId && globalIssueTypes.find(x => x.id === t.sourceGlobalId);
+    if (!g) continue;
+    const have = new Set((t.fields || []).map(f => f.id));
+    const seen = new Set(t.syncedFieldIds || []);
+    const missing = (g.fields || []).filter(f => !have.has(f.id) && !seen.has(f.id));
+    if (!missing.length && t.syncedFieldIds) continue;
+    const fields = [...(t.fields || []), ...missing];
+    try {
+      await Data.updateIssueType(activeUid, t.id, { fields, syncedFieldIds: (g.fields || []).map(f => f.id) });
+      t.fields = fields;
+      t.syncedFieldIds = (g.fields || []).map(f => f.id);
+    } catch (err) {
+      console.warn('catalog sync failed for', t.name, err);
+    }
+  }
+}
+
 async function loadAllData() {
-  await seedDefaultIssueTypeIfEmpty(currentUser.uid);
-  issueTypes = await Data.listIssueTypes(currentUser.uid);
+  if (!isViewingOther()) await seedDefaultIssueTypeIfEmpty(activeUid);
+  globalQuestions = await Data.listGlobalQuestions();
+  issueTypes = await Data.listIssueTypes(activeUid);
   globalIssueTypes = await Data.listGlobalIssueTypes();
+  await syncCatalogFields();
   if (!selectedRecordIssueTypeId && issueTypes.length) selectedRecordIssueTypeId = issueTypes[0].id;
   renderIssueChipRow('record-issue-chips', issueTypes, selectedRecordIssueTypeId, selectRecordIssueType);
   renderIssueChipRow('history-filter-chips', issueTypes, historyFilterId, selectHistoryFilter, true);
@@ -798,14 +1283,19 @@ async function loadAllData() {
   renderCustomFields();
   renderIssueTypesSettings();
   renderCatalog();
-  if (isAdmin(currentUser)) renderAdminCatalog();
+  if (isAdmin(currentUser)) { renderAdminCatalog(); renderAdminQuestions(); }
   document.getElementById('admin-catalog-section').style.display = isAdmin(currentUser) ? 'block' : 'none';
-  visits = await Data.listVisits(currentUser.uid);
-  todos = await Data.listTodos(currentUser.uid);
+  document.getElementById('admin-questions-section').style.display = isAdmin(currentUser) ? 'block' : 'none';
+  renderQuestionPicker();
+  const fullScope = activeAccess?.scope !== 'types';
+  visits = fullScope ? await Data.listVisits(activeUid) : [];
+  todos = fullScope ? await Data.listTodos(activeUid) : [];
   renderVisits();
   renderTodos();
   await renderHistory();
   await renderStats();
+  await renderHome();
+  renderShares();
 }
 
 function renderIssueChipRow(containerId, types, activeId, onSelect, includeAll) {
@@ -960,6 +1450,56 @@ function applyTypeConfigToRecordForm() {
   }
   updateSaveEnabled();
 }
+// "scale" fields: pick a level from min..max; text on every level or only the ends.
+function scaleRange(f) {
+  const min = Number.isFinite(+f.min) ? +f.min : 1;
+  const max = Number.isFinite(+f.max) ? +f.max : 5;
+  return { min, max };
+}
+function levelLabel(f, n) {
+  const { min, max } = scaleRange(f);
+  const text = f.labels?.[n] ?? f.labels?.[String(n)] ?? '';
+  if ((f.labelMode || 'ends') === 'all') return text;
+  return n === min || n === max ? text : '';
+}
+function renderScaleField(wrap, f) {
+  const { min, max } = scaleRange(f);
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.className = 'custom-field-input';
+  hidden.dataset.fieldId = f.id;
+  hidden.value = '';
+  const row = document.createElement('div');
+  row.className = 'scale-row';
+  const buttons = [];
+  for (let n = min; n <= max; n++) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'scale-btn';
+    b.textContent = n;
+    b.addEventListener('click', () => { hidden.value = hidden.value === String(n) ? '' : String(n); hidden.dispatchEvent(new Event('change')); });
+    buttons.push([n, b]);
+    row.appendChild(b);
+  }
+  const caption = document.createElement('div');
+  caption.className = 'scale-caption';
+  const sync = () => {
+    buttons.forEach(([n, b]) => b.classList.toggle('active', String(n) === hidden.value));
+    caption.textContent = hidden.value === '' ? '' : (levelLabel(f, +hidden.value) || '');
+  };
+  hidden.addEventListener('change', sync);
+  wrap.classList.add('scale-field');
+  wrap.append(hidden, row);
+  if ((f.labelMode || 'ends') === 'ends') {
+    const ends = document.createElement('div');
+    ends.className = 'scale-ends';
+    ends.innerHTML = `<span>${escapeHtml(levelLabel(f, min))}</span><span>${escapeHtml(levelLabel(f, max))}</span>`;
+    wrap.appendChild(ends);
+  } else {
+    wrap.appendChild(caption);
+  }
+  sync();
+}
 function renderCustomFields() {
   applyTypeConfigToRecordForm();
   const container = document.getElementById('custom-fields-container');
@@ -972,6 +1512,11 @@ function renderCustomFields() {
     const label = document.createElement('label');
     label.textContent = f.label + (f.unit ? ` (${f.unit})` : '');
     wrap.appendChild(label);
+    if (f.type === 'scale') {
+      renderScaleField(wrap, f);
+      container.appendChild(wrap);
+      return;
+    }
     let input;
     if (f.type === 'select') {
       input = document.createElement('select');
@@ -1038,7 +1583,7 @@ function loadEntryIntoForm(entry) {
   document.getElementById('note-input').value = entry.comments?.[0]?.text || '';
   Object.entries(entry.customFieldValues || {}).forEach(([fieldId, val]) => {
     const el = document.querySelector(`.custom-field-input[data-field-id="${fieldId}"]`);
-    if (el) el.value = val;
+    if (el) { el.value = val; el.dispatchEvent(new Event('change')); }
   });
   document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1071,11 +1616,11 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       endAt: recordStatus === 'closed' ? Timestamp.fromDate(new Date(startAt.getTime() + durationHours * 3600000)) : null,
       durationHours
     };
-    await Data.updateEntry(currentUser.uid, editingEntryId, patch);
+    await Data.updateEntry(activeUid, editingEntryId, patch);
     exitEditMode();
     showToast('✅ עודכן!');
   } else {
-    const entryRef = await Data.createEntry(currentUser.uid, {
+    const entryRef = await Data.createEntry(activeUid, {
       issueTypeId: selectedRecordIssueTypeId,
       startAt: Timestamp.fromDate(startAt),
       severity,
@@ -1085,7 +1630,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     });
     if (recordStatus === 'closed') {
       const endAt = new Date(startAt.getTime() + durationHours * 3600000);
-      await Data.closeEntry(currentUser.uid, entryRef.id, Timestamp.fromDate(endAt));
+      await Data.closeEntry(activeUid, entryRef.id, Timestamp.fromDate(endAt));
     }
     showToast('✅ נשמר!');
   }
@@ -1107,9 +1652,16 @@ let historyEntriesCache = [];
 async function renderHistory() {
   if (!currentUser) return;
   const el = document.getElementById('history-list');
-  const entries = await Data.listEntries(currentUser.uid, {
-    issueTypeId: historyFilterId === 'all' ? undefined : historyFilterId
-  });
+  let entries;
+  try {
+    entries = await Data.listEntries(activeUid, {
+      issueTypeId: historyFilterId === 'all' ? undefined : historyFilterId
+    });
+  } catch (err) {
+    el.innerHTML = `<div class="history-empty">⚠️ שגיאה בטעינת הרשומות. נסי לרענן את הדף.</div>`;
+    console.error('renderHistory failed:', err);
+    return;
+  }
   historyEntriesCache = entries;
   if (!entries.length) {
     el.innerHTML = `<div class="history-empty"><span class="empty-emoji">🌸</span>אין רשומות עדיין.<br>תעדי את הרשומה הראשונה שלך!</div>`;
@@ -1126,6 +1678,16 @@ async function renderHistory() {
         ? `<div class="entry-status closed">⚡ חד פעמי</div>`
         : `<div class="entry-status closed">${e.durationHours != null ? `⏱ ${e.durationHours.toFixed(1)} שעות` : '✅ סגור'}</div>`;
     const closeBtn = e.status === 'open' ? `<button class="entry-close-btn" data-close="${e.id}">✔️ סגור עכשיו</button>` : '';
+    const fieldChips = (type?.fields || [])
+      .filter(f => e.customFieldValues?.[f.id] !== undefined && String(e.customFieldValues[f.id]).trim() !== '')
+      .map(f => {
+        const raw = String(e.customFieldValues[f.id]);
+        const shown = f.type === 'scale'
+          ? `${escapeHtml(raw)}/${scaleRange(f).max}${levelLabel(f, +raw) ? ' · ' + escapeHtml(levelLabel(f, +raw)) : ''}`
+          : `${escapeHtml(raw)}${f.unit ? ' ' + escapeHtml(f.unit) : ''}`;
+        return `<span class="entry-field-chip"><b>${escapeHtml(f.label)}:</b> ${shown}</span>`;
+      })
+      .join('');
     return `
       <div class="entry-card">
         <div class="entry-badge" style="background:${meta.color};color:${meta.text}">
@@ -1134,6 +1696,7 @@ async function renderHistory() {
         </div>
         <div class="entry-info">
           <div class="entry-date">${type?.name || ''} · ${date.toLocaleDateString('he-IL')} ${date.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</div>
+          ${fieldChips ? `<div class="entry-fields">${fieldChips}</div>` : ''}
           ${note ? `<div class="entry-note">${escapeHtml(note)}</div>` : ''}
           ${statusHtml}
         </div>
@@ -1145,11 +1708,11 @@ async function renderHistory() {
       </div>`;
   }).join('');
   el.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', async () => {
-    await Data.deleteEntry(currentUser.uid, btn.dataset.del);
+    await Data.deleteEntry(activeUid, btn.dataset.del);
     await renderHistory(); await renderStats();
   }));
   el.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', async () => {
-    await Data.closeEntry(currentUser.uid, btn.dataset.close, Timestamp.now());
+    await Data.closeEntry(activeUid, btn.dataset.close, Timestamp.now());
     await renderHistory(); await renderStats();
   }));
   el.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
@@ -1162,48 +1725,312 @@ function escapeHtml(s) {
 }
 
 // ── Stats ─────────────────────────────────────────────────────
+// Type-aware: charts are generated from the selected issue type's config
+// (severity / duration / instant) and from the distribution of its custom fields.
+let statsRange = 'all'; // 'all' | '30' | '7'
+let statsCharts = [];
+const DAY_MS = 86400000;
+const CHART_PALETTE = ['#a855f7','#60a5fa','#2dd4bf','#fbbf24','#fb923c','#f87171','#ff6b9d','#4ade80','#818cf8','#94a3b8'];
+const WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const HOUR_BLOCKS = ['00-03','03-06','06-09','09-12','12-15','15-18','18-21','21-24'];
+
+document.querySelectorAll('#stats-range-row .status-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    statsRange = btn.dataset.range;
+    document.querySelectorAll('#stats-range-row .status-btn').forEach(b => b.classList.toggle('active', b === btn));
+    renderStats();
+  });
+});
+
+function toDate(ts) { return ts?.toDate ? ts.toDate() : new Date(ts); }
+function startOfDay(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+function startOfWeek(d) { const x = startOfDay(d); x.setDate(x.getDate() - x.getDay()); return x; }
+const shortDate = d => `${d.getDate()}/${d.getMonth() + 1}`;
+const shortDateTime = d => `${shortDate(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const mean = a => a.length ? a.reduce((s, v) => s + v, 0) / a.length : null;
+const fmt1 = n => n == null ? '–' : String(Math.round(n * 10) / 10);
+
+function pearson(pairs) {
+  if (pairs.length < 3) return null;
+  const mx = mean(pairs.map(p => p.x)), my = mean(pairs.map(p => p.y));
+  let sxy = 0, sxx = 0, syy = 0;
+  pairs.forEach(p => { const dx = p.x - mx, dy = p.y - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; });
+  return sxx && syy ? sxy / Math.sqrt(sxx * syy) : null;
+}
+function corrWord(r) {
+  const a = Math.abs(r);
+  return `${r > 0 ? 'חיובי' : 'שלילי'} ${a >= 0.6 ? 'חזק' : a >= 0.35 ? 'בינוני' : 'חלש'}`;
+}
+
+function addChart(container, title, type, labels, datasets, opts = {}) {
+  const card = document.createElement('div');
+  card.className = 'chart-card';
+  card.innerHTML = `<h3>${escapeHtml(title)}</h3>${opts.hint ? `<div class="chart-hint">${escapeHtml(opts.hint)}</div>` : ''}<canvas></canvas>`;
+  container.appendChild(card);
+  const isPie = type === 'pie' || type === 'doughnut';
+  statsCharts.push(new Chart(card.querySelector('canvas'), {
+    type,
+    data: { labels, datasets },
+    options: {
+      plugins: { legend: { display: isPie || !!opts.legend, position: 'bottom' } },
+      scales: isPie ? {} : {
+        x: { stacked: !!opts.stacked },
+        y: { beginAtZero: true, stacked: !!opts.stacked, ticks: opts.decimals ? {} : { precision: 0 }, ...(opts.y || {}) }
+      }
+    }
+  }));
+}
+
+function buildBuckets(entries, cutoff) {
+  const today = startOfDay(new Date());
+  const start = cutoff || startOfDay(new Date(Math.min(...entries.map(e => toDate(e.startAt)))));
+  const weekly = Math.round((today - start) / DAY_MS) + 1 > 45;
+  const step = weekly ? 7 : 1;
+  const buckets = [];
+  for (let cur = weekly ? startOfWeek(start) : start; cur <= today; cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + step)) {
+    buckets.push({ start: new Date(cur), label: shortDate(cur) });
+  }
+  const indexOf = d => Math.round(((weekly ? startOfWeek(d) : startOfDay(d)) - buckets[0].start) / DAY_MS / step);
+  return { buckets, weekly, indexOf };
+}
+
+// Turns a custom field's raw values into categories: distinct values for
+// select/boolean/text, distinct or 5 equal-width bins for numbers.
+function categorize(f, rows) {
+  if (f.type === 'scale') {
+    const { min, max } = scaleRange(f);
+    const nums = rows.map(r => ({ n: parseFloat(r.v), sev: r.sev })).filter(r => !isNaN(r.n));
+    if (nums.length < 2) return null;
+    const name = n => `${n}${levelLabel(f, n) ? ' ' + levelLabel(f, n) : ''}`;
+    const keys = Array.from({ length: max - min + 1 }, (_, i) => name(min + i));
+    return { keys, items: nums.map(r => ({ key: name(r.n), sev: r.sev, n: r.n })), numeric: true };
+  }
+  if (f.type === 'number') {
+    const nums = rows.map(r => ({ n: parseFloat(r.v), sev: r.sev })).filter(r => !isNaN(r.n));
+    if (nums.length < 2) return null;
+    const distinct = [...new Set(nums.map(r => r.n))].sort((a, b) => a - b);
+    let keyOf, keys;
+    if (distinct.length <= 8) {
+      keys = distinct.map(String);
+      keyOf = n => String(n);
+    } else {
+      const min = distinct[0], max = distinct[distinct.length - 1], w = (max - min) / 5;
+      keys = Array.from({ length: 5 }, (_, i) => `${fmt1(min + w * i)}-${fmt1(min + w * (i + 1))}`);
+      keyOf = n => keys[Math.min(4, Math.floor((n - min) / w))];
+    }
+    return { keys, items: nums.map(r => ({ key: keyOf(r.n), sev: r.sev, n: r.n })), numeric: true };
+  }
+  const items = rows.map(r => ({ key: String(r.v), sev: r.sev }));
+  const keys = [...new Set(items.map(i => i.key))];
+  if (keys.length > 8 || (f.type === 'text' && keys.length >= items.length)) return null;
+  return { keys, items, numeric: false };
+}
+
 async function renderStats() {
   if (!currentUser) return;
-  const entries = await Data.listEntries(currentUser.uid, {
-    issueTypeId: statsFilterId === 'all' ? undefined : statsFilterId
-  });
   const grid = document.getElementById('stats-grid');
+  const chartsEl = document.getElementById('stats-charts');
+  const insightsEl = document.getElementById('stats-insights');
+  let allEntries;
+  try {
+    allEntries = await Data.listEntries(activeUid, {
+      issueTypeId: statsFilterId === 'all' ? undefined : statsFilterId
+    });
+  } catch (err) {
+    grid.innerHTML = `<div class="history-empty">⚠️ שגיאה בטעינת הסטטיסטיקות. נסי לרענן את הדף.</div>`;
+    console.error('renderStats failed:', err);
+    return;
+  }
+  statsCharts.forEach(c => c.destroy());
+  statsCharts = [];
+  chartsEl.innerHTML = '';
+  insightsEl.innerHTML = '';
+
+  const today = startOfDay(new Date());
+  let cutoff = null;
+  if (statsRange !== 'all') { cutoff = new Date(today); cutoff.setDate(cutoff.getDate() - (Number(statsRange) - 1)); }
+  const entries = cutoff ? allEntries.filter(e => toDate(e.startAt) >= cutoff) : allEntries;
+
+  const type = statsFilterId === 'all' ? null : issueTypes.find(t => t.id === statsFilterId);
+  const instant = type?.entryMode === 'instant';
+  const typeName = id => issueTypes.find(t => t.id === id)?.name || 'לא ידוע';
   const withSeverity = entries.filter(e => e.severity != null);
-  const avg = withSeverity.length ? (withSeverity.reduce((s,e)=>s+e.severity,0)/withSeverity.length).toFixed(1) : '–';
+  const sevs = withSeverity.map(e => e.severity);
+  const durEntries = instant ? [] : entries.filter(e => e.status === 'closed' && e.durationHours != null);
+  const durs = durEntries.map(e => e.durationHours);
   const openCount = entries.filter(e => e.status === 'open').length;
-  const last30 = entries.filter(e => {
-    const d = e.startAt?.toDate ? e.startAt.toDate() : new Date(e.startAt);
-    return (Date.now() - d.getTime()) < 30*24*3600000;
-  }).length;
-  grid.innerHTML = `
-    <div class="stat-card"><div class="stat-emoji">📈</div><div class="stat-val">${entries.length}</div><div class="stat-lbl">סה"כ רשומות</div></div>
-    <div class="stat-card"><div class="stat-emoji">🌡️</div><div class="stat-val">${avg}</div><div class="stat-lbl">עוצמה ממוצעת</div></div>
-    <div class="stat-card"><div class="stat-emoji">🟠</div><div class="stat-val">${openCount}</div><div class="stat-lbl">אירועים פתוחים</div></div>
-    <div class="stat-card"><div class="stat-emoji">🗓️</div><div class="stat-val">${last30}</div><div class="stat-lbl">ב-30 יום אחרונים</div></div>
-  `;
+  const firstDate = entries.length ? startOfDay(new Date(Math.min(...entries.map(e => toDate(e.startAt))))) : today;
+  const spanDays = cutoff ? Number(statsRange) : Math.max(1, Math.round((today - firstDate) / DAY_MS) + 1);
+  const perWeek = entries.length / Math.max(1, spanDays / 7);
 
-  const sorted = [...withSeverity].sort((a,b) => toDate(a.startAt) - toDate(b.startAt));
-  const timelineLabels = sorted.map(e => toDate(e.startAt).toLocaleDateString('he-IL'));
-  const timelineData = sorted.map(e => e.severity);
+  const cards = [
+    ['📈', entries.length, 'סה"כ אירועים'],
+    ['🗓️', fmt1(perWeek), 'ממוצע אירועים בשבוע']
+  ];
+  if (sevs.length) {
+    cards.push(['🌡️', fmt1(mean(sevs)), 'עוצמה ממוצעת']);
+    cards.push(['🔥', sevs.filter(s => s >= 7).length, 'אירועים חזקים (7+)']);
+  }
+  if (durs.length) {
+    cards.push(['⏱️', fmt1(mean(durs)), 'משך ממוצע לאירוע (שעות)']);
+    cards.push(['⌛', fmt1(durs.reduce((s, v) => s + v, 0)), 'סה"כ שעות']);
+  }
+  if (!instant && (openCount || type)) cards.push(['🟠', openCount, 'אירועים פתוחים']);
+  grid.innerHTML = cards.map(([emoji, val, lbl]) =>
+    `<div class="stat-card"><div class="stat-emoji">${emoji}</div><div class="stat-val">${val}</div><div class="stat-lbl">${lbl}</div></div>`).join('');
 
-  const dowCounts = [0,0,0,0,0,0,0];
-  entries.forEach(e => dowCounts[toDate(e.startAt).getDay()]++);
-  const dowLabels = ['א','ב','ג','ד','ה','ו','ש'];
+  if (!entries.length) {
+    chartsEl.innerHTML = `<div class="history-empty"><span class="empty-emoji">📭</span>אין נתונים בטווח שנבחר</div>`;
+    return;
+  }
 
-  const distCounts = Array(10).fill(0);
-  withSeverity.forEach(e => distCounts[e.severity-1]++);
+  const insights = [];
+  const { buckets, weekly, indexOf } = buildBuckets(entries, cutoff);
 
-  renderChart('chart-timeline', 'line', timelineLabels, [{ label: 'עוצמה', data: timelineData, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.15)', fill: true, tension: 0.3 }]);
-  renderChart('chart-dow', 'bar', dowLabels, [{ label: 'כמות', data: dowCounts, backgroundColor: '#60a5fa' }]);
-  renderChart('chart-dist', 'bar', Array.from({length:10},(_,i)=>i+1), [{ label: 'כמות', data: distCounts, backgroundColor: GAUGE_COLORS }]);
-}
-function toDate(ts) { return ts?.toDate ? ts.toDate() : new Date(ts); }
-function renderChart(canvasId, type, labels, datasets) {
-  if (charts[canvasId]) charts[canvasId].destroy();
-  charts[canvasId] = new Chart(document.getElementById(canvasId), {
-    type, data: { labels, datasets },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-  });
+  // 1. Severity over time — the leading chart when the type tracks severity
+  const chartSeverityTimeline = () => {
+    const pts = [...withSeverity].sort((a, b) => toDate(a.startAt) - toDate(b.startAt));
+    const avg = mean(sevs);
+    addChart(chartsEl, type ? 'עוצמה לאורך זמן' : 'עוצמה לאורך זמן (כל הסוגים)', 'line',
+      pts.map(e => shortDateTime(toDate(e.startAt))),
+      [
+        { label: 'עוצמה', data: pts.map(e => e.severity), borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.15)', fill: true, tension: 0.3 },
+        { label: 'ממוצע', data: pts.map(() => avg), borderColor: '#fb923c', borderDash: [6, 4], pointRadius: 0, borderWidth: 2, fill: false }
+      ],
+      { legend: true, decimals: true, y: { min: 0, max: 10 } });
+  };
+
+  // 2. Event count over time (stacked by type when viewing all types)
+  const chartEventsOverTime = () => {
+    let datasets;
+    if (!type) {
+      const names = [...new Set(entries.map(e => typeName(e.issueTypeId)))];
+      datasets = names.map((name, i) => {
+        const data = buckets.map(() => 0);
+        entries.filter(e => typeName(e.issueTypeId) === name).forEach(e => { data[indexOf(toDate(e.startAt))]++; });
+        return { label: name, data, backgroundColor: CHART_PALETTE[i % CHART_PALETTE.length] };
+      });
+    } else {
+      const data = buckets.map(() => 0);
+      entries.forEach(e => { data[indexOf(toDate(e.startAt))]++; });
+      datasets = [{ label: 'אירועים', data, backgroundColor: '#60a5fa' }];
+    }
+    addChart(chartsEl, `מספר אירועים לאורך זמן (לפי ${weekly ? 'שבוע' : 'יום'})`, 'bar',
+      buckets.map(b => b.label), datasets, { stacked: !type, legend: !type });
+  };
+
+  // 3. Duration per event over time + average line
+  const chartDuration = () => {
+    const pts = [...durEntries].sort((a, b) => toDate(a.startAt) - toDate(b.startAt));
+    const avg = mean(durs);
+    addChart(chartsEl, 'משך כל אירוע לאורך זמן (שעות)', 'bar',
+      pts.map(e => shortDateTime(toDate(e.startAt))),
+      [
+        { label: 'משך (שעות)', data: pts.map(e => e.durationHours), backgroundColor: '#2dd4bf' },
+        { type: 'line', label: `ממוצע לאירוע: ${fmt1(avg)}`, data: pts.map(() => avg), borderColor: '#fb923c', borderDash: [6, 4], pointRadius: 0, borderWidth: 2, fill: false }
+      ],
+      { legend: true, decimals: true });
+  };
+
+  // 4. Severity distribution
+  const chartSeverityDist = () => {
+    const counts = Array(10).fill(0);
+    withSeverity.forEach(e => counts[e.severity - 1]++);
+    addChart(chartsEl, 'התפלגות עוצמות', 'bar', Array.from({ length: 10 }, (_, i) => i + 1),
+      [{ label: 'כמות', data: counts, backgroundColor: GAUGE_COLORS }]);
+  };
+
+  // 5. Weekday + time-of-day patterns
+  const dow = Array(7).fill(0), tod = Array(8).fill(0);
+  entries.forEach(e => { const d = toDate(e.startAt); dow[d.getDay()]++; tod[Math.floor(d.getHours() / 3)]++; });
+  const chartWeekday = () => addChart(chartsEl, 'תדירות לפי יום בשבוע', 'bar', WEEKDAYS,
+    [{ label: 'כמות', data: dow, backgroundColor: '#818cf8' }]);
+  const chartTimeOfDay = () => addChart(chartsEl, 'תדירות לפי שעות היום', 'bar', HOUR_BLOCKS,
+    [{ label: 'כמות', data: tod, backgroundColor: '#fbbf24' }]);
+
+  // 6. By-type share (all-types view)
+  const chartByType = () => {
+    const counts = {};
+    entries.forEach(e => { const n = typeName(e.issueTypeId); counts[n] = (counts[n] || 0) + 1; });
+    const names = Object.keys(counts);
+    addChart(chartsEl, 'חלוקה לפי סוג בעיה', 'pie', names,
+      [{ data: names.map(n => counts[n]), backgroundColor: names.map((_, i) => CHART_PALETTE[i % CHART_PALETTE.length]) }]);
+    if (names.length > 1) {
+      const top = names.sort((a, b) => counts[b] - counts[a])[0];
+      insights.push(`הסוג השכיח ביותר: ${top} (${counts[top]} מתוך ${entries.length})`);
+    }
+  };
+
+  // 7. Per custom-field charts: distribution + relation to severity
+  const chartFields = () => {
+    (type?.fields || []).forEach(f => {
+      const rows = entries
+        .map(e => ({ v: e.customFieldValues?.[f.id], sev: e.severity }))
+        .filter(r => r.v !== undefined && String(r.v).trim() !== '');
+      if (!rows.length) return;
+      const cat = categorize(f, rows);
+      if (!cat) return;
+      const counts = cat.keys.map(k => cat.items.filter(i => i.key === k).length);
+      const total = counts.reduce((s, v) => s + v, 0);
+      const unit = f.unit ? ` (${f.unit})` : '';
+
+      if (cat.numeric) {
+        addChart(chartsEl, `התפלגות: ${f.label}${unit}`, 'bar', cat.keys,
+          [{ label: 'כמות', data: counts, backgroundColor: '#60a5fa' }]);
+        insights.push(`${f.label}: ממוצע ${fmt1(mean(cat.items.map(i => i.n)))}${f.unit ? ' ' + f.unit : ''}`);
+      } else {
+        addChart(chartsEl, `התפלגות: ${f.label}`, 'pie', cat.keys,
+          [{ data: counts, backgroundColor: cat.keys.map((_, i) => CHART_PALETTE[i % CHART_PALETTE.length]) }]);
+        const topIdx = counts.indexOf(Math.max(...counts));
+        insights.push(`${f.label}: הנפוץ ביותר "${cat.keys[topIdx]}" (${Math.round(counts[topIdx] / total * 100)}%)`);
+      }
+
+      const sevItems = cat.items.filter(i => i.sev != null);
+      if (sevItems.length >= 3 && cat.keys.length >= 2) {
+        const groups = cat.keys.map(k => {
+          const s = sevItems.filter(i => i.key === k).map(i => i.sev);
+          return { k, n: s.length, avg: mean(s) };
+        }).filter(g => g.n > 0);
+        if (groups.length >= 2) {
+          addChart(chartsEl, `עוצמה ממוצעת לפי ${f.label}`, 'bar', groups.map(g => `${g.k} (n=${g.n})`),
+            [{ label: 'עוצמה ממוצעת', data: groups.map(g => Math.round(g.avg * 10) / 10), backgroundColor: '#f87171' }],
+            { decimals: true, y: { min: 0, max: 10 }, hint: 'עוזר לאתר גורמים שמשפיעים על העוצמה' });
+          const multi = groups.filter(g => g.n >= 2).sort((a, b) => b.avg - a.avg);
+          if (multi.length >= 2 && multi[0].avg - multi[multi.length - 1].avg >= 1) {
+            insights.push(`עוצמה גבוהה יותר כש${f.label} = "${multi[0].k}" (${fmt1(multi[0].avg)}) לעומת "${multi[multi.length - 1].k}" (${fmt1(multi[multi.length - 1].avg)})`);
+          }
+        }
+        if (cat.numeric) {
+          const r = pearson(sevItems.map(i => ({ x: i.n, y: i.sev })));
+          if (r != null && sevItems.length >= 5) {
+            insights.push(Math.abs(r) >= 0.35
+              ? `קשר ${corrWord(r)} בין ${f.label} לעוצמה (r=${(Math.round(r * 100) / 100)})`
+              : `לא נמצא קשר בולט בין ${f.label} לעוצמה`);
+          }
+        }
+      }
+    });
+  };
+
+  // Chart order: severity leads when tracked; otherwise the event/parameter charts lead.
+  const hasSeverity = sevs.length > 0;
+  if (hasSeverity) chartSeverityTimeline();
+  if (!type) chartByType();
+  chartEventsOverTime();
+  if (durs.length) chartDuration();
+  if (!hasSeverity) chartFields();
+  if (hasSeverity) chartSeverityDist();
+  if (entries.length >= 3) { chartWeekday(); chartTimeOfDay(); }
+  if (hasSeverity) chartFields();
+
+  if (entries.length >= 3) {
+    const maxDow = Math.max(...dow), maxTod = Math.max(...tod);
+    insights.unshift(`יום שכיח: ${WEEKDAYS[dow.indexOf(maxDow)]} (${maxDow}) · שעות שכיחות: ${HOUR_BLOCKS[tod.indexOf(maxTod)]} (${maxTod})`);
+  }
+  if (!type && issueTypes.length > 1) insights.push('בחרי סוג בעיה ספציפי לניתוח מפורט לפי הפרמטרים שלו');
+  if (insights.length) {
+    insightsEl.innerHTML = `<div class="insights-card"><h3>💡 תובנות</h3><ul>${insights.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ul></div>`;
+  }
 }
 
 // ── Medical: tab switching ────────────────────────────────────
@@ -1255,9 +2082,9 @@ window.saveVisit = async function () {
   const date = document.getElementById('v-date').value;
   const summary = document.getElementById('v-summary').value.trim();
   if (!doctorName || !date) { showToast('⚠️ נא למלא שם רופא ותאריך'); return; }
-  await Data.createVisit(currentUser.uid, { doctorName, date, summary, attachments: pendingFiles });
+  await Data.createVisit(activeUid, { doctorName, date, summary, attachments: pendingFiles });
   toggleVisitForm(false);
-  visits = await Data.listVisits(currentUser.uid);
+  visits = await Data.listVisits(activeUid);
   renderVisits();
   showToast('✅ ביקור נשמר!');
 };
@@ -1288,8 +2115,8 @@ function renderVisits() {
   }));
   el.querySelectorAll('[data-del-visit]').forEach(b => b.addEventListener('click', async (e) => {
     e.stopPropagation();
-    await Data.deleteVisit(currentUser.uid, b.dataset.delVisit);
-    visits = await Data.listVisits(currentUser.uid);
+    await Data.deleteVisit(activeUid, b.dataset.delVisit);
+    visits = await Data.listVisits(activeUid);
     renderVisits();
   }));
 }
@@ -1299,9 +2126,9 @@ window.addTodo = async function () {
   const input = document.getElementById('todo-input');
   const text = input.value.trim();
   if (!text) return;
-  await Data.createTodo(currentUser.uid, text);
+  await Data.createTodo(activeUid, text);
   input.value = '';
-  todos = await Data.listTodos(currentUser.uid);
+  todos = await Data.listTodos(activeUid);
   renderTodos();
 };
 function renderTodos() {
@@ -1318,13 +2145,13 @@ function renderTodos() {
     </div>`).join('');
   el.querySelectorAll('[data-toggle-todo]').forEach(b => b.addEventListener('click', async () => {
     const t = todos.find(x => x.id === b.dataset.toggleTodo);
-    await Data.updateTodo(currentUser.uid, t.id, { done: !t.done });
-    todos = await Data.listTodos(currentUser.uid);
+    await Data.updateTodo(activeUid, t.id, { done: !t.done });
+    todos = await Data.listTodos(activeUid);
     renderTodos();
   }));
   el.querySelectorAll('[data-del-todo]').forEach(b => b.addEventListener('click', async () => {
-    await Data.deleteTodo(currentUser.uid, b.dataset.delTodo);
-    todos = await Data.listTodos(currentUser.uid);
+    await Data.deleteTodo(activeUid, b.dataset.delTodo);
+    todos = await Data.listTodos(activeUid);
     renderTodos();
   }));
 }
@@ -1333,6 +2160,13 @@ function renderTodos() {
 let editingFields = [];
 let editingIssueTypeId = null;
 let editingScope = 'personal'; // 'personal' | 'global'
+let editingSourceGlobalId = null; // catalog type a personal copy came from (admins can push edits back)
+function setPushRow(sourceGlobalId) {
+  editingSourceGlobalId = sourceGlobalId || null;
+  const show = !!editingSourceGlobalId && isAdmin(currentUser) && globalIssueTypes.some(g => g.id === editingSourceGlobalId);
+  document.getElementById('it-push-catalog-row').style.display = show ? 'flex' : 'none';
+  document.getElementById('it-push-catalog').checked = false;
+}
 let editingEntryMode = 'episodic'; // 'episodic' | 'instant'
 let editingTrackSeverity = true;
 
@@ -1359,6 +2193,7 @@ document.getElementById('add-issue-type-trigger').addEventListener('click', () =
   document.getElementById('it-emoji').value = '';
   setEditingEntryMode('episodic');
   setEditingTrackSeverity(true);
+  setPushRow(null);
   document.getElementById('it-save-btn').textContent = '💾 שמור';
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
@@ -1371,6 +2206,7 @@ document.getElementById('add-global-type-trigger').addEventListener('click', () 
   document.getElementById('it-emoji').value = '';
   setEditingEntryMode('episodic');
   setEditingTrackSeverity(true);
+  setPushRow(null);
   document.getElementById('it-save-btn').textContent = '💾 שמור לקטלוג';
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
@@ -1383,12 +2219,13 @@ document.getElementById('it-cancel-btn').addEventListener('click', () => {
 function openIssueTypeEditor(type, scope) {
   editingScope = scope;
   editingIssueTypeId = type.id;
-  editingFields = (type.fields || []).map(f => ({ ...f, options: [...(f.options || [])] }));
+  editingFields = (type.fields || []).map(f => ({ ...f, options: [...(f.options || [])], labels: { ...(f.labels || {}) } }));
   document.getElementById('it-name').value = type.name;
   document.getElementById('it-emoji').value = type.emoji || '';
   setEditingEntryMode(type.entryMode || 'episodic');
   setEditingTrackSeverity(type.trackSeverity !== false);
   document.getElementById('it-save-btn').textContent = scope === 'global' ? '💾 עדכן בקטלוג' : '💾 עדכן';
+  setPushRow(scope === 'personal' ? type.sourceGlobalId : null);
   renderFieldsBuilder();
   document.getElementById('issue-type-form').classList.add('open');
   document.getElementById('issue-type-form').scrollIntoView({ behavior: 'smooth' });
@@ -1397,25 +2234,169 @@ document.getElementById('it-add-field-btn').addEventListener('click', () => {
   editingFields.push({ id: 'f' + Date.now(), label: '', type: 'number', unit: '', options: [] });
   renderFieldsBuilder();
 });
-function renderFieldsBuilder() {
-  const el = document.getElementById('it-fields-list');
-  el.innerHTML = editingFields.map((f, i) => `
+function scaleConfigHtml(f, i) {
+  const { min, max } = scaleRange(f);
+  const mode = f.labelMode || 'ends';
+  const levels = mode === 'all' ? Array.from({ length: max - min + 1 }, (_, k) => min + k) : [min, max];
+  const labelRows = levels.map(n => `
+    <div class="scale-label-row">
+      <span>${n}</span>
+      <input class="field-input" placeholder="טקסט לרמה ${n} (לא חובה)" data-sc-label="${i}" data-level="${n}" value="${escapeHtml(f.labels?.[n] ?? '')}" />
+    </div>`).join('');
+  return `
+    <div class="scale-config">
+      <div class="scale-range-row">
+        <label>מ־ <input type="number" class="field-input" min="0" max="9" data-sc-min="${i}" value="${min}" /></label>
+        <label>עד <input type="number" class="field-input" min="1" max="10" data-sc-max="${i}" value="${max}" /></label>
+        <select class="field-input" data-sc-mode="${i}">
+          <option value="ends" ${mode === 'ends' ? 'selected' : ''}>טקסט: קצוות בלבד</option>
+          <option value="all" ${mode === 'all' ? 'selected' : ''}>טקסט: כל הרמות</option>
+        </select>
+      </div>
+      ${labelRows}
+    </div>`;
+}
+const FIELD_TYPE_LABELS = { number: 'מספר', text: 'טקסט', select: 'בחירה', boolean: 'כן/לא', scale: 'סקאלה' };
+const copyQuestionDef = q => ({
+  label: q.label, type: q.type, unit: q.unit || '', options: [...(q.options || [])],
+  ...(q.type === 'scale' ? { min: q.min, max: q.max, labelMode: q.labelMode || 'ends', labels: { ...(q.labels || {}) } } : {})
+});
+function questionSummary(q) {
+  const t = FIELD_TYPE_LABELS[q.type] || q.type;
+  if (q.type === 'scale') { const { min, max } = scaleRange(q); return `${t} ${min}-${max}`; }
+  if (q.type === 'select') return `${t} · ${(q.options || []).length} אפשרויות`;
+  return t;
+}
+
+// Shared by the issue-type editor and the admin question editor: renders `fields`
+// into `el` and re-renders through `rerender` whenever the structure changes.
+function renderFieldEditor(el, fields, rerender, opts = {}) {
+  el.innerHTML = fields.map((f, i) => f.questionId ? `
     <div class="custom-field-row">
-      <input class="field-input" style="flex:2" placeholder="שם שדה" data-cf-label="${i}" value="${escapeHtml(f.label)}" />
+      <span class="linked-q">📚 ${escapeHtml(f.label)} <small>${escapeHtml(questionSummary(f))} · שאלה משותפת</small></span>
+      <button type="button" class="cf-del" data-cf-del="${i}">✕</button>
+    </div>` : `
+    <div class="custom-field-row">
+      <input class="field-input" style="flex:2" placeholder="${opts.labelPlaceholder || 'שם שדה'}" data-cf-label="${i}" value="${escapeHtml(f.label)}" />
       <select class="field-input" style="flex:1" data-cf-type="${i}">
         <option value="number" ${f.type==='number'?'selected':''}>מספר</option>
         <option value="text" ${f.type==='text'?'selected':''}>טקסט</option>
         <option value="select" ${f.type==='select'?'selected':''}>בחירה</option>
         <option value="boolean" ${f.type==='boolean'?'selected':''}>כן/לא</option>
+        <option value="scale" ${f.type==='scale'?'selected':''}>סקאלה (דירוג)</option>
       </select>
-      <button type="button" class="cf-del" data-cf-del="${i}">✕</button>
+      ${opts.noDelete ? '' : `<button type="button" class="cf-del" data-cf-del="${i}">✕</button>`}
     </div>
     ${f.type === 'select' ? `<input class="field-input" placeholder="אפשרויות מופרדות בפסיק" data-cf-options="${i}" value="${escapeHtml((f.options||[]).join(', '))}" />` : ''}
+    ${f.type === 'scale' ? scaleConfigHtml(f, i) : ''}
   `).join('');
-  el.querySelectorAll('[data-cf-label]').forEach(inp => inp.addEventListener('input', () => { editingFields[+inp.dataset.cfLabel].label = inp.value; }));
-  el.querySelectorAll('[data-cf-type]').forEach(sel => sel.addEventListener('change', () => { editingFields[+sel.dataset.cfType].type = sel.value; renderFieldsBuilder(); }));
-  el.querySelectorAll('[data-cf-options]').forEach(inp => inp.addEventListener('input', () => { editingFields[+inp.dataset.cfOptions].options = inp.value.split(',').map(s=>s.trim()).filter(Boolean); }));
-  el.querySelectorAll('[data-cf-del]').forEach(btn => btn.addEventListener('click', () => { editingFields.splice(+btn.dataset.cfDel, 1); renderFieldsBuilder(); }));
+  el.querySelectorAll('[data-cf-label]').forEach(inp => inp.addEventListener('input', () => { fields[+inp.dataset.cfLabel].label = inp.value; }));
+  el.querySelectorAll('[data-cf-type]').forEach(sel => sel.addEventListener('change', () => {
+    const f = fields[+sel.dataset.cfType];
+    f.type = sel.value;
+    if (f.type === 'scale') {
+      if (f.min == null) f.min = 1;
+      if (f.max == null) f.max = 5;
+      if (!f.labelMode) f.labelMode = 'ends';
+      if (!f.labels) f.labels = {};
+    }
+    rerender();
+  }));
+  el.querySelectorAll('[data-sc-min], [data-sc-max]').forEach(inp => inp.addEventListener('change', () => {
+    const i = +(inp.dataset.scMin ?? inp.dataset.scMax);
+    const f = fields[i];
+    const v = parseInt(inp.value, 10);
+    if (inp.dataset.scMin !== undefined) f.min = Math.min(Math.max(isNaN(v) ? 1 : v, 0), 9);
+    else f.max = Math.min(Math.max(isNaN(v) ? 5 : v, 1), 10);
+    if (f.max <= f.min) f.max = Math.min(f.min + 1, 10);
+    if (f.min >= f.max) f.min = f.max - 1;
+    rerender();
+  }));
+  el.querySelectorAll('[data-sc-mode]').forEach(sel => sel.addEventListener('change', () => { fields[+sel.dataset.scMode].labelMode = sel.value; rerender(); }));
+  el.querySelectorAll('[data-sc-label]').forEach(inp => inp.addEventListener('input', () => {
+    const f = fields[+inp.dataset.scLabel];
+    if (!f.labels) f.labels = {};
+    f.labels[inp.dataset.level] = inp.value;
+  }));
+  el.querySelectorAll('[data-cf-options]').forEach(inp => inp.addEventListener('input', () => { fields[+inp.dataset.cfOptions].options = inp.value.split(',').map(s=>s.trim()).filter(Boolean); }));
+  el.querySelectorAll('[data-cf-del]').forEach(btn => btn.addEventListener('click', () => { fields.splice(+btn.dataset.cfDel, 1); rerender(); }));
+}
+function renderFieldsBuilder() {
+  renderFieldEditor(document.getElementById('it-fields-list'), editingFields, renderFieldsBuilder);
+  renderQuestionPicker();
+}
+
+// ── Shared question library: pick into an issue type ───────────
+function renderQuestionPicker() {
+  const sel = document.getElementById('it-question-picker');
+  const used = new Set(editingFields.map(f => f.questionId).filter(Boolean));
+  const avail = globalQuestions.filter(q => !used.has(q.id));
+  sel.style.display = avail.length ? 'block' : 'none';
+  sel.innerHTML = `<option value="">📚 הוסף שאלה מהספרייה...</option>` +
+    avail.map(q => `<option value="${q.id}">${escapeHtml(q.label)} (${escapeHtml(questionSummary(q))})</option>`).join('');
+}
+document.getElementById('it-question-picker').addEventListener('change', e => {
+  const q = globalQuestions.find(x => x.id === e.target.value);
+  if (!q) return;
+  editingFields.push({ id: 'q_' + q.id, questionId: q.id, ...copyQuestionDef(q) });
+  renderFieldsBuilder();
+});
+
+// ── Admin: manage the question library ─────────────────────────
+let editingQuestionId = null;
+let editingQuestionFields = [];
+function renderQuestionBuilder() {
+  renderFieldEditor(document.getElementById('q-fields-list'), editingQuestionFields, renderQuestionBuilder,
+    { noDelete: true, labelPlaceholder: 'השאלה (למשל: כמה ספורט עשית היום?)' });
+}
+function openQuestionEditor(q) {
+  editingQuestionId = q ? q.id : null;
+  editingQuestionFields = [q ? { id: 'q', ...copyQuestionDef(q) }
+    : { id: 'q', label: '', type: 'scale', unit: '', options: [], min: 1, max: 5, labelMode: 'ends', labels: {} }];
+  document.getElementById('q-save-btn').textContent = q ? '💾 עדכן שאלה' : '💾 שמור שאלה';
+  renderQuestionBuilder();
+  const form = document.getElementById('question-form');
+  form.classList.add('open');
+  form.scrollIntoView({ behavior: 'smooth' });
+}
+document.getElementById('add-question-trigger').addEventListener('click', () => openQuestionEditor(null));
+document.getElementById('q-cancel-btn').addEventListener('click', () => {
+  editingQuestionId = null;
+  document.getElementById('question-form').classList.remove('open');
+});
+document.getElementById('q-save-btn').addEventListener('click', async () => {
+  const q = editingQuestionFields[0];
+  if (!q.label.trim()) { showToast('⚠️ נא להזין את השאלה'); return; }
+  if (q.type === 'select' && !(q.options || []).length) { showToast('⚠️ נא להוסיף אפשרויות בחירה'); return; }
+  const def = { label: q.label.trim(), type: q.type, unit: q.unit || '', options: q.options || [] };
+  if (q.type === 'scale') Object.assign(def, { min: q.min, max: q.max, labelMode: q.labelMode || 'ends', labels: q.labels || {} });
+  if (editingQuestionId) await Data.updateGlobalQuestion(editingQuestionId, def);
+  else await Data.createGlobalQuestion(currentUser.uid, def);
+  editingQuestionId = null;
+  document.getElementById('question-form').classList.remove('open');
+  await loadAllData();
+  showToast('✅ נשמר!');
+});
+function renderAdminQuestions() {
+  const el = document.getElementById('admin-questions-list');
+  if (!el) return;
+  el.innerHTML = globalQuestions.length ? globalQuestions.map(q => `
+    <div class="issue-type-card">
+      <span class="it-emoji">📚</span>
+      <span class="it-name">${escapeHtml(q.label)}</span>
+      <span class="it-fields-count">${escapeHtml(questionSummary(q))}</span>
+      <button class="todo-del" data-edit-q="${q.id}">✏️</button>
+      <button class="todo-del" data-del-q="${q.id}">🗑</button>
+    </div>`).join('')
+    : `<div class="med-empty" style="padding:16px"><span style="font-size:13px">אין עדיין שאלות בספרייה</span></div>`;
+  el.querySelectorAll('[data-edit-q]').forEach(btn => btn.addEventListener('click', () => {
+    const q = globalQuestions.find(x => x.id === btn.dataset.editQ);
+    if (q) openQuestionEditor(q);
+  }));
+  el.querySelectorAll('[data-del-q]').forEach(btn => btn.addEventListener('click', async () => {
+    await Data.deleteGlobalQuestion(btn.dataset.delQ);
+    await loadAllData();
+  }));
 }
 document.getElementById('it-save-btn').addEventListener('click', async () => {
   const name = document.getElementById('it-name').value.trim();
@@ -1435,11 +2416,17 @@ document.getElementById('it-save-btn').addEventListener('click', async () => {
     renderCatalog();
   } else {
     if (editingIssueTypeId) {
-      await Data.updateIssueType(currentUser.uid, editingIssueTypeId, { name, emoji, fields, entryMode, trackSeverity });
+      await Data.updateIssueType(activeUid, editingIssueTypeId, { name, emoji, fields, entryMode, trackSeverity });
     } else {
-      await Data.createIssueType(currentUser.uid, { name, emoji, fields, entryMode, trackSeverity });
+      await Data.createIssueType(activeUid, { name, emoji, fields, entryMode, trackSeverity });
     }
-    issueTypes = await Data.listIssueTypes(currentUser.uid);
+    if (editingSourceGlobalId && isAdmin(currentUser) && document.getElementById('it-push-catalog').checked) {
+      await Data.updateGlobalIssueType(editingSourceGlobalId, { name, emoji, fields, entryMode, trackSeverity });
+      globalIssueTypes = await Data.listGlobalIssueTypes();
+      renderAdminCatalog();
+      renderCatalog();
+    }
+    issueTypes = await Data.listIssueTypes(activeUid);
     if (!selectedRecordIssueTypeId) selectedRecordIssueTypeId = issueTypes[0]?.id;
     renderIssueTypesSettings();
     renderIssueChipRow('record-issue-chips', issueTypes, selectedRecordIssueTypeId, selectRecordIssueType);
@@ -1448,6 +2435,7 @@ document.getElementById('it-save-btn').addEventListener('click', async () => {
     renderCustomFields();
   }
   editingIssueTypeId = null;
+  editingSourceGlobalId = null;
   document.getElementById('issue-type-form').classList.remove('open');
 });
 
@@ -1471,8 +2459,8 @@ function renderCatalog() {
   el.querySelectorAll('[data-add-global]').forEach(btn => btn.addEventListener('click', async () => {
     const g = globalIssueTypes.find(x => x.id === btn.dataset.addGlobal);
     if (!g) return;
-    await Data.createIssueType(currentUser.uid, { name: g.name, emoji: g.emoji, fields: g.fields, sourceGlobalId: g.id, entryMode: g.entryMode, trackSeverity: g.trackSeverity });
-    issueTypes = await Data.listIssueTypes(currentUser.uid);
+    await Data.createIssueType(activeUid, { name: g.name, emoji: g.emoji, fields: g.fields, sourceGlobalId: g.id, entryMode: g.entryMode, trackSeverity: g.trackSeverity, syncedFieldIds: (g.fields || []).map(f => f.id) });
+    issueTypes = await Data.listIssueTypes(activeUid);
     if (!selectedRecordIssueTypeId) selectedRecordIssueTypeId = issueTypes[0]?.id;
     renderCatalog();
     renderIssueTypesSettings();
@@ -1505,9 +2493,85 @@ function renderAdminCatalog() {
     renderAdminCatalog();
     renderCatalog();
   }));
+  renderAdminUserTypes();
+}
+
+// Admin-only: every user's hand-made issue types (not copied from the
+// catalog), with full definitions, and a one-click promote into the catalog.
+let userIssueTypes = [];
+
+async function loadUserIssueTypes() {
+  if (!isAdmin(currentUser) || !accounts.length) return;
+  const perAccount = await Promise.all(accounts.map(async a => {
+    try {
+      const types = await Data.listIssueTypes(a.uid);
+      return types.filter(t => !t.sourceGlobalId).map(t => ({ ...t, owner: a }));
+    } catch (err) {
+      console.error('listIssueTypes failed for', a.uid, err);
+      return [];
+    }
+  }));
+  userIssueTypes = perAccount.flat()
+    .sort((a, b) => a.name.localeCompare(b.name, 'he') || accountLabel(a.owner).localeCompare(accountLabel(b.owner), 'he'));
+  renderAdminUserTypes();
+}
+
+function catalogMatchFor(t) {
+  return globalIssueTypes.find(g =>
+    (g.promotedFrom?.uid === t.owner.uid && g.promotedFrom?.issueTypeId === t.id) ||
+    g.name.trim() === t.name.trim());
+}
+
+function renderAdminUserTypes() {
+  const el = document.getElementById('admin-user-types-list');
+  if (!el || !isAdmin(currentUser)) return;
+  if (!userIssueTypes.length) {
+    el.innerHTML = `<div class="med-empty" style="padding:16px"><span style="font-size:13px">אין סוגים ידניים</span></div>`;
+    return;
+  }
+  el.innerHTML = userIssueTypes.map((t, i) => {
+    const match = catalogMatchFor(t);
+    const fieldsHtml = (t.fields || []).length
+      ? t.fields.map(f => `
+          <span class="ut-field">${escapeHtml(f.label || '')}
+            <small>${FIELD_TYPE_LABELS[f.type] || f.type}${f.unit ? ` · ${escapeHtml(f.unit)}` : ''}${f.type === 'select' && f.options?.length ? `: ${f.options.map(escapeHtml).join(' / ')}` : ''}</small>
+          </span>`).join('')
+      : `<span class="ut-field"><small>ללא שדות</small></span>`;
+    return `
+    <div class="ut-card">
+      <div class="ut-head">
+        <span class="it-emoji">${t.emoji || '📌'}</span>
+        <div class="ut-title">
+          <div class="it-name">${escapeHtml(t.name)}</div>
+          <div class="ut-owner">👤 ${escapeHtml(accountLabel(t.owner))}${t.owner.uid === currentUser.uid ? ' (אני)' : ''}</div>
+        </div>
+        <button class="catalog-add-btn" data-promote="${i}" ${match ? 'disabled' : ''}>${match ? '✓ בקטלוג' : '➕ לקטלוג'}</button>
+      </div>
+      <div class="ut-meta">
+        ${t.entryMode === 'instant' ? '⚡ רגע חד־פעמי' : '⏱ מתמשך (פתוח/סגור)'} · ${t.trackSeverity === false ? 'ללא מדידת עוצמה' : 'עוצמה 0-10'} · ${(t.fields || []).length} שדות
+      </div>
+      <div class="ut-fields">${fieldsHtml}</div>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('[data-promote]').forEach(btn => btn.addEventListener('click', async () => {
+    const t = userIssueTypes[+btn.dataset.promote];
+    if (!t || catalogMatchFor(t)) return;
+    btn.disabled = true;
+    await Data.createGlobalIssueType(currentUser.uid, {
+      name: t.name, emoji: t.emoji, color: t.color,
+      fields: (t.fields || []).map(f => ({ ...f, options: [...(f.options || [])] })),
+      entryMode: t.entryMode || 'episodic', trackSeverity: t.trackSeverity !== false,
+      promotedFrom: { uid: t.owner.uid, issueTypeId: t.id }
+    });
+    globalIssueTypes = await Data.listGlobalIssueTypes();
+    renderAdminCatalog();
+    renderCatalog();
+    showToast('✅ נוסף לקטלוג הגלובלי!');
+  }));
 }
 
 function renderIssueTypesSettings() {
+  loadUserIssueTypes();
   const el = document.getElementById('issue-types-list');
   el.innerHTML = issueTypes.map(t => `
     <div class="issue-type-card">
@@ -1522,20 +2586,288 @@ function renderIssueTypesSettings() {
     if (type) openIssueTypeEditor(type, 'personal');
   }));
   el.querySelectorAll('[data-del-type]').forEach(btn => btn.addEventListener('click', async () => {
-    await Data.deleteIssueType(currentUser.uid, btn.dataset.delType);
+    await Data.deleteIssueType(activeUid, btn.dataset.delType);
     if (selectedRecordIssueTypeId === btn.dataset.delType) selectedRecordIssueTypeId = null;
     await loadAllData();
   }));
 }
 
+// ── Home ──────────────────────────────────────────────────────
+function entryRowHtml(e, withClose) {
+  const type = issueTypes.find(t => t.id === e.issueTypeId);
+  const meta = e.severity != null ? (LEVEL_META[e.severity] || LEVEL_META[5]) : { color: '#ede9fe', text: 'var(--purple)' };
+  const d = toDate(e.startAt);
+  const note = e.comments?.[0]?.text || '';
+  const status = e.status === 'open' ? `<div class="entry-status open">🟠 פתוח</div>`
+    : e.status === 'instant' ? `<div class="entry-status closed">⚡ חד פעמי</div>`
+    : `<div class="entry-status closed">${e.durationHours != null ? `⏱ ${e.durationHours.toFixed(1)} שעות` : '✅ סגור'}</div>`;
+  return `
+    <div class="entry-card">
+      <div class="entry-badge" style="background:${meta.color};color:${meta.text}">
+        <span class="badge-emoji">${type?.emoji || '📌'}</span>
+        ${e.severity != null ? `<span class="badge-num">${e.severity}</span>` : ''}
+      </div>
+      <div class="entry-info">
+        <div class="entry-date">${escapeHtml(type?.name || '')} · ${d.toLocaleDateString('he-IL')} ${d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</div>
+        ${note ? `<div class="entry-note">${escapeHtml(note)}</div>` : ''}
+        ${status}
+      </div>
+      ${withClose && e.status === 'open' ? `<div class="entry-actions"><button class="entry-close-btn" data-home-close="${e.id}">✔️ סגור עכשיו</button></div>` : ''}
+    </div>`;
+}
+
+async function renderHome() {
+  if (!currentUser) return;
+  let entries = [];
+  try {
+    entries = await Data.listEntries(activeUid);
+  } catch (err) {
+    console.error('renderHome failed:', err);
+  }
+
+  // Stats strip
+  const now = Date.now();
+  const last = entries[0] ? toDate(entries[0].startAt) : null;
+  const daysSince = last ? Math.floor((startOfDay(new Date()) - startOfDay(last)) / DAY_MS) : null;
+  const week = entries.filter(e => now - toDate(e.startAt).getTime() <= 7 * DAY_MS).length;
+  const month = entries.filter(e => now - toDate(e.startAt).getTime() <= 30 * DAY_MS).length;
+  document.getElementById('home-stats').innerHTML = `
+    <div class="home-stat"><div class="hs-val">${daysSince ?? '–'}</div><div class="hs-lbl">ימים מאז האחרון</div></div>
+    <div class="home-stat"><div class="hs-val">${week}</div><div class="hs-lbl">ב-7 ימים</div></div>
+    <div class="home-stat"><div class="hs-val">${month}</div><div class="hs-lbl">ב-30 ימים</div></div>`;
+
+  // Quick record buttons, one per issue type
+  document.getElementById('home-quick-record').innerHTML = issueTypes.length
+    ? issueTypes.map(t => `<button type="button" class="home-quick-btn" data-quick="${t.id}"><span class="hq-emoji">${t.emoji || '📌'}</span>תיעוד ${escapeHtml(t.name)}</button>`).join('')
+    : `<div class="home-empty" style="grid-column:1/-1">אין סוגי בעיות. הוסיפי בלשונית ניהול.</div>`;
+  document.querySelectorAll('#home-quick-record [data-quick]').forEach(b => b.addEventListener('click', () => {
+    selectRecordIssueType(b.dataset.quick);
+    showPage('record');
+  }));
+
+  // Open incidents
+  const open = entries.filter(e => e.status === 'open');
+  document.getElementById('home-open-section').style.display = open.length ? 'block' : 'none';
+  const openEl = document.getElementById('home-open-list');
+  openEl.innerHTML = open.map(e => entryRowHtml(e, true)).join('');
+  openEl.querySelectorAll('[data-home-close]').forEach(b => b.addEventListener('click', async () => {
+    await Data.closeEntry(activeUid, b.dataset.homeClose, Timestamp.now());
+    showToast('✅ נסגר');
+    await renderHistory(); await renderStats(); await renderHome();
+  }));
+
+  // Recent 3
+  document.getElementById('home-recent-list').innerHTML = entries.length
+    ? entries.slice(0, 3).map(e => entryRowHtml(e, false)).join('')
+    : `<div class="home-empty">🌸 אין רשומות עדיין</div>`;
+
+  // Todos (open first, max 5)
+  const openTodos = todos.filter(t => !t.done);
+  const shown = openTodos.slice(0, 5);
+  const todosEl = document.getElementById('home-todos-list');
+  todosEl.innerHTML = shown.length
+    ? shown.map(t => `
+      <div class="todo-item">
+        <button class="todo-check" data-home-todo="${t.id}"></button>
+        <span class="todo-text">${escapeHtml(t.text)}</span>
+      </div>`).join('') + (openTodos.length > shown.length ? `<div class="home-empty">ועוד ${openTodos.length - shown.length} משימות</div>` : '')
+    : `<div class="home-empty">אין משימות פתוחות 🎉</div>`;
+  todosEl.querySelectorAll('[data-home-todo]').forEach(b => b.addEventListener('click', async () => {
+    await Data.updateTodo(activeUid, b.dataset.homeTodo, { done: true });
+    todos = await Data.listTodos(activeUid);
+    renderTodos();
+    renderHome();
+  }));
+
+  // Last doctor visit
+  const v = visits[0];
+  document.getElementById('home-last-visit').innerHTML = v
+    ? `<div class="home-visit"><div class="hv-name">${escapeHtml(v.doctorName)}</div>
+        <div class="hv-date">${new Date(v.date).toLocaleDateString('he-IL')}</div>
+        ${v.summary ? `<div class="hv-summary">${escapeHtml(v.summary.length > 160 ? v.summary.slice(0, 160) + '…' : v.summary)}</div>` : ''}</div>`
+    : `<div class="home-empty">אין ביקורים רשומים</div>`;
+}
+
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => showPage(b.dataset.go)));
+function openMedical(subtab) {
+  showPage('medical');
+  document.querySelector(`.med-subtab[data-mt="${subtab}"]`).click();
+}
+document.getElementById('home-add-instruction').addEventListener('click', () => {
+  openMedical('visits');
+  toggleVisitForm(true);
+  document.getElementById('visit-form').scrollIntoView({ behavior: 'smooth' });
+});
+document.getElementById('home-visits-all').addEventListener('click', () => openMedical('visits'));
+document.getElementById('home-todos-all').addEventListener('click', () => openMedical('todos'));
+async function addHomeTodo() {
+  const input = document.getElementById('home-todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  await Data.createTodo(activeUid, text);
+  input.value = '';
+  todos = await Data.listTodos(activeUid);
+  renderTodos();
+  renderHome();
+}
+document.getElementById('home-todo-add').addEventListener('click', addHomeTodo);
+document.getElementById('home-todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') addHomeTodo(); });
+
+// ── Sharing (owner side) ──────────────────────────────────────
+let shareRole = 'viewer';
+let shareScope = 'all';
+let sharesCache = [];
+
+function setShareRole(r) {
+  shareRole = r;
+  document.querySelectorAll('#share-role-row .status-btn').forEach(b => b.classList.toggle('active', b.dataset.role === r));
+}
+function setShareScope(sc) {
+  shareScope = sc;
+  document.querySelectorAll('#share-scope-row .status-btn').forEach(b => b.classList.toggle('active', b.dataset.scope === sc));
+  document.getElementById('share-types-wrap').style.display = sc === 'types' ? 'block' : 'none';
+}
+document.querySelectorAll('#share-role-row .status-btn').forEach(b => b.addEventListener('click', () => setShareRole(b.dataset.role)));
+document.querySelectorAll('#share-scope-row .status-btn').forEach(b => b.addEventListener('click', () => setShareScope(b.dataset.scope)));
+
+function renderShareTypeChecks(selected = []) {
+  document.getElementById('share-types-list').innerHTML = issueTypes.map(t =>
+    `<label class="check-row"><input type="checkbox" value="${t.id}" ${selected.includes(t.id) ? 'checked' : ''}> ${t.emoji || '📌'} ${escapeHtml(t.name)}</label>`).join('');
+}
+
+function openShareForm(share) {
+  document.getElementById('share-email').value = share?.email || '';
+  document.getElementById('share-email').readOnly = !!share;
+  setShareRole(share?.role || 'viewer');
+  setShareScope(share?.scope || 'all');
+  renderShareTypeChecks(share?.typeIds || []);
+  document.getElementById('share-form').classList.add('open');
+  document.getElementById('share-form').scrollIntoView({ behavior: 'smooth' });
+}
+document.getElementById('add-share-trigger').addEventListener('click', () => openShareForm(null));
+document.getElementById('share-cancel-btn').addEventListener('click', () => document.getElementById('share-form').classList.remove('open'));
+
+document.getElementById('share-save-btn').addEventListener('click', async () => {
+  const email = document.getElementById('share-email').value.trim().toLowerCase();
+  if (!/^[^@\s/]+@[^@\s/]+\.[^@\s/]+$/.test(email)) { showToast('⚠️ אימייל לא תקין'); return; }
+  if (email === currentUser.email.toLowerCase()) { showToast('⚠️ זה האימייל שלך'); return; }
+  const typeIds = [...document.querySelectorAll('#share-types-list input:checked')].map(i => i.value);
+  if (shareScope === 'types' && !typeIds.length) { showToast('⚠️ בחרי לפחות סוג אחד'); return; }
+  await Data.saveShare({ uid: currentUser.uid, name: displayNameOrFallback(currentUser), email: currentUser.email },
+    { email, role: shareRole, scope: shareScope, typeIds });
+  document.getElementById('share-form').classList.remove('open');
+  showToast('✅ השיתוף נשמר');
+  renderShares();
+});
+
+async function renderShares() {
+  if (!currentUser || isViewingOther()) return;
+  const el = document.getElementById('shares-list');
+  try { sharesCache = await Data.listShares(currentUser.uid); } catch (err) { console.error('listShares failed:', err); sharesCache = []; }
+  el.innerHTML = sharesCache.length ? sharesCache.map(sh => {
+    const names = sh.scope === 'types'
+      ? (sh.typeIds || []).map(id => issueTypes.find(t => t.id === id)?.name).filter(Boolean).join(', ') || 'סוגים נבחרים'
+      : 'הכל';
+    return `<div class="share-item">
+      <div class="si-main"><div class="si-email">${escapeHtml(sh.email)}</div>
+        <div class="si-meta">${sh.role === 'editor' ? '✏️ עורך' : '👀 צופה'} · ${escapeHtml(names)}</div></div>
+      <button class="entry-close-btn" data-edit-share="${escapeHtml(sh.id)}">✏️</button>
+      <button class="entry-delete" data-del-share="${escapeHtml(sh.id)}">🗑</button>
+    </div>`;
+  }).join('') : `<div class="home-empty" style="margin-bottom:10px">לא שיתפת את החשבון עם אף אחד.</div>`;
+  el.querySelectorAll('[data-edit-share]').forEach(b => b.addEventListener('click', () =>
+    openShareForm(sharesCache.find(x => x.id === b.dataset.editShare))));
+  el.querySelectorAll('[data-del-share]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('להסיר את הגישה?')) return;
+    await Data.deleteShare(currentUser.uid, b.dataset.delShare);
+    renderShares();
+  }));
+}
+
+// ── Report / PDF share ────────────────────────────────────────
+let reportDays = 30;
+let reportBlob = null;
+let reportFilename = 'health-report.pdf';
+let reportSummaryText = '';
+const reportEl = id => document.getElementById(id);
+
+function openReportModal() {
+  reportBlob = null;
+  reportEl('report-result').classList.remove('show');
+  reportEl('report-generate-btn').disabled = false;
+  reportEl('report-types').innerHTML = issueTypes.map(t =>
+    `<label class="check-row"><input type="checkbox" value="${t.id}" checked> ${t.emoji || '📌'} ${escapeHtml(t.name)}</label>`).join('');
+  reportEl('report-backdrop').classList.add('open');
+}
+function closeReportModal() { reportEl('report-backdrop').classList.remove('open'); }
+
+document.querySelectorAll('[data-open-report]').forEach(b => b.addEventListener('click', openReportModal));
+reportEl('home-share-report').addEventListener('click', openReportModal);
+reportEl('report-close-btn').addEventListener('click', closeReportModal);
+reportEl('report-backdrop').addEventListener('click', e => { if (e.target.id === 'report-backdrop') closeReportModal(); });
+document.querySelectorAll('#report-range-row .status-btn').forEach(b => b.addEventListener('click', () => {
+  reportDays = Number(b.dataset.days);
+  document.querySelectorAll('#report-range-row .status-btn').forEach(x => x.classList.toggle('active', x === b));
+}));
+
+reportEl('report-generate-btn').addEventListener('click', async () => {
+  const typeIds = [...document.querySelectorAll('#report-types input:checked')].map(i => i.value);
+  if (!typeIds.length) { showToast('⚠️ בחרי לפחות סוג אחד'); return; }
+  const btn = reportEl('report-generate-btn');
+  const result = reportEl('report-result');
+  btn.disabled = true;
+  btn.textContent = '⏳ מייצר דוח…';
+  try {
+    const entries = await Data.listEntries(activeUid);
+    const fullScope = activeAccess?.scope !== 'types';
+    const a = accounts.find(x => x.uid === activeUid);
+    const ownerName = isViewingOther() ? (activeAccess?.name || (a && accountLabel(a)) || '') : displayNameOrFallback(currentUser);
+    const options = {
+      days: reportDays || null, typeIds,
+      summary: reportEl('rp-summary').checked, charts: reportEl('rp-charts').checked,
+      history: reportEl('rp-history').checked,
+      visits: fullScope && reportEl('rp-visits').checked, todos: fullScope && reportEl('rp-todos').checked
+    };
+    reportBlob = await Report.generateReport({ ownerName, issueTypes, entries, visits, todos, options });
+    const stamp = new Date().toISOString().slice(0, 10);
+    reportFilename = `health-report-${stamp}.pdf`;
+    const cutoff = options.days ? Date.now() - options.days * DAY_MS : 0;
+    const count = entries.filter(e => typeIds.includes(e.issueTypeId) && toDate(e.startAt).getTime() >= cutoff).length;
+    reportSummaryText = `דוח מעקב בריאות${ownerName ? ' – ' + ownerName : ''} (${options.days ? options.days + ' ימים אחרונים' : 'כל התקופה'}): ${count} אירועים.`;
+    reportEl('report-status').textContent = `✅ הדוח מוכן (${Math.round(reportBlob.size / 1024)}KB)`;
+    const canShare = Report.canShareFile(reportBlob, reportFilename);
+    reportEl('report-share-btn').style.display = canShare ? 'block' : 'none';
+    reportEl('report-hint').textContent = canShare ? '' : 'בדפדפן זה אי אפשר לצרף קובץ אוטומטית: הקובץ יורד למכשיר, וצרפי אותו להודעה.';
+    result.classList.add('show');
+  } catch (err) {
+    console.error('report failed:', err);
+    showToast('⚠️ יצירת הדוח נכשלה');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📄 צור PDF';
+  }
+});
+
+reportEl('report-share-btn').addEventListener('click', async () => {
+  if (!reportBlob) return;
+  try { await Report.shareFile(reportBlob, reportFilename, 'דוח מעקב בריאות', reportSummaryText); }
+  catch (err) { if (err?.name !== 'AbortError') { console.error(err); showToast('⚠️ השיתוף נכשל'); } }
+});
+reportEl('report-download-btn').addEventListener('click', () => reportBlob && Report.downloadBlob(reportBlob, reportFilename));
+reportEl('report-whatsapp-btn').addEventListener('click', () => {
+  if (!reportBlob) return;
+  Report.downloadBlob(reportBlob, reportFilename);
+  window.open(Report.whatsappUrl(reportSummaryText + ' (הקובץ המצורף: ' + reportFilename + ')'), '_blank');
+});
+reportEl('report-mail-btn').addEventListener('click', () => {
+  if (!reportBlob) return;
+  Report.downloadBlob(reportBlob, reportFilename);
+  location.href = Report.mailtoUrl('דוח מעקב בריאות', reportSummaryText + '\n\nהקובץ המצורף: ' + reportFilename);
+});
+
 // ── Tab navigation ────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('page-' + btn.dataset.page).classList.add('active');
-  });
+  btn.addEventListener('click', () => showPage(btn.dataset.page));
 });
 </script>
 </body>

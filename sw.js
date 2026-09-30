@@ -1,4 +1,4 @@
-const CACHE = 'healthmonitor-v2';
+const CACHE = 'healthmonitor-v3';
 const ASSETS = [
   './',
   './index.html',
